@@ -51,7 +51,6 @@ AVDECC_Controller::AVDECC_Controller()
 : wxFrame(NULL, wxID_ANY, wxT("AVDECC-LIB Controller widget"),
           wxDefaultPosition, wxSize(600,300))
 {
-    /*
     netif = avdecc_lib::create_net_interface();
     netif->select_interface_by_num(7);
     controller_obj = avdecc_lib::create_controller(netif, notification_callback, log_callback, log_level);
@@ -60,7 +59,6 @@ AVDECC_Controller::AVDECC_Controller()
     m_end_station_count = 0;
     m_timer = new wxTimer(this, wxID_ANY);
     m_timer->Start(1000, wxTIMER_CONTINUOUS);
-    */
 
     // set the frame icon
     SetIcon(wxICON(sample));
@@ -91,7 +89,6 @@ AVDECC_Controller::AVDECC_Controller()
 
 AVDECC_Controller::~AVDECC_Controller()
 {
-    /*
     sys->process_close();
     sys->destroy();
     controller_obj->destroy();
@@ -99,15 +96,14 @@ AVDECC_Controller::~AVDECC_Controller()
     m_timer->Stop();
     delete wxLog::SetActiveTarget(NULL);
     //delete details;
-    */
 }
 
 void AVDECC_Controller::CreateEndStationList()
 {
     sleep(1); //delay to process end stations (will be replaced by timer method)
 
-    for (unsigned int i = 0; i < 2; i++)
-    {   /*
+    for (unsigned int i = 0; i < controller_obj->get_end_station_count(); i++)
+    {
         avdecc_lib::end_station *end_station = controller_obj->get_end_station_by_index(i);
         
         if (end_station)
@@ -138,21 +134,14 @@ void AVDECC_Controller::CreateEndStationList()
             details_list->SetItem(i, 4, wxString::Format("%llx",end_station_mac));
             delete ent_desc_resp;
         }
-        */
-        //m_end_station_count++;
-        wxListItem item;
-        item.SetId(i);
-        details_list->InsertItem(item);
-        details_list->SetItem(i, 1, "temp");
+        m_end_station_count++;
     }
-/*
 #if wxUSE_STATUSBAR
     SetStatusText(wxString::Format(
                                    wxT("# end stations found = %u"),
                                    m_end_station_count
                                    ));
 #endif // wxUSE_STATUSBAR
-*/
 }
 
 
@@ -174,27 +163,27 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
 {
     details = new end_station_details();
 
-    //avdecc_lib::end_station *end_station = controller_obj->get_end_station_by_index(event.GetIndex());
-    //avdecc_lib::entity_descriptor *entity;
-    //avdecc_lib::configuration_descriptor *configuration;
-    //get_current_entity_and_decriptor(end_station, &entity, &configuration);
-    //uint16_t number_of_stream_input_ports = configuration->stream_input_desc_count();
-    //uint16_t number_of_stream_output_ports = configuration->stream_output_desc_count();
+    avdecc_lib::end_station *end_station = controller_obj->get_end_station_by_index(event.GetIndex());
+    avdecc_lib::entity_descriptor *entity;
+    avdecc_lib::configuration_descriptor *configuration;
+    get_current_entity_and_decriptor(end_station, &entity, &configuration);
+    uint16_t number_of_stream_input_ports = configuration->stream_input_desc_count();
+    uint16_t number_of_stream_output_ports = configuration->stream_output_desc_count();
 
-    //wxString entity_id = wxString::Format("0x%llx",end_station->entity_id());
+    wxString entity_id = wxString::Format("0x%llx",end_station->entity_id());
     
-    //avdecc_lib::entity_descriptor_response *entity_desc_resp = entity->get_entity_response();
-    //wxString default_name = entity_desc_resp->entity_name();
+    avdecc_lib::entity_descriptor_response *entity_desc_resp = entity->get_entity_response();
+    wxString default_name = entity_desc_resp->entity_name();
     
-    //wxString mac = wxString::Format("%llx",end_station->mac());
+    wxString mac = wxString::Format("%llx",end_station->mac());
     
-    //wxString fw_ver = (const char *)entity_desc_resp->firmware_version();
+    wxString fw_ver = (const char *)entity_desc_resp->firmware_version();
 
     wxString init_sample_rate = wxT("48000");
     
-    details->CreateEndStationDetailsPanel("Temp Name", init_sample_rate, "12345", "54321", "0.1");
-    details->CreateAndSizeGrid(2, 2);
-    /*
+    details->CreateEndStationDetailsPanel(default_name, init_sample_rate, entity_id, mac, fw_ver);
+    details->CreateAndSizeGrid(number_of_stream_input_ports, number_of_stream_output_ports);
+    
     for(unsigned int i = 0; i < number_of_stream_input_ports; i++)
     {
         avdecc_lib::stream_input_descriptor *stream_input_desc_ref = configuration->get_stream_input_desc_by_index(i);
@@ -274,7 +263,6 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
             delete stream_output_resp_ref;
         }
     }
-    */
 }
 
 int AVDECC_Controller::get_current_entity_and_decriptor(avdecc_lib::end_station *end_station,

@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "avdecc-widget/avdecc-app.cpp"
-            timestampString = "445971423.490811"
+            timestampString = "446414851.48814"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "124"
-            endingLineNumber = "124"
+            startingLineNumber = "116"
+            endingLineNumber = "116"
             landmarkName = "AVDECC_Controller::CreateEndStationList()"
             landmarkType = "5">
          </BreakpointContent>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "avdecc-widget/avdecc-app.cpp"
-            timestampString = "445971423.490811"
+            timestampString = "446414851.48814"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "110"
-            endingLineNumber = "110"
+            startingLineNumber = "102"
+            endingLineNumber = "102"
             landmarkName = "AVDECC_Controller::CreateEndStationList()"
             landmarkType = "5">
             <Locations>
@@ -86,11 +86,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "avdecc-widget/avdecc-app.cpp"
-            timestampString = "445971423.490811"
+            timestampString = "446414851.48814"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "112"
-            endingLineNumber = "112"
+            startingLineNumber = "104"
+            endingLineNumber = "104"
             landmarkName = "AVDECC_Controller::CreateEndStationList()"
             landmarkType = "5">
          </BreakpointContent>
@@ -102,11 +102,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "avdecc-widget/avdecc-app.cpp"
-            timestampString = "445971423.490811"
+            timestampString = "446414851.48814"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "140"
-            endingLineNumber = "140"
+            startingLineNumber = "132"
+            endingLineNumber = "132"
             landmarkName = "AVDECC_Controller::CreateEndStationList()"
             landmarkType = "5">
          </BreakpointContent>
@@ -118,12 +118,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "avdecc-widget/avdecc-app.cpp"
-            timestampString = "446083800.76232"
+            timestampString = "446414851.48814"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "178"
-            endingLineNumber = "178"
-            landmarkName = "AVDECC_Controller::OnEndStationDClick(wxListEvent&amp; event)"
+            startingLineNumber = "156"
+            endingLineNumber = "156"
+            landmarkName = "AVDECC_Controller::OnQuit(wxCommandEvent&amp; WXUNUSED(event))"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -141,6 +141,52 @@
             endingLineNumber = "130"
             landmarkName = "class AVDECC_Controller"
             landmarkType = "3">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "avdecc-widget/end_station_details.cpp"
+            timestampString = "446413946.042575"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "331"
+            endingLineNumber = "331"
+            landmarkName = "end_station_details::OnApply(wxCommandEvent&amp; event)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "avdecc-widget/end_station_details.cpp"
+            timestampString = "446413946.042575"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "335"
+            endingLineNumber = "335">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "avdecc-widget/end_station_details.cpp"
+            timestampString = "446413946.042575"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "280"
+            endingLineNumber = "280"
+            landmarkName = "end_station_details::CreateAndSizeGrid(unsigned int stream_input_count, unsigned int stream_output_count)"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
