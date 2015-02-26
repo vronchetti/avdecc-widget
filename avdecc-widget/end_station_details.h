@@ -26,7 +26,7 @@
  *
  */
 
-//#include "wx/wxprec.h"
+#include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -34,7 +34,6 @@
 
 // for all others, include the necessary headers
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
 #include "wx/app.h"
 #include "wx/frame.h"
 #include "wx/log.h"
@@ -53,28 +52,13 @@
 #include "wx/icon.h"
 #include "wx/timer.h"
 #include "wx/scrolwin.h"
+#include "wx/event.h"
 #endif
 #include "wx/colordlg.h"
 #include "wx/numdlg.h"
 #include "wx/htmllbox.h"
 #include "wx/grid.h"
-#include "wx/button.h"
-#include "wx/timer.h"
 
-//avdecc-lib necessary headers
-#include <assert.h>
-#include <iostream>
-#include <vector>
-#include <iomanip>
-#include <string>
-#include <sstream>
-#include <fstream>
-#include <limits.h>
-#include <string.h>
-#include <fstream>
-#include <inttypes.h>
-
-//#include "avdecc-app.h"
 
 class end_station_details : public wxFrame
 {
@@ -82,7 +66,7 @@ public:
     end_station_details();
     virtual ~end_station_details();
 
-    void CreateEndStationDetailsPanel(wxString Default_Name, wxString Init_Sampling_Rate,
+    void CreateEndStationDetailsPanel(wxString Default_Name, uint32_t Init_Sampling_Rate,
                                       wxString Entity_ID, wxString Mac, wxString fw_ver);
     void CreateAndSizeGrid(unsigned int stream_input_count, unsigned int stream_output_count);
     void OnGridCellChange(wxGridEvent& event);
@@ -98,6 +82,8 @@ public:
     void SetOutputChannelName(unsigned int stream_index, wxString name);
     
     void OnApply(wxCommandEvent& event);
+    
+    wxButton * button_test;
 
 private:
     wxFrame *EndStation_Details_Dialog;
@@ -109,7 +95,6 @@ private:
     wxTextCtrl *entity_id;
     wxTextCtrl *mac;
     wxTextCtrl *fw_ver;
-    
 
     wxGrid * input_stream_grid;
     wxGrid * output_stream_grid;
@@ -121,10 +106,8 @@ private:
     wxBoxSizer * input_stream_header_sizer;
     wxStaticBoxSizer *Output_Stream_Sizer;
     wxBoxSizer * output_stream_header_sizer;
+    
     wxDECLARE_EVENT_TABLE();
 };
 
-enum
-{
-};
 

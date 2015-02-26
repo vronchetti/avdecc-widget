@@ -167,6 +167,10 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
     avdecc_lib::entity_descriptor *entity;
     avdecc_lib::configuration_descriptor *configuration;
     get_current_entity_and_decriptor(end_station, &entity, &configuration);
+    avdecc_lib::audio_unit_descriptor *audio_unit_desc = configuration->get_audio_unit_desc_by_index(0);
+    avdecc_lib::audio_unit_descriptor_response *audio_unit_resp_ref = audio_unit_desc->get_audio_unit_response();
+    
+    
     uint16_t number_of_stream_input_ports = configuration->stream_input_desc_count();
     uint16_t number_of_stream_output_ports = configuration->stream_output_desc_count();
 
@@ -179,10 +183,12 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
     
     wxString fw_ver = (const char *)entity_desc_resp->firmware_version();
 
-    wxString init_sample_rate = wxT("48000");
+    uint32_t init_sample_rate = audio_unit_resp_ref->current_sampling_rate();
     
     details->CreateEndStationDetailsPanel(default_name, init_sample_rate, entity_id, mac, fw_ver);
     details->CreateAndSizeGrid(number_of_stream_input_ports, number_of_stream_output_ports);
+    
+    delete audio_unit_resp_ref;
     
     for(unsigned int i = 0; i < number_of_stream_input_ports; i++)
     {

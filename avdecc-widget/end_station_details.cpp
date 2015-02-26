@@ -29,19 +29,15 @@
 #include "end_station_details.h"
 
 wxBEGIN_EVENT_TABLE(end_station_details, wxFrame)
-    EVT_BUTTON(10, end_station_details::OnApply)
+    EVT_GRID_CELL_CHANGED(end_station_details::OnGridCellChange)
 wxEND_EVENT_TABLE()
+
 
 end_station_details::end_station_details()
 {
-
-   
-
-    EndStation_Details_Dialog = new wxFrame(NULL, wxID_ANY, wxT("End Station Configuration"),
+    EndStation_Details_Dialog = new wxFrame(this, wxID_ANY, wxT("End Station Configuration"),
                                             wxDefaultPosition,
                                             wxSize(500,750));
-    
-    
     
     EndStation_Details_Dialog->Show();
 }
@@ -53,7 +49,7 @@ end_station_details::~end_station_details()
     delete output_stream_grid;
 }
 
-void end_station_details::CreateEndStationDetailsPanel(wxString Default_Name, wxString Init_Sampling_Rate,
+void end_station_details::CreateEndStationDetailsPanel(wxString Default_Name, uint32_t Init_Sampling_Rate,
                                                        wxString Entity_ID, wxString Mac, wxString fw_version)
 {
     wxBoxSizer* Sizer1  = new wxBoxSizer(wxHORIZONTAL);
@@ -87,6 +83,19 @@ void end_station_details::CreateEndStationDetailsPanel(wxString Default_Name, wx
     str.Add("96000 Hz");
     
     sampling_rate = new wxChoice(EndStation_Details_Dialog, wxID_ANY, wxDefaultPosition, wxSize(150,25), str);
+    switch(Init_Sampling_Rate)
+    {
+        case 48000:
+            sampling_rate->SetSelection(0);
+            break;
+        case 96000:
+            sampling_rate->SetSelection(1);
+            break;
+        default:
+            //not implemented
+            break;
+    }
+
     Sizer3->Add(sampling_rate);
     
     entity_id = new wxTextCtrl(EndStation_Details_Dialog, wxID_ANY, Entity_ID, wxDefaultPosition, wxSize(150,25));
@@ -128,8 +137,8 @@ void end_station_details::SetChannelChoice(unsigned int stream_input_count, unsi
     
     for(unsigned int j = 0; j < stream_output_count; j++)
     {
-        output_stream_grid->SetCellEditor(j, 1, new wxGridCellChoiceEditor(str));
-        output_stream_grid->SetCellValue(j, 1, "1-Channel");
+        wxGridCellChoiceEditor *channel_choice = new wxGridCellChoiceEditor(str);
+        output_stream_grid->SetCellEditor(j, 1, channel_choice);
     }
 }
 
@@ -276,18 +285,26 @@ void end_station_details::CreateOutputStreamGridHeader()
 
 void end_station_details::CreateAndSizeGrid(unsigned int stream_input_count, unsigned int stream_output_count)
 {
-    wxButton * button_test = new wxButton(EndStation_Details_Dialog, 10, wxT("Apply"));
+    button_test = new wxButton(EndStation_Details_Dialog, 233, wxT("Apply"));
+    
     button_test->Connect(
                          wxEVT_COMMAND_BUTTON_CLICKED,
                          wxCommandEventHandler(end_station_details::OnApply),
-                         NULL, EndStation_Details_Dialog);
-    input_stream_grid = new wxGrid(EndStation_Details_Dialog, wxID_ANY, wxDefaultPosition, wxDefaultSize);
+                         NULL, NULL);
+
+    input_stream_grid = new wxGrid(EndStation_Details_Dialog, 243, wxDefaultPosition, wxDefaultSize);
     output_stream_grid = new wxGrid(EndStation_Details_Dialog, wxID_ANY, wxDefaultPosition, wxDefaultSize);
     
     Input_Stream_Sizer = new wxStaticBoxSizer(wxVERTICAL,
                                               EndStation_Details_Dialog, "Input Streams");
     Output_Stream_Sizer = new wxStaticBoxSizer(wxVERTICAL,
                                               EndStation_Details_Dialog, "Output Streams");
+
+    output_stream_grid->Connect(
+                            wxEVT_GRID_CELL_CHANGED,
+                            wxGridEventHandler(end_station_details::OnGridCellChange),
+                            NULL, NULL);
+
     
     CreateInputStreamGridHeader();
     CreateOutputStreamGridHeader();
@@ -328,5 +345,11 @@ void end_station_details::CreateAndSizeGrid(unsigned int stream_input_count, uns
 
 void end_station_details::OnApply(wxCommandEvent& event)
 {
-    std::cout << "working";
+    std::cout << "working" << std::endl;
+}
+
+void end_station_details::OnGridCellChange(wxGridEvent &event)
+{
+    std::cout << "grid_working" << std::endl;
+    std::cout << input_stream_grid->GetCellValue(1,2);
 }

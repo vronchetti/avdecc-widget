@@ -27,37 +27,6 @@
  * 
  */
 
-#include "wx/wxprec.h"
-
-#ifdef __BORLANDC__
-#pragma hdrstop
-#endif
-
-// for all others, include the necessary headers
-#ifndef WX_PRECOMP
-#include "wx/app.h"
-#include "wx/frame.h"
-#include "wx/log.h"
-#include "wx/textdlg.h"
-#include "wx/sizer.h"
-#include "wx/button.h"
-#include "wx/notebook.h"
-#include "wx/statbox.h"
-#include "wx/stattext.h"
-#include "wx/listctrl.h"
-#include "wx/choice.h"
-#include "wx/menu.h"
-#include "wx/msgdlg.h"
-#include "wx/textctrl.h"
-#include "wx/dc.h"
-#include "wx/icon.h"
-#include "wx/timer.h"
-#include "wx/scrolwin.h"
-#endif
-#include "wx/colordlg.h"
-#include "wx/numdlg.h"
-#include "wx/htmllbox.h"
-
 #include "end_station_details.h"
 
 //avdecc-lib necessary headers

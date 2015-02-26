@@ -180,7 +180,6 @@
 		574BDE501A80054400F08D6C /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = util.h; sourceTree = "<group>"; };
 		574BDE511A8007B300F08D6C /* libcontroller.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcontroller.dylib; path = ../new/controller/lib/Debug/libcontroller.dylib; sourceTree = "<group>"; };
 		575C14891A7D51C100A29984 /* avdecc-widget.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "avdecc-widget.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		575C148D1A7D51C100A29984 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		575C149F1A7D51C100A29984 /* avdecc-widgetTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "avdecc-widgetTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		575C14AF1A7D528E00A29984 /* libwx_osx_cocoau_gl-3.1.0.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libwx_osx_cocoau_gl-3.1.0.0.0.dylib"; path = "../wxWidgets-master/build-cocoa-debug/lib/libwx_osx_cocoau_gl-3.1.0.0.0.dylib"; sourceTree = "<group>"; };
 		575C14B01A7D528E00A29984 /* libwx_osx_cocoau_gl-3.1.0.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libwx_osx_cocoau_gl-3.1.0.0.0.dylib"; path = "../wxWidgets-master/build-cocoa-debug/lib/libwx_osx_cocoau_gl-3.1.0.0.0.dylib"; sourceTree = "<group>"; };
@@ -1918,7 +1917,6 @@
 			isa = PBXGroup;
 			children = (
 				572307C31A7DBEE3002800EB /* avdecc-app.cpp */,
-				575C148D1A7D51C100A29984 /* Info.plist */,
 				5798AE3B1A8FB99A00A011A4 /* end_station_details.cpp */,
 			);
 			name = "Supporting Files";
