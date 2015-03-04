@@ -95,6 +95,8 @@ private:
     wxTimer * m_timer;
 
     end_station_details * details;
+    end_station_configuration * config;
+    stream_configuration * stream_config;
     
     //avdecc-lib objects, variables
     avdecc_lib::controller *controller_obj;
@@ -139,4 +141,3 @@ enum
     // (where it is special and put into the "Apple" menu)
     HtmlLbox_About = wxID_ABOUT
 };
-

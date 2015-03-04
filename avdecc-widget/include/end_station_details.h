@@ -58,12 +58,14 @@
 #include "wx/numdlg.h"
 #include "wx/htmllbox.h"
 #include "wx/grid.h"
+#include "end_station_configuration.h"
+#include "stream_configuration.h"
 
 
 class end_station_details : public wxFrame
 {
 public:
-    end_station_details();
+    end_station_details(end_station_configuration *config, stream_configuration *stream_config);
     virtual ~end_station_details();
 
     void CreateEndStationDetailsPanel(wxString Default_Name, uint32_t Init_Sampling_Rate,
@@ -75,29 +77,35 @@ public:
                               unsigned int stream_input_count);
     void SetOutputChannelCount(unsigned int stream_index, unsigned int channel_count,
                               unsigned int stream_input_count);
-    
+
     void CreateInputStreamGridHeader();
     void CreateOutputStreamGridHeader();
     void SetInputChannelName(unsigned int stream_index, wxString name);
     void SetOutputChannelName(unsigned int stream_index, wxString name);
-    
+
     void OnApply(wxCommandEvent& event);
-    
-    wxButton * button_test;
+    void OnCancel(wxCommandEvent& event);
 
 private:
     wxFrame *EndStation_Details_Dialog;
     
     uint64_t channel_count;
+    unsigned int m_stream_input_count;
+    unsigned int m_stream_output_count;
     wxTextCtrl *name;
     wxTextCtrl *default_name;
     wxChoice *sampling_rate;
     wxTextCtrl *entity_id;
     wxTextCtrl *mac;
     wxTextCtrl *fw_ver;
+    
+    wxButton * apply_button;
+    wxButton * cancel_button;
 
     wxGrid * input_stream_grid;
     wxGrid * output_stream_grid;
+    wxGridCellChoiceEditor *input_channel_choice;
+    wxGridCellChoiceEditor *output_channel_choice;
     wxGridStringTable *grid_base;
     wxGridStringTable *grid_base2;
     
@@ -110,4 +118,8 @@ private:
     wxDECLARE_EVENT_TABLE();
 };
 
-
+enum
+{
+    ID_APPLY = 233,
+    ID_CANCEL = 234
+};

@@ -30,14 +30,41 @@
 
 wxBEGIN_EVENT_TABLE(end_station_details, wxFrame)
     EVT_GRID_CELL_CHANGED(end_station_details::OnGridCellChange)
+    EVT_BUTTON(ID_APPLY, end_station_details::OnApply)
+    EVT_BUTTON(ID_CANCEL, end_station_details::OnCancel)
 wxEND_EVENT_TABLE()
 
 
-end_station_details::end_station_details()
+end_station_details::end_station_details(end_station_configuration *config, stream_configuration *stream_config)
 {
     EndStation_Details_Dialog = new wxFrame(this, wxID_ANY, wxT("End Station Configuration"),
                                             wxDefaultPosition,
-                                            wxSize(500,750));
+                                            wxSize(500,500));
+
+    CreateEndStationDetailsPanel(config->get_default_name(), config->get_init_sample_rate(), config->get_entity_id(), config->get_mac(), config->get_fw_ver());
+    
+    m_stream_input_count = stream_config->get_stream_input_count();
+    m_stream_output_count = stream_config->get_stream_output_count();
+    
+    CreateAndSizeGrid(m_stream_input_count, m_stream_output_count);
+    
+    for(unsigned int i = 0; i < m_stream_input_count; i++)
+    {
+        struct stream_configuration_details m_stream_details;
+        
+        stream_config->get_stream_input_name_by_index(i, m_stream_details);
+        SetInputChannelName(i, m_stream_details.stream_name);
+        SetInputChannelCount(i, m_stream_details.channel_count, m_stream_input_count);
+    }
+    
+    for(unsigned int i = 0; i < m_stream_output_count; i++)
+    {
+        struct stream_configuration_details m_stream_details;
+        
+        stream_config->get_stream_output_name_by_index(i, m_stream_details);
+        SetOutputChannelName(i, m_stream_details.stream_name);
+        SetOutputChannelCount(i, m_stream_details.channel_count, m_stream_output_count);
+    }
     
     EndStation_Details_Dialog->Show();
 }
@@ -47,6 +74,8 @@ end_station_details::~end_station_details()
     //delete button;
     delete input_stream_grid;
     delete output_stream_grid;
+    delete input_channel_choice;
+    delete output_channel_choice;
 }
 
 void end_station_details::CreateEndStationDetailsPanel(wxString Default_Name, uint32_t Init_Sampling_Rate,
@@ -131,14 +160,14 @@ void end_station_details::SetChannelChoice(unsigned int stream_input_count, unsi
     
     for(unsigned int j = 0; j < stream_input_count; j++)
     {
-        wxGridCellChoiceEditor *channel_choice = new wxGridCellChoiceEditor(str);
-        input_stream_grid->SetCellEditor(j, 1, channel_choice);
+        input_channel_choice = new wxGridCellChoiceEditor(str);
+        input_stream_grid->SetCellEditor(j, 1, input_channel_choice);
     }
     
     for(unsigned int j = 0; j < stream_output_count; j++)
     {
-        wxGridCellChoiceEditor *channel_choice = new wxGridCellChoiceEditor(str);
-        output_stream_grid->SetCellEditor(j, 1, channel_choice);
+        output_channel_choice = new wxGridCellChoiceEditor(str);
+        output_stream_grid->SetCellEditor(j, 1, output_channel_choice);
     }
 }
 
@@ -176,8 +205,6 @@ void end_station_details::SetInputChannelCount(unsigned int stream_index, unsign
         }
         else if(input_stream_grid->GetCellValue(j, 1) == "2-Channel")
         {
-            input_stream_grid->SetCellBackgroundColour(2, 0, *wxWHITE);
-            
             for(unsigned int k = 3; k < 10; k++)
             {
                 input_stream_grid->SetReadOnly(j, k);
@@ -215,8 +242,6 @@ void end_station_details::SetOutputChannelCount(unsigned int stream_index, unsig
         }
         else if(output_stream_grid->GetCellValue(j, 1) == "2-Channel")
         {
-            output_stream_grid->SetCellBackgroundColour(2, 0, *wxWHITE);
-            
             for(unsigned int k = 3; k < 10; k++)
             {
                 output_stream_grid->SetReadOnly(j, k);
@@ -229,7 +254,6 @@ void end_station_details::SetOutputChannelCount(unsigned int stream_index, unsig
         }
     }
 }
-
 
 void end_station_details::CreateInputStreamGridHeader()
 {
@@ -285,12 +309,8 @@ void end_station_details::CreateOutputStreamGridHeader()
 
 void end_station_details::CreateAndSizeGrid(unsigned int stream_input_count, unsigned int stream_output_count)
 {
-    button_test = new wxButton(EndStation_Details_Dialog, 233, wxT("Apply"));
-    
-    button_test->Connect(
-                         wxEVT_COMMAND_BUTTON_CLICKED,
-                         wxCommandEventHandler(end_station_details::OnApply),
-                         NULL, NULL);
+    apply_button = new wxButton(EndStation_Details_Dialog, ID_APPLY, wxT("Apply"));
+    cancel_button = new wxButton(EndStation_Details_Dialog, ID_CANCEL, wxT("Cancel"));
 
     input_stream_grid = new wxGrid(EndStation_Details_Dialog, 243, wxDefaultPosition, wxDefaultSize);
     output_stream_grid = new wxGrid(EndStation_Details_Dialog, wxID_ANY, wxDefaultPosition, wxDefaultSize);
@@ -300,10 +320,6 @@ void end_station_details::CreateAndSizeGrid(unsigned int stream_input_count, uns
     Output_Stream_Sizer = new wxStaticBoxSizer(wxVERTICAL,
                                               EndStation_Details_Dialog, "Output Streams");
 
-    output_stream_grid->Connect(
-                            wxEVT_GRID_CELL_CHANGED,
-                            wxGridEventHandler(end_station_details::OnGridCellChange),
-                            NULL, NULL);
 
     
     CreateInputStreamGridHeader();
@@ -325,6 +341,7 @@ void end_station_details::CreateAndSizeGrid(unsigned int stream_input_count, uns
     SetChannelChoice(stream_input_count, stream_output_count);
 
     wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *button_sizer = new wxBoxSizer(wxHORIZONTAL);
 
     sizer->Add(Details_Sizer);
     Input_Stream_Sizer->Add(input_stream_header_sizer);
@@ -334,7 +351,10 @@ void end_station_details::CreateAndSizeGrid(unsigned int stream_input_count, uns
     Output_Stream_Sizer->Add(output_stream_header_sizer);
     Output_Stream_Sizer->Add(output_stream_grid);
     sizer->Add(Output_Stream_Sizer);
-    sizer->Add(button_test);
+    
+    button_sizer->Add(apply_button);
+    button_sizer->Add(cancel_button);
+    sizer->Add(button_sizer);
 
     EndStation_Details_Dialog->SetSizer(sizer, true);
     
@@ -345,11 +365,23 @@ void end_station_details::CreateAndSizeGrid(unsigned int stream_input_count, uns
 
 void end_station_details::OnApply(wxCommandEvent& event)
 {
-    std::cout << "working" << std::endl;
+    std::cout << "apply button pressed" << std::endl;
+    //set sampling rate
+    //set stream formats
+
+
+    //Destroy();
+}
+
+void end_station_details::OnCancel(wxCommandEvent& event)
+{
+    std::cout << "cancel button pressed" << std::endl;
+
+    Destroy();
 }
 
 void end_station_details::OnGridCellChange(wxGridEvent &event)
 {
-    std::cout << "grid_working" << std::endl;
-    std::cout << input_stream_grid->GetCellValue(1,2);
+    std::cout << "grid changed" << std::endl;
+    
 }

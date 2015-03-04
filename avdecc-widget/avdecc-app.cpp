@@ -31,6 +31,12 @@ public:
     virtual bool OnInit() wxOVERRIDE { (new AVDECC_Controller())->Show(); return true; }
 };
 
+class Input_Stream_Details
+{
+public:
+    
+};
+
 // ----------------------------------------------------------------------------
 // event tables and other macros for AVDECC_Controller
 // ----------------------------------------------------------------------------
@@ -95,7 +101,8 @@ AVDECC_Controller::~AVDECC_Controller()
     netif->destroy();
     m_timer->Stop();
     delete wxLog::SetActiveTarget(NULL);
-    //delete details;
+    delete config;
+    delete stream_config;
 }
 
 void AVDECC_Controller::CreateEndStationList()
@@ -155,39 +162,28 @@ void AVDECC_Controller::OnQuit(wxCommandEvent& WXUNUSED(event))
     Close(true);
 }
 
-// ----------------------------------------------------------------------------
-// listbox event handlers
-// ----------------------------------------------------------------------------
-
 void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
 {
-    details = new end_station_details();
-
     avdecc_lib::end_station *end_station = controller_obj->get_end_station_by_index(event.GetIndex());
     avdecc_lib::entity_descriptor *entity;
     avdecc_lib::configuration_descriptor *configuration;
     get_current_entity_and_decriptor(end_station, &entity, &configuration);
     avdecc_lib::audio_unit_descriptor *audio_unit_desc = configuration->get_audio_unit_desc_by_index(0);
     avdecc_lib::audio_unit_descriptor_response *audio_unit_resp_ref = audio_unit_desc->get_audio_unit_response();
-    
-    
+
     uint16_t number_of_stream_input_ports = configuration->stream_input_desc_count();
     uint16_t number_of_stream_output_ports = configuration->stream_output_desc_count();
 
     wxString entity_id = wxString::Format("0x%llx",end_station->entity_id());
-    
     avdecc_lib::entity_descriptor_response *entity_desc_resp = entity->get_entity_response();
     wxString default_name = entity_desc_resp->entity_name();
-    
     wxString mac = wxString::Format("%llx",end_station->mac());
-    
     wxString fw_ver = (const char *)entity_desc_resp->firmware_version();
-
     uint32_t init_sample_rate = audio_unit_resp_ref->current_sampling_rate();
     
-    details->CreateEndStationDetailsPanel(default_name, init_sample_rate, entity_id, mac, fw_ver);
-    details->CreateAndSizeGrid(number_of_stream_input_ports, number_of_stream_output_ports);
-    
+    config = new end_station_configuration(entity_id, default_name, mac, fw_ver, init_sample_rate);
+    stream_config = new stream_configuration(number_of_stream_input_ports, number_of_stream_output_ports);
+
     delete audio_unit_resp_ref;
     
     for(unsigned int i = 0; i < number_of_stream_input_ports; i++)
@@ -195,6 +191,8 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
         avdecc_lib::stream_input_descriptor *stream_input_desc_ref = configuration->get_stream_input_desc_by_index(i);
         if(stream_input_desc_ref)
         {
+            struct stream_configuration_details input_stream_details;
+            
             avdecc_lib::stream_input_descriptor_response *stream_input_resp_ref = stream_input_desc_ref->get_stream_input_response();
             const uint8_t * object_name = stream_input_resp_ref->object_name();
             const uint8_t * stream_input_name;
@@ -207,7 +205,7 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
                 stream_input_name = object_name;
             }
             
-            details->SetInputChannelName(i, stream_input_name);
+            input_stream_details.stream_name = stream_input_name;
             
             const char * current_format = stream_input_resp_ref->current_format();
             uint64_t value = avdecc_lib::utility::ieee1722_format_name_to_value(current_format);
@@ -216,16 +214,17 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
         
             if(value == 1) //channel count 1
             {
-                details->SetInputChannelCount(i, 1, number_of_stream_input_ports);
+                input_stream_details.channel_count = 1;
             }
             else if(value == 2) //channel count 2
             {
-                details->SetInputChannelCount(i, 2, number_of_stream_input_ports);
+                input_stream_details.channel_count = 2;
             }
             else //channel count 2
             {
-                details->SetInputChannelCount(i, 8, number_of_stream_input_ports);
+                input_stream_details.channel_count = 8;
             }
+            stream_config->input_stream_config.push_back(input_stream_details);
             delete stream_input_resp_ref;
         }
     }
@@ -235,6 +234,8 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
         avdecc_lib::stream_output_descriptor *stream_output_desc_ref = configuration->get_stream_output_desc_by_index(i);
         if(stream_output_desc_ref)
         {
+            struct stream_configuration_details output_stream_details;
+
             avdecc_lib::stream_output_descriptor_response *stream_output_resp_ref = stream_output_desc_ref->get_stream_output_response();
             const uint8_t * object_name = stream_output_resp_ref->object_name();
             const uint8_t * stream_output_name;
@@ -247,7 +248,7 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
                 stream_output_name = object_name;
             }
             
-            details->SetOutputChannelName(i, stream_output_name);
+            output_stream_details.stream_name = stream_output_name;
 
             const char * current_format = stream_output_resp_ref->current_format();
             uint64_t value = avdecc_lib::utility::ieee1722_format_name_to_value(current_format);
@@ -256,19 +257,22 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
             
             if(value == 1) //channel count 1
             {
-                details->SetOutputChannelCount(i, 1, number_of_stream_output_ports);
+                output_stream_details.channel_count = 1;
             }
             else if(value == 2) //channel count 2
             {
-                details->SetOutputChannelCount(i, 2, number_of_stream_output_ports);
+                output_stream_details.channel_count = 2;
             }
             else //channel count 8
             {
-                details->SetOutputChannelCount(i, 8, number_of_stream_output_ports);
+                output_stream_details.channel_count = 8;
             }
+            stream_config->output_stream_config.push_back(output_stream_details);
             delete stream_output_resp_ref;
         }
     }
+    
+    details = new end_station_details(config, stream_config);
 }
 
 int AVDECC_Controller::get_current_entity_and_decriptor(avdecc_lib::end_station *end_station,

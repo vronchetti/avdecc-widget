@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		572307C41A7DBEE3002800EB /* avdecc-app.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 572307C31A7DBEE3002800EB /* avdecc-app.cpp */; };
 		5741D02B1A96B90E000D0DF7 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5741D02A1A96B90E000D0DF7 /* Info.plist */; };
+		5749859F1AA4D93600A736A9 /* end_station_configuration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5749859E1AA4D93600A736A9 /* end_station_configuration.cpp */; };
 		574BDE521A8007B300F08D6C /* libcontroller.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 574BDE511A8007B300F08D6C /* libcontroller.dylib */; };
 		575C14E41A7D528E00A29984 /* libwx_osx_cocoau_gl-3.1.0.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 575C14AF1A7D528E00A29984 /* libwx_osx_cocoau_gl-3.1.0.0.0.dylib */; };
 		575C14E51A7D528E00A29984 /* libwx_osx_cocoau_gl-3.1.0.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 575C14B01A7D528E00A29984 /* libwx_osx_cocoau_gl-3.1.0.0.0.dylib */; };
@@ -97,6 +98,7 @@
 		575C1B131A7D568B00A29984 /* wx.rc in Resources */ = {isa = PBXBuildFile; fileRef = 575C184D1A7D568700A29984 /* wx.rc */; };
 		575C1B141A7D568B00A29984 /* image_placeholder24x24.xpm in Resources */ = {isa = PBXBuildFile; fileRef = 575C19971A7D568800A29984 /* image_placeholder24x24.xpm */; };
 		5798AE3D1A8FB99A00A011A4 /* end_station_details.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5798AE3B1A8FB99A00A011A4 /* end_station_details.cpp */; };
+		57F1BB331AA51E270095AFAF /* stream_configuration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57F1BB321AA51E270095AFAF /* stream_configuration.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -116,6 +118,9 @@
 		5741D0261A96B870000D0DF7 /* cli_command_format.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = cli_command_format.h; path = "avdecc-widget/cli_command_format.h"; sourceTree = "<group>"; };
 		5741D0271A96B870000D0DF7 /* cli_command.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = cli_command.h; path = "avdecc-widget/cli_command.h"; sourceTree = "<group>"; };
 		5741D02A1A96B90E000D0DF7 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5749859E1AA4D93600A736A9 /* end_station_configuration.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = end_station_configuration.cpp; sourceTree = "<group>"; };
+		574985A01AA4DA7800A736A9 /* end_station_details.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = end_station_details.h; path = "avdecc-widget/include/end_station_details.h"; sourceTree = SOURCE_ROOT; };
+		574985A11AA4DC7100A736A9 /* end_station_configuration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = end_station_configuration.h; path = "avdecc-widget/include/end_station_configuration.h"; sourceTree = SOURCE_ROOT; };
 		574BDE131A80054400F08D6C /* audio_cluster_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audio_cluster_descriptor.h; sourceTree = "<group>"; };
 		574BDE141A80054400F08D6C /* audio_cluster_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audio_cluster_descriptor_response.h; sourceTree = "<group>"; };
 		574BDE151A80054400F08D6C /* audio_map_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audio_map_descriptor.h; sourceTree = "<group>"; };
@@ -1672,8 +1677,9 @@
 		5798AE381A8FB19600A011A4 /* avdecc-app.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "avdecc-app.h"; path = "avdecc-widget/include/avdecc-app.h"; sourceTree = SOURCE_ROOT; };
 		5798AE3A1A8FB73500A011A4 /* notif_log.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = notif_log.h; path = "avdecc-widget/include/notif_log.h"; sourceTree = SOURCE_ROOT; };
 		5798AE3B1A8FB99A00A011A4 /* end_station_details.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = end_station_details.cpp; sourceTree = "<group>"; };
-		5798AE3C1A8FB99A00A011A4 /* end_station_details.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = end_station_details.h; path = "../../avdecc-widget/avdecc-widget/end_station_details.h"; sourceTree = "<group>"; };
 		5798AE461A8FBB9300A011A4 /* cmd_line_help.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cmd_line_help.h; path = "avdecc-widget/cmd_line_help.h"; sourceTree = "<group>"; };
+		57F1BB321AA51E270095AFAF /* stream_configuration.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stream_configuration.cpp; sourceTree = "<group>"; };
+		57F1BB341AA51E630095AFAF /* stream_configuration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = stream_configuration.h; path = "avdecc-widget/include/stream_configuration.h"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1916,8 +1922,10 @@
 		575C148C1A7D51C100A29984 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				5749859E1AA4D93600A736A9 /* end_station_configuration.cpp */,
 				572307C31A7DBEE3002800EB /* avdecc-app.cpp */,
 				5798AE3B1A8FB99A00A011A4 /* end_station_details.cpp */,
+				57F1BB321AA51E270095AFAF /* stream_configuration.cpp */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1941,7 +1949,9 @@
 		575C15221A7D568600A29984 /* include */ = {
 			isa = PBXGroup;
 			children = (
-				5798AE3C1A8FB99A00A011A4 /* end_station_details.h */,
+				57F1BB341AA51E630095AFAF /* stream_configuration.h */,
+				574985A11AA4DC7100A736A9 /* end_station_configuration.h */,
+				574985A01AA4DA7800A736A9 /* end_station_details.h */,
 				5798AE3A1A8FB73500A011A4 /* notif_log.h */,
 				5798AE381A8FB19600A011A4 /* avdecc-app.h */,
 				575C15231A7D568600A29984 /* msvc */,
@@ -3939,8 +3949,10 @@
 			files = (
 				575C1AF41A7D568B00A29984 /* arrimpl.cpp in Sources */,
 				5798AE3D1A8FB99A00A011A4 /* end_station_details.cpp in Sources */,
+				57F1BB331AA51E270095AFAF /* stream_configuration.cpp in Sources */,
 				575C1AF51A7D568B00A29984 /* listimpl.cpp in Sources */,
 				572307C41A7DBEE3002800EB /* avdecc-app.cpp in Sources */,
+				5749859F1AA4D93600A736A9 /* end_station_configuration.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
