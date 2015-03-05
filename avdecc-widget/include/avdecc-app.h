@@ -1,7 +1,7 @@
 /*
  * Licensed under the MIT License (MIT)
  *
- * Copyright (c) 2013 AudioScience Inc.
+ * Copyright (c) 2015 AudioScience Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -103,7 +103,14 @@ private:
     avdecc_lib::system *sys;
     avdecc_lib::net_interface *netif;
     int32_t log_level = avdecc_lib::LOGGING_LEVEL_ERROR;
+    intptr_t notification_id;
     unsigned int m_end_station_count;
+    long current_end_station_index;
+    uint32_t init_sample_rate;
+    uint32_t get_next_notification_id();
+    
+    int cmd_set_sampling_rate(uint32_t new_sampling_rate);
+    
     
     // any class wishing to process wxWidgets events must use this macro
     wxDECLARE_EVENT_TABLE();

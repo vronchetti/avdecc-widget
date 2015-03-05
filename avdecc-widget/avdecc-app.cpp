@@ -1,7 +1,7 @@
 /*
  * Licensed under the MIT License (MIT)
  *
- * Copyright (c) 2013 AudioScience Inc.
+ * Copyright (c) 2015 AudioScience Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -63,8 +63,10 @@ AVDECC_Controller::AVDECC_Controller()
     sys = avdecc_lib::create_system(avdecc_lib::system::LAYER2_MULTITHREADED_CALLBACK, netif, controller_obj);
     sys->process_start();
     m_end_station_count = 0;
-    m_timer = new wxTimer(this, wxID_ANY);
+    m_timer = new wxTimer(this, EndStationTimer);
     m_timer->Start(1000, wxTIMER_CONTINUOUS);
+    
+    notification_id = 1;
 
     // set the frame icon
     SetIcon(wxICON(sample));
@@ -168,23 +170,31 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
     avdecc_lib::entity_descriptor *entity;
     avdecc_lib::configuration_descriptor *configuration;
     get_current_entity_and_decriptor(end_station, &entity, &configuration);
+    
+    current_end_station_index = event.GetIndex();
+    
     avdecc_lib::audio_unit_descriptor *audio_unit_desc = configuration->get_audio_unit_desc_by_index(0);
     avdecc_lib::audio_unit_descriptor_response *audio_unit_resp_ref = audio_unit_desc->get_audio_unit_response();
+    avdecc_lib::strings_descriptor *strings_desc = configuration->get_strings_desc_by_index(0);
+    avdecc_lib::strings_descriptor_response *strings_resp_ref = strings_desc->get_strings_response();
 
     uint16_t number_of_stream_input_ports = configuration->stream_input_desc_count();
     uint16_t number_of_stream_output_ports = configuration->stream_output_desc_count();
 
     wxString entity_id = wxString::Format("0x%llx",end_station->entity_id());
     avdecc_lib::entity_descriptor_response *entity_desc_resp = entity->get_entity_response();
-    wxString default_name = entity_desc_resp->entity_name();
+    wxString entity_name = entity_desc_resp->entity_name();
+    wxString default_name = strings_resp_ref->get_string_by_index(1);
     wxString mac = wxString::Format("%llx",end_station->mac());
     wxString fw_ver = (const char *)entity_desc_resp->firmware_version();
-    uint32_t init_sample_rate = audio_unit_resp_ref->current_sampling_rate();
+    init_sample_rate = audio_unit_resp_ref->current_sampling_rate();
     
-    config = new end_station_configuration(entity_id, default_name, mac, fw_ver, init_sample_rate);
+    config = new end_station_configuration(entity_name, entity_id, default_name, mac, fw_ver, init_sample_rate);
     stream_config = new stream_configuration(number_of_stream_input_ports, number_of_stream_output_ports);
 
     delete audio_unit_resp_ref;
+    delete entity_desc_resp;
+    delete strings_resp_ref;
     
     for(unsigned int i = 0; i < number_of_stream_input_ports; i++)
     {
@@ -271,8 +281,27 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
             delete stream_output_resp_ref;
         }
     }
+    details = new end_station_details(this, config, stream_config);
+    int retval = details->ShowModal();
     
-    details = new end_station_details(config, stream_config);
+    if (retval == wxID_CANCEL)
+    {
+        details->OnCancel();
+        std::cout << "Cancel" << std::endl;
+    }
+    if (retval == wxID_OK)
+    {
+        details->OnOK();
+        std::cout << "Apply" << std::endl;
+        std::cout << "Sampling Rate: " << details->m_sampling_rate << std::endl;
+
+        if(details->m_sampling_rate != init_sample_rate)
+        {
+            cmd_set_sampling_rate(details->m_sampling_rate);
+        }
+        
+        details->Destroy();
+    }
 }
 
 int AVDECC_Controller::get_current_entity_and_decriptor(avdecc_lib::end_station *end_station,
@@ -304,6 +333,7 @@ int AVDECC_Controller::get_current_entity_and_decriptor(avdecc_lib::end_station 
 
 void AVDECC_Controller::OnIncrementTimer(wxTimerEvent& event)
 {
+
     if(m_end_station_count < controller_obj->get_end_station_count())
     {
         details_list->DeleteAllItems();
@@ -359,3 +389,33 @@ void AVDECC_Controller::CreateEndStationListFormat()
     
     SetSizer(sizer2);
 }
+
+uint32_t AVDECC_Controller::get_next_notification_id()
+{
+    return (uint32_t)notification_id++;
+}
+
+int AVDECC_Controller::cmd_set_sampling_rate(uint32_t new_sampling_rate)
+{
+    avdecc_lib::end_station *end_station = controller_obj->get_end_station_by_index(current_end_station_index);
+    avdecc_lib::entity_descriptor *entity;
+    avdecc_lib::configuration_descriptor *configuration;
+    get_current_entity_and_decriptor(end_station, &entity, &configuration);
+
+    intptr_t cmd_notification_id = get_next_notification_id();
+    sys->set_wait_for_next_cmd((void *)cmd_notification_id);
+    avdecc_lib::audio_unit_descriptor *audio_unit_desc_ref = configuration->get_audio_unit_desc_by_index(0);
+    audio_unit_desc_ref->send_set_sampling_rate_cmd((void *)cmd_notification_id, new_sampling_rate);
+    int status = sys->get_last_resp_status();
+    
+    if(status == avdecc_lib::AEM_STATUS_SUCCESS)
+    {
+        avdecc_lib::audio_unit_descriptor_response *audio_unit_resp_ref = audio_unit_desc_ref->get_audio_unit_response();
+        std::cout << "Sampling rate: " << std::dec << audio_unit_resp_ref->current_sampling_rate();
+        delete audio_unit_resp_ref;
+    }
+
+    return 0;
+}
+
+

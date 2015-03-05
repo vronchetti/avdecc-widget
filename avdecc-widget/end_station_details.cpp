@@ -1,7 +1,7 @@
 /*
  * Licensed under the MIT License (MIT)
  *
- * Copyright (c) 2013 AudioScience Inc.
+ * Copyright (c) 2015 AudioScience Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -30,18 +30,18 @@
 
 wxBEGIN_EVENT_TABLE(end_station_details, wxFrame)
     EVT_GRID_CELL_CHANGED(end_station_details::OnGridCellChange)
-    EVT_BUTTON(ID_APPLY, end_station_details::OnApply)
-    EVT_BUTTON(ID_CANCEL, end_station_details::OnCancel)
 wxEND_EVENT_TABLE()
 
 
-end_station_details::end_station_details(end_station_configuration *config, stream_configuration *stream_config)
+end_station_details::end_station_details(wxWindow *parent, end_station_configuration *config, stream_configuration *stream_config)
 {
-    EndStation_Details_Dialog = new wxFrame(this, wxID_ANY, wxT("End Station Configuration"),
+    EndStation_Details_Dialog = new wxDialog(parent, wxID_ANY, wxT("End Station Configuration"),
                                             wxDefaultPosition,
                                             wxSize(500,500));
 
-    CreateEndStationDetailsPanel(config->get_default_name(), config->get_init_sample_rate(), config->get_entity_id(), config->get_mac(), config->get_fw_ver());
+    CreateEndStationDetailsPanel(config->get_entity_name(), config->get_default_name(),
+                                 config->get_init_sample_rate(), config->get_entity_id(),
+                                 config->get_mac(), config->get_fw_ver());
     
     m_stream_input_count = stream_config->get_stream_input_count();
     m_stream_output_count = stream_config->get_stream_output_count();
@@ -69,17 +69,11 @@ end_station_details::end_station_details(end_station_configuration *config, stre
     EndStation_Details_Dialog->Show();
 }
 
-end_station_details::~end_station_details()
-{
-    //delete button;
-    delete input_stream_grid;
-    delete output_stream_grid;
-    delete input_channel_choice;
-    delete output_channel_choice;
-}
+end_station_details::~end_station_details(){}
 
-void end_station_details::CreateEndStationDetailsPanel(wxString Default_Name, uint32_t Init_Sampling_Rate,
-                                                       wxString Entity_ID, wxString Mac, wxString fw_version)
+void end_station_details::CreateEndStationDetailsPanel(wxString Entity_Name, wxString Default_Name,
+                                                       uint32_t Sampling_Rate, wxString Entity_ID,
+                                                       wxString Mac, wxString fw_version)
 {
     wxBoxSizer* Sizer1  = new wxBoxSizer(wxHORIZONTAL);
     Sizer1->Add(new wxStaticText(EndStation_Details_Dialog, wxID_ANY, "End Station Name: ", wxDefaultPosition, wxSize(125,25)));
@@ -99,7 +93,7 @@ void end_station_details::CreateEndStationDetailsPanel(wxString Default_Name, ui
     wxBoxSizer* Sizer6  = new wxBoxSizer(wxHORIZONTAL);
     Sizer6->Add(new wxStaticText(EndStation_Details_Dialog, wxID_ANY, "Firmware Version: ", wxDefaultPosition, wxSize(125,25)));
 
-    name = new wxTextCtrl(EndStation_Details_Dialog, wxID_ANY, "", wxDefaultPosition, wxSize(150,25));
+    name = new wxTextCtrl(EndStation_Details_Dialog, wxID_ANY, Entity_Name, wxDefaultPosition, wxSize(150,25));
     Sizer1->Add(name);
     
     default_name = new wxTextCtrl(EndStation_Details_Dialog, wxID_ANY, Default_Name,
@@ -112,7 +106,7 @@ void end_station_details::CreateEndStationDetailsPanel(wxString Default_Name, ui
     str.Add("96000 Hz");
     
     sampling_rate = new wxChoice(EndStation_Details_Dialog, wxID_ANY, wxDefaultPosition, wxSize(150,25), str);
-    switch(Init_Sampling_Rate)
+    switch(Sampling_Rate)
     {
         case 48000:
             sampling_rate->SetSelection(0);
@@ -309,18 +303,16 @@ void end_station_details::CreateOutputStreamGridHeader()
 
 void end_station_details::CreateAndSizeGrid(unsigned int stream_input_count, unsigned int stream_output_count)
 {
-    apply_button = new wxButton(EndStation_Details_Dialog, ID_APPLY, wxT("Apply"));
-    cancel_button = new wxButton(EndStation_Details_Dialog, ID_CANCEL, wxT("Cancel"));
+    apply_button = new wxButton(EndStation_Details_Dialog, wxID_OK, wxT("Apply"));
+    cancel_button = new wxButton(EndStation_Details_Dialog, wxID_CANCEL, wxT("Cancel"));
 
-    input_stream_grid = new wxGrid(EndStation_Details_Dialog, 243, wxDefaultPosition, wxDefaultSize);
+    input_stream_grid = new wxGrid(EndStation_Details_Dialog, wxID_ANY, wxDefaultPosition, wxDefaultSize);
     output_stream_grid = new wxGrid(EndStation_Details_Dialog, wxID_ANY, wxDefaultPosition, wxDefaultSize);
     
     Input_Stream_Sizer = new wxStaticBoxSizer(wxVERTICAL,
                                               EndStation_Details_Dialog, "Input Streams");
     Output_Stream_Sizer = new wxStaticBoxSizer(wxVERTICAL,
                                               EndStation_Details_Dialog, "Output Streams");
-
-
     
     CreateInputStreamGridHeader();
     CreateOutputStreamGridHeader();
@@ -360,26 +352,23 @@ void end_station_details::CreateAndSizeGrid(unsigned int stream_input_count, uns
     
     input_stream_grid->SetColSize(0, 130);
     output_stream_grid->SetColSize(0, 130);
-    
 }
 
-void end_station_details::OnApply(wxCommandEvent& event)
+void end_station_details::OnOK()
 {
-    std::cout << "apply button pressed" << std::endl;
-    //set sampling rate
-    //set stream formats
-
-
-    //Destroy();
+    int n = sampling_rate->GetSelection(); //return index
+    m_sampling_rate = atoi(sampling_rate->GetString(n)); //return string
 }
 
-void end_station_details::OnCancel(wxCommandEvent& event)
+void end_station_details::OnCancel()
 {
-    std::cout << "cancel button pressed" << std::endl;
-
     Destroy();
 }
 
+int end_station_details::ShowModal()
+{
+    return EndStation_Details_Dialog->ShowModal();
+}
 void end_station_details::OnGridCellChange(wxGridEvent &event)
 {
     std::cout << "grid changed" << std::endl;

@@ -1,7 +1,7 @@
 /*
  * Licensed under the MIT License (MIT)
  *
- * Copyright (c) 2013 AudioScience Inc.
+ * Copyright (c) 2015 AudioScience Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -65,11 +65,13 @@
 class end_station_details : public wxFrame
 {
 public:
-    end_station_details(end_station_configuration *config, stream_configuration *stream_config);
+    end_station_details(wxWindow *parent, end_station_configuration *config, stream_configuration *stream_config);
     virtual ~end_station_details();
 
-    void CreateEndStationDetailsPanel(wxString Default_Name, uint32_t Init_Sampling_Rate,
-                                      wxString Entity_ID, wxString Mac, wxString fw_ver);
+    void CreateEndStationDetailsPanel(wxString Entity_Name, wxString Default_Name,
+                                      uint32_t Init_Sampling_Rate, wxString Entity_ID,
+                                      wxString Mac, wxString fw_ver);
+
     void CreateAndSizeGrid(unsigned int stream_input_count, unsigned int stream_output_count);
     void OnGridCellChange(wxGridEvent& event);
     void SetChannelChoice(unsigned int stream_input_count, unsigned int stream_output_count);
@@ -83,15 +85,20 @@ public:
     void SetInputChannelName(unsigned int stream_index, wxString name);
     void SetOutputChannelName(unsigned int stream_index, wxString name);
 
-    void OnApply(wxCommandEvent& event);
-    void OnCancel(wxCommandEvent& event);
+    void OnOK();
+    void OnCancel();
+    int ShowModal();
+    
+    uint32_t m_sampling_rate;
+    bool IsApplied = false;
 
 private:
-    wxFrame *EndStation_Details_Dialog;
+    wxDialog *EndStation_Details_Dialog;
     
     uint64_t channel_count;
     unsigned int m_stream_input_count;
     unsigned int m_stream_output_count;
+
     wxTextCtrl *name;
     wxTextCtrl *default_name;
     wxChoice *sampling_rate;
@@ -116,10 +123,4 @@ private:
     wxBoxSizer * output_stream_header_sizer;
     
     wxDECLARE_EVENT_TABLE();
-};
-
-enum
-{
-    ID_APPLY = 233,
-    ID_CANCEL = 234
 };
