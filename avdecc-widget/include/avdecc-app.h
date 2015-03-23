@@ -43,6 +43,9 @@
 #include <inttypes.h>
 
 #include "end_station.h"
+#include "controller.h"
+#include "system.h"
+#include "net_interface.h"
 #include "entity_descriptor.h"
 #include "configuration_descriptor.h"
 #include "audio_unit_descriptor.h"
@@ -65,11 +68,8 @@
 #include "descriptor_field.h"
 #include "descriptor_field_flags.h"
 #include "control_descriptor.h"
+#include "enumeration.h"
 #include "util.h"
-#include "cmdline.h"
-#include "cli_argument.h"
-#include "cli_command_format.h"
-#include "cli_command.h"
 
 class AVDECC_Controller : public wxFrame
 {

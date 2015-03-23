@@ -21,6 +21,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#include <cstdint>
+
+#include <wx/listbox.h>
+#include <wx/listctrl.h>
+#include <wx/notebook.h>
+#include <wx/utils.h>
+
 #include "avdecc-app.h"
 #include "notif_log.h"
 #include "../sample.xpm"
@@ -96,7 +103,7 @@ AVDECC_Controller::~AVDECC_Controller()
 
 void AVDECC_Controller::CreateEndStationList()
 {
-    sleep(1); //delay to process end stations
+	wxMilliSleep(1000); //delay to process end stations (will be replaced by timer method)
 
     for (unsigned int i = 0; i < controller_obj->get_end_station_count(); i++)
     {

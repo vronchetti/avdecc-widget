@@ -26,6 +26,7 @@
  *
  */
 
+#include <cstdint>
 #include <iostream>
 #include <wx/string.h>
 
