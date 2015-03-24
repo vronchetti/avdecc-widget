@@ -47,7 +47,7 @@ unsigned int stream_configuration::get_stream_output_count()
     return m_stream_output_count;
 }
 
-int stream_configuration::get_stream_input_name_by_index(unsigned int index, struct stream_configuration_details &stream_details)
+int stream_configuration::get_stream_input_details_by_index(unsigned int index, struct stream_configuration_details &stream_details)
 {
     if (index >= m_stream_input_count)
         return -1;
@@ -56,7 +56,7 @@ int stream_configuration::get_stream_input_name_by_index(unsigned int index, str
     return 0;
 }
 
-int stream_configuration::get_stream_output_name_by_index(unsigned int index, struct stream_configuration_details &stream_details)
+int stream_configuration::get_stream_output_details_by_index(unsigned int index, struct stream_configuration_details &stream_details)
 {
     if (index >= m_stream_output_count)
         return -1;

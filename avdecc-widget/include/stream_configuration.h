@@ -46,8 +46,8 @@ public:
     
     unsigned int get_stream_input_count();
     unsigned int get_stream_output_count();
-    int get_stream_input_name_by_index(unsigned int index, struct stream_configuration_details &stream_details);
-    int get_stream_output_name_by_index(unsigned int index, struct stream_configuration_details &stream_details);
+    int get_stream_input_details_by_index(unsigned int index, struct stream_configuration_details &stream_details);
+    int get_stream_output_details_by_index(unsigned int index, struct stream_configuration_details &stream_details);
 
 private:
     unsigned int m_stream_input_count;

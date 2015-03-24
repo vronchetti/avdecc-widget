@@ -31,24 +31,14 @@ public:
     virtual bool OnInit() wxOVERRIDE { (new AVDECC_Controller())->Show(); return true; }
 };
 
-class Input_Stream_Details
-{
-public:
-    
-};
-
 // ----------------------------------------------------------------------------
-// event tables and other macros for AVDECC_Controller
+// event table for AVDECC_Controller
 // ----------------------------------------------------------------------------
 
 wxBEGIN_EVENT_TABLE(AVDECC_Controller, wxFrame)
-
-EVT_MENU(HtmlLbox_Quit,  AVDECC_Controller::OnQuit)
-
-EVT_TIMER(EndStationTimer, AVDECC_Controller::OnIncrementTimer)
-
-EVT_LIST_ITEM_ACTIVATED(wxID_ANY, AVDECC_Controller::OnEndStationDClick)
-
+    EVT_MENU(HtmlLbox_Quit,  AVDECC_Controller::OnQuit)
+    EVT_TIMER(EndStationTimer, AVDECC_Controller::OnIncrementTimer)
+    EVT_LIST_ITEM_ACTIVATED(wxID_ANY, AVDECC_Controller::OnEndStationDClick)
 wxEND_EVENT_TABLE()
 
 IMPLEMENT_APP(AVDECC_App)
@@ -65,7 +55,6 @@ AVDECC_Controller::AVDECC_Controller()
     m_end_station_count = 0;
     m_timer = new wxTimer(this, EndStationTimer);
     m_timer->Start(1000, wxTIMER_CONTINUOUS);
-    
     notification_id = 1;
 
     // set the frame icon
@@ -86,11 +75,9 @@ AVDECC_Controller::AVDECC_Controller()
 #endif // wxUSE_MENUS
     
 #if wxUSE_STATUSBAR
-    // create a status bar just for fun (by default with 1 pane only)
     CreateStatusBar(2);
     SetStatusText(wxT("Welcome to avdecc-lib controller!"));
 #endif // wxUSE_STATUSBAR
-    
     CreateEndStationListFormat();
     CreateEndStationList();
 }
@@ -109,7 +96,7 @@ AVDECC_Controller::~AVDECC_Controller()
 
 void AVDECC_Controller::CreateEndStationList()
 {
-    sleep(1); //delay to process end stations (will be replaced by timer method)
+    sleep(1); //delay to process end stations
 
     for (unsigned int i = 0; i < controller_obj->get_end_station_count(); i++)
     {
@@ -169,7 +156,7 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
     avdecc_lib::end_station *end_station = controller_obj->get_end_station_by_index(event.GetIndex());
     avdecc_lib::entity_descriptor *entity;
     avdecc_lib::configuration_descriptor *configuration;
-    get_current_entity_and_decriptor(end_station, &entity, &configuration);
+    get_current_entity_and_descriptor(end_station, &entity, &configuration);
     
     current_end_station_index = event.GetIndex();
     
@@ -289,23 +276,132 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
         details->OnCancel();
         std::cout << "Cancel" << std::endl;
     }
-    if (retval == wxID_OK)
+    else if (retval == wxID_OK)
     {
         details->OnOK();
         std::cout << "Apply" << std::endl;
-        std::cout << "Sampling Rate: " << details->m_sampling_rate << std::endl;
 
-        if(details->m_sampling_rate != init_sample_rate)
+        if(details->m_end_station_config->get_sample_rate() != init_sample_rate)
         {
             cmd_set_sampling_rate(details->m_sampling_rate);
         }
+        else
+        {
+            //same value
+        }
         
+        for(int i = 0; i < details->m_stream_input_count; i++)
+        {
+            struct stream_configuration_details avdecc_stream_input_details;
+            struct stream_configuration_details dialog_stream_input_details;
+            
+            stream_config->get_stream_input_details_by_index(i, avdecc_stream_input_details);
+            details->m_stream_config->get_stream_input_details_by_index(i, dialog_stream_input_details);
+            
+            if(dialog_stream_input_details.channel_count != avdecc_stream_input_details.channel_count)
+            {
+                unsigned int stream_index = channel_count_and_sample_rate_to_stream_index(dialog_stream_input_details.channel_count,
+                                                                                          details->m_sampling_rate);
+                if(stream_index != -1)
+                {
+                    cmd_set_stream_format("STREAM_INPUT", i, stream_index);
+                }
+                else
+                {
+                    //error, stream_format not found
+                }
+            }
+            else
+            {
+                //same value
+            }
+        }
+        
+        for(int i = 0; i < details->m_stream_output_count; i++)
+        {
+            struct stream_configuration_details avdecc_stream_output_details;
+            struct stream_configuration_details dialog_stream_output_details;
+            
+            stream_config->get_stream_output_details_by_index(i, avdecc_stream_output_details);
+            details->m_stream_config->get_stream_output_details_by_index(i, dialog_stream_output_details);
+            
+            if(dialog_stream_output_details.channel_count != avdecc_stream_output_details.channel_count)
+            {
+                unsigned int stream_index = channel_count_and_sample_rate_to_stream_index(dialog_stream_output_details.channel_count,
+                                                                                          details->m_sampling_rate);
+                if(stream_index != -1)
+                {
+                    cmd_set_stream_format("STREAM_OUTPUT", i, stream_index);
+                }
+                else
+                {
+                    //error, stream_format not found
+                }
+            }
+            else
+            {
+                //same value
+            }
+        }
         details->Destroy();
+    }
+    else
+    {
+        //not supported
     }
 }
 
-int AVDECC_Controller::get_current_entity_and_decriptor(avdecc_lib::end_station *end_station,
-                                              avdecc_lib::entity_descriptor **entity, avdecc_lib::configuration_descriptor **configuration)
+unsigned int AVDECC_Controller::channel_count_and_sample_rate_to_stream_index(unsigned int channel_count, uint32_t sampling_rate)
+{
+    switch(channel_count)
+    {
+        case 1:
+            if(sampling_rate == 48000)
+            {
+                return 0;
+            }
+            else
+            {
+                return 4;
+            }
+            break;
+        case 2:
+            if(sampling_rate == 48000)
+            {
+                return 1;
+            }
+            else
+            {
+                return 5;
+            }
+            break;
+        case 4:
+            if(sampling_rate == 48000)
+            {
+                return 2;
+            }
+            else
+            {
+                return 6;
+            }
+            break;
+        case 8:
+            if(sampling_rate == 48000)
+            {
+                return 3;
+            }
+            else
+            {
+                return 7;
+            }
+            break;
+    }
+    return -1; //not found
+}
+
+
+int AVDECC_Controller::get_current_entity_and_descriptor(avdecc_lib::end_station *end_station,
+                                                         avdecc_lib::entity_descriptor **entity, avdecc_lib::configuration_descriptor **configuration)
 {
     *entity = NULL;
     *configuration = NULL;
@@ -331,19 +427,48 @@ int AVDECC_Controller::get_current_entity_and_decriptor(avdecc_lib::end_station 
     return 0;
 }
 
+int AVDECC_Controller::get_current_end_station_entity_and_descriptor(avdecc_lib::end_station **end_station,
+                                                                     avdecc_lib::entity_descriptor **entity, avdecc_lib::configuration_descriptor **configuration)
+{
+    if (get_current_end_station(end_station))
+        return 1;
+    
+    if (get_current_entity_and_descriptor(*end_station, entity, configuration))
+    {
+        atomic_cout << "Current End Station not fully enumerated" << std::endl;
+        return 1;
+    }
+    return 0;
+}
+
+int AVDECC_Controller::get_current_end_station(avdecc_lib::end_station **end_station) const
+{
+    if (current_end_station_index >= controller_obj->get_end_station_count())
+    {
+        atomic_cout << "No End Stations available" << std::endl;
+        *end_station = NULL;
+        return 1;
+    }
+    
+    *end_station = controller_obj->get_end_station_by_index(current_end_station_index);
+    return 0;
+}
+
 void AVDECC_Controller::OnIncrementTimer(wxTimerEvent& event)
 {
-
     if(m_end_station_count < controller_obj->get_end_station_count())
     {
         details_list->DeleteAllItems();
         CreateEndStationList();
     }
+    else
+    {
+        //no added end stations found
+    }
 }
 
 void AVDECC_Controller::CreateEndStationListFormat()
 {
-    // create the child controls
     wxNotebook *notebook = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxSize(700,200), wxGROW);
     wxPanel * window1 = new wxPanel(notebook, wxID_ANY, wxDefaultPosition, wxSize(700, 200), wxGROW);
     
@@ -362,22 +487,19 @@ void AVDECC_Controller::CreateEndStationListFormat()
     col1.SetText( _("Name") );
     col1.SetWidth(100);
     details_list->InsertColumn(1, col1);
-    
-    // Add second column
+
     wxListItem col2;
     col2.SetId(2);
     col2.SetText( _("Entity ID") );
     col2.SetWidth(150);
     details_list->InsertColumn(2, col2);
-    
-    // Add third column
+
     wxListItem col3;
     col3.SetId(3);
     col3.SetText( _("Firmware Version") );
     col3.SetWidth(150);
     details_list->InsertColumn(3, col3);
-    
-    // Add fourth column
+
     wxListItem col4;
     col4.SetId(4);
     col4.SetText( _("MAC") );
@@ -400,7 +522,7 @@ int AVDECC_Controller::cmd_set_sampling_rate(uint32_t new_sampling_rate)
     avdecc_lib::end_station *end_station = controller_obj->get_end_station_by_index(current_end_station_index);
     avdecc_lib::entity_descriptor *entity;
     avdecc_lib::configuration_descriptor *configuration;
-    get_current_entity_and_decriptor(end_station, &entity, &configuration);
+    get_current_entity_and_descriptor(end_station, &entity, &configuration);
 
     intptr_t cmd_notification_id = get_next_notification_id();
     sys->set_wait_for_next_cmd((void *)cmd_notification_id);
@@ -418,4 +540,69 @@ int AVDECC_Controller::cmd_set_sampling_rate(uint32_t new_sampling_rate)
     return 0;
 }
 
+int AVDECC_Controller::cmd_set_stream_format(wxString desc_name, uint16_t desc_index, unsigned int stream_format_index)
+{
+    std::string stream_format;
+    uint64_t stream_format_value = avdecc_lib::utility::ieee1722_format_index_to_value(stream_format_index);
+
+    uint16_t desc_type_value = avdecc_lib::utility::aem_desc_name_to_value(desc_name.c_str());
+    avdecc_lib::end_station *end_station;
+    avdecc_lib::entity_descriptor *entity;
+    avdecc_lib::configuration_descriptor *configuration;
+    if (get_current_end_station_entity_and_descriptor(&end_station, &entity, &configuration))
+        return 0;
+    
+    if(desc_type_value == avdecc_lib::AEM_DESC_STREAM_INPUT)
+    {
+        intptr_t cmd_notification_id = get_next_notification_id();
+        sys->set_wait_for_next_cmd((void *)cmd_notification_id);
+        avdecc_lib::stream_input_descriptor *stream_input_desc_ref = configuration->get_stream_input_desc_by_index(desc_index);
+        stream_input_desc_ref->send_set_stream_format_cmd((void *)cmd_notification_id, stream_format_value);
+        int status = sys->get_last_resp_status();
+        
+        if(status == avdecc_lib::AEM_STATUS_SUCCESS)
+        {
+            avdecc_lib::stream_input_descriptor_response *stream_input_resp_ref = stream_input_desc_ref->get_stream_input_response();
+            stream_format = stream_input_resp_ref->current_format();
+            if(stream_format == "UNKNOWN")
+            {
+                atomic_cout << "Stream format: 0x" << std::hex << stream_input_resp_ref->current_format() << std::endl;
+            }
+            else
+            {
+                atomic_cout << "Stream format: " << stream_format << std::endl;
+            }
+            delete stream_input_resp_ref;
+        }
+    }
+    else if(desc_type_value == avdecc_lib::AEM_DESC_STREAM_OUTPUT)
+    {
+        intptr_t cmd_notification_id = get_next_notification_id();
+        sys->set_wait_for_next_cmd((void *)cmd_notification_id);
+        avdecc_lib::stream_output_descriptor *stream_output_desc_ref = configuration->get_stream_output_desc_by_index(desc_index);
+        stream_output_desc_ref->send_set_stream_format_cmd((void *)cmd_notification_id, stream_format_value);
+        int status = sys->get_last_resp_status();
+        
+        if(status == avdecc_lib::AEM_STATUS_SUCCESS)
+        {
+            avdecc_lib::stream_output_descriptor_response *stream_output_resp_ref = stream_output_desc_ref->get_stream_output_response();
+            stream_format = stream_output_resp_ref->current_format();
+            if(stream_format == "UNKNOWN")
+            {
+                atomic_cout << "Stream format: 0x" << std::hex << stream_output_resp_ref->current_format() << std::endl;
+            }
+            else
+            {
+                atomic_cout << "Stream format: " << stream_format << std::endl;
+            }
+            delete stream_output_resp_ref;
+        }
+    }
+    else
+    {
+        atomic_cout << "cmd_set_stream_format error" << std::endl;
+    }
+    
+    return 0;
+}
 

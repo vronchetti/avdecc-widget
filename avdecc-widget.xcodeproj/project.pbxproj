@@ -121,68 +121,6 @@
 		5749859E1AA4D93600A736A9 /* end_station_configuration.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = end_station_configuration.cpp; sourceTree = "<group>"; };
 		574985A01AA4DA7800A736A9 /* end_station_details.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = end_station_details.h; path = "avdecc-widget/include/end_station_details.h"; sourceTree = SOURCE_ROOT; };
 		574985A11AA4DC7100A736A9 /* end_station_configuration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = end_station_configuration.h; path = "avdecc-widget/include/end_station_configuration.h"; sourceTree = SOURCE_ROOT; };
-		574BDE131A80054400F08D6C /* audio_cluster_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audio_cluster_descriptor.h; sourceTree = "<group>"; };
-		574BDE141A80054400F08D6C /* audio_cluster_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audio_cluster_descriptor_response.h; sourceTree = "<group>"; };
-		574BDE151A80054400F08D6C /* audio_map_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audio_map_descriptor.h; sourceTree = "<group>"; };
-		574BDE161A80054400F08D6C /* audio_map_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audio_map_descriptor_response.h; sourceTree = "<group>"; };
-		574BDE171A80054400F08D6C /* audio_unit_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audio_unit_descriptor.h; sourceTree = "<group>"; };
-		574BDE181A80054400F08D6C /* audio_unit_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audio_unit_descriptor_response.h; sourceTree = "<group>"; };
-		574BDE191A80054400F08D6C /* audio_unit_get_sampling_rate_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audio_unit_get_sampling_rate_response.h; sourceTree = "<group>"; };
-		574BDE1A1A80054400F08D6C /* avb_counters_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = avb_counters_response.h; sourceTree = "<group>"; };
-		574BDE1B1A80054400F08D6C /* avb_interface_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = avb_interface_descriptor.h; sourceTree = "<group>"; };
-		574BDE1C1A80054400F08D6C /* avb_interface_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = avb_interface_descriptor_response.h; sourceTree = "<group>"; };
-		574BDE1D1A80054400F08D6C /* build.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = build.h; sourceTree = "<group>"; };
-		574BDE1E1A80054400F08D6C /* clock_domain_counters_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = clock_domain_counters_response.h; sourceTree = "<group>"; };
-		574BDE1F1A80054400F08D6C /* clock_domain_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = clock_domain_descriptor.h; sourceTree = "<group>"; };
-		574BDE201A80054400F08D6C /* clock_domain_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = clock_domain_descriptor_response.h; sourceTree = "<group>"; };
-		574BDE211A80054400F08D6C /* clock_domain_get_clock_source_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = clock_domain_get_clock_source_response.h; sourceTree = "<group>"; };
-		574BDE221A80054400F08D6C /* clock_source_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = clock_source_descriptor.h; sourceTree = "<group>"; };
-		574BDE231A80054400F08D6C /* clock_source_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = clock_source_descriptor_response.h; sourceTree = "<group>"; };
-		574BDE241A80054400F08D6C /* configuration_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = configuration_descriptor.h; sourceTree = "<group>"; };
-		574BDE251A80054400F08D6C /* control_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = control_descriptor.h; sourceTree = "<group>"; };
-		574BDE261A80054400F08D6C /* control_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = control_descriptor_response.h; sourceTree = "<group>"; };
-		574BDE271A80054400F08D6C /* controller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = controller.h; sourceTree = "<group>"; };
-		574BDE281A80054400F08D6C /* descriptor_base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = descriptor_base.h; sourceTree = "<group>"; };
-		574BDE291A80054400F08D6C /* descriptor_field.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = descriptor_field.h; sourceTree = "<group>"; };
-		574BDE2A1A80054400F08D6C /* descriptor_field_flags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = descriptor_field_flags.h; sourceTree = "<group>"; };
-		574BDE2B1A80054400F08D6C /* end_station.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = end_station.h; sourceTree = "<group>"; };
-		574BDE2C1A80054400F08D6C /* entity_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = entity_descriptor.h; sourceTree = "<group>"; };
-		574BDE2D1A80054400F08D6C /* entity_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = entity_descriptor_response.h; sourceTree = "<group>"; };
-		574BDE2E1A80054400F08D6C /* enumeration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = enumeration.h; sourceTree = "<group>"; };
-		574BDE2F1A80054400F08D6C /* external_port_input_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = external_port_input_descriptor.h; sourceTree = "<group>"; };
-		574BDE301A80054400F08D6C /* external_port_input_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = external_port_input_descriptor_response.h; sourceTree = "<group>"; };
-		574BDE311A80054400F08D6C /* external_port_output_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = external_port_output_descriptor.h; sourceTree = "<group>"; };
-		574BDE321A80054400F08D6C /* external_port_output_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = external_port_output_descriptor_response.h; sourceTree = "<group>"; };
-		574BDE331A80054400F08D6C /* jack_input_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jack_input_descriptor.h; sourceTree = "<group>"; };
-		574BDE341A80054400F08D6C /* jack_input_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jack_input_descriptor_response.h; sourceTree = "<group>"; };
-		574BDE351A80054400F08D6C /* jack_output_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jack_output_descriptor.h; sourceTree = "<group>"; };
-		574BDE361A80054400F08D6C /* jack_output_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jack_output_descriptor_response.h; sourceTree = "<group>"; };
-		574BDE371A80054400F08D6C /* locale_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = locale_descriptor.h; sourceTree = "<group>"; };
-		574BDE381A80054400F08D6C /* locale_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = locale_descriptor_response.h; sourceTree = "<group>"; };
-		574BDE391A80054400F08D6C /* memory_object_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = memory_object_descriptor.h; sourceTree = "<group>"; };
-		574BDE3A1A80054400F08D6C /* memory_object_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = memory_object_descriptor_response.h; sourceTree = "<group>"; };
-		574BDE3B1A80054400F08D6C /* net_interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = net_interface.h; sourceTree = "<group>"; };
-		574BDE3C1A80054400F08D6C /* response_frame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = response_frame.h; sourceTree = "<group>"; };
-		574BDE3D1A80054400F08D6C /* stream_input_counters_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_input_counters_response.h; sourceTree = "<group>"; };
-		574BDE3E1A80054400F08D6C /* stream_input_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_input_descriptor.h; sourceTree = "<group>"; };
-		574BDE3F1A80054400F08D6C /* stream_input_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_input_descriptor_response.h; sourceTree = "<group>"; };
-		574BDE401A80054400F08D6C /* stream_input_get_rx_state_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_input_get_rx_state_response.h; sourceTree = "<group>"; };
-		574BDE411A80054400F08D6C /* stream_input_get_stream_format_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_input_get_stream_format_response.h; sourceTree = "<group>"; };
-		574BDE421A80054400F08D6C /* stream_input_get_stream_info_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_input_get_stream_info_response.h; sourceTree = "<group>"; };
-		574BDE431A80054400F08D6C /* stream_output_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_output_descriptor.h; sourceTree = "<group>"; };
-		574BDE441A80054400F08D6C /* stream_output_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_output_descriptor_response.h; sourceTree = "<group>"; };
-		574BDE451A80054400F08D6C /* stream_output_get_stream_format_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_output_get_stream_format_response.h; sourceTree = "<group>"; };
-		574BDE461A80054400F08D6C /* stream_output_get_stream_info_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_output_get_stream_info_response.h; sourceTree = "<group>"; };
-		574BDE471A80054400F08D6C /* stream_output_get_tx_connection_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_output_get_tx_connection_response.h; sourceTree = "<group>"; };
-		574BDE481A80054400F08D6C /* stream_output_get_tx_state_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_output_get_tx_state_response.h; sourceTree = "<group>"; };
-		574BDE491A80054400F08D6C /* stream_port_input_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_port_input_descriptor.h; sourceTree = "<group>"; };
-		574BDE4A1A80054400F08D6C /* stream_port_input_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_port_input_descriptor_response.h; sourceTree = "<group>"; };
-		574BDE4B1A80054400F08D6C /* stream_port_output_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_port_output_descriptor.h; sourceTree = "<group>"; };
-		574BDE4C1A80054400F08D6C /* stream_port_output_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_port_output_descriptor_response.h; sourceTree = "<group>"; };
-		574BDE4D1A80054400F08D6C /* strings_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = strings_descriptor.h; sourceTree = "<group>"; };
-		574BDE4E1A80054400F08D6C /* strings_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = strings_descriptor_response.h; sourceTree = "<group>"; };
-		574BDE4F1A80054400F08D6C /* system.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = system.h; sourceTree = "<group>"; };
-		574BDE501A80054400F08D6C /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = util.h; sourceTree = "<group>"; };
 		574BDE511A8007B300F08D6C /* libcontroller.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcontroller.dylib; path = ../new/controller/lib/Debug/libcontroller.dylib; sourceTree = "<group>"; };
 		575C14891A7D51C100A29984 /* avdecc-widget.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "avdecc-widget.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		575C149F1A7D51C100A29984 /* avdecc-widgetTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "avdecc-widgetTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1674,6 +1612,68 @@
 		575C1AF11A7D568B00A29984 /* xtixml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xtixml.h; sourceTree = "<group>"; };
 		575C1AF21A7D568B00A29984 /* zipstrm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zipstrm.h; sourceTree = "<group>"; };
 		575C1AF31A7D568B00A29984 /* zstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zstream.h; sourceTree = "<group>"; };
+		5774ADA41AAA33C9001F8362 /* audio_cluster_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audio_cluster_descriptor.h; sourceTree = "<group>"; };
+		5774ADA51AAA33C9001F8362 /* audio_cluster_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audio_cluster_descriptor_response.h; sourceTree = "<group>"; };
+		5774ADA61AAA33C9001F8362 /* audio_map_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audio_map_descriptor.h; sourceTree = "<group>"; };
+		5774ADA71AAA33C9001F8362 /* audio_map_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audio_map_descriptor_response.h; sourceTree = "<group>"; };
+		5774ADA81AAA33C9001F8362 /* audio_unit_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audio_unit_descriptor.h; sourceTree = "<group>"; };
+		5774ADA91AAA33C9001F8362 /* audio_unit_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audio_unit_descriptor_response.h; sourceTree = "<group>"; };
+		5774ADAA1AAA33C9001F8362 /* audio_unit_get_sampling_rate_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audio_unit_get_sampling_rate_response.h; sourceTree = "<group>"; };
+		5774ADAB1AAA33C9001F8362 /* avb_counters_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = avb_counters_response.h; sourceTree = "<group>"; };
+		5774ADAC1AAA33C9001F8362 /* avb_interface_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = avb_interface_descriptor.h; sourceTree = "<group>"; };
+		5774ADAD1AAA33C9001F8362 /* avb_interface_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = avb_interface_descriptor_response.h; sourceTree = "<group>"; };
+		5774ADAE1AAA33C9001F8362 /* build.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = build.h; sourceTree = "<group>"; };
+		5774ADAF1AAA33C9001F8362 /* clock_domain_counters_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = clock_domain_counters_response.h; sourceTree = "<group>"; };
+		5774ADB01AAA33C9001F8362 /* clock_domain_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = clock_domain_descriptor.h; sourceTree = "<group>"; };
+		5774ADB11AAA33C9001F8362 /* clock_domain_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = clock_domain_descriptor_response.h; sourceTree = "<group>"; };
+		5774ADB21AAA33C9001F8362 /* clock_domain_get_clock_source_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = clock_domain_get_clock_source_response.h; sourceTree = "<group>"; };
+		5774ADB31AAA33C9001F8362 /* clock_source_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = clock_source_descriptor.h; sourceTree = "<group>"; };
+		5774ADB41AAA33C9001F8362 /* clock_source_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = clock_source_descriptor_response.h; sourceTree = "<group>"; };
+		5774ADB51AAA33C9001F8362 /* configuration_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = configuration_descriptor.h; sourceTree = "<group>"; };
+		5774ADB61AAA33C9001F8362 /* control_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = control_descriptor.h; sourceTree = "<group>"; };
+		5774ADB71AAA33C9001F8362 /* control_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = control_descriptor_response.h; sourceTree = "<group>"; };
+		5774ADB81AAA33C9001F8362 /* controller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = controller.h; sourceTree = "<group>"; };
+		5774ADB91AAA33C9001F8362 /* descriptor_base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = descriptor_base.h; sourceTree = "<group>"; };
+		5774ADBA1AAA33C9001F8362 /* descriptor_field.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = descriptor_field.h; sourceTree = "<group>"; };
+		5774ADBB1AAA33C9001F8362 /* descriptor_field_flags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = descriptor_field_flags.h; sourceTree = "<group>"; };
+		5774ADBC1AAA33C9001F8362 /* end_station.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = end_station.h; sourceTree = "<group>"; };
+		5774ADBD1AAA33C9001F8362 /* entity_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = entity_descriptor.h; sourceTree = "<group>"; };
+		5774ADBE1AAA33C9001F8362 /* entity_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = entity_descriptor_response.h; sourceTree = "<group>"; };
+		5774ADBF1AAA33C9001F8362 /* enumeration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = enumeration.h; sourceTree = "<group>"; };
+		5774ADC01AAA33C9001F8362 /* external_port_input_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = external_port_input_descriptor.h; sourceTree = "<group>"; };
+		5774ADC11AAA33C9001F8362 /* external_port_input_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = external_port_input_descriptor_response.h; sourceTree = "<group>"; };
+		5774ADC21AAA33C9001F8362 /* external_port_output_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = external_port_output_descriptor.h; sourceTree = "<group>"; };
+		5774ADC31AAA33C9001F8362 /* external_port_output_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = external_port_output_descriptor_response.h; sourceTree = "<group>"; };
+		5774ADC41AAA33C9001F8362 /* jack_input_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jack_input_descriptor.h; sourceTree = "<group>"; };
+		5774ADC51AAA33C9001F8362 /* jack_input_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jack_input_descriptor_response.h; sourceTree = "<group>"; };
+		5774ADC61AAA33C9001F8362 /* jack_output_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jack_output_descriptor.h; sourceTree = "<group>"; };
+		5774ADC71AAA33C9001F8362 /* jack_output_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jack_output_descriptor_response.h; sourceTree = "<group>"; };
+		5774ADC81AAA33C9001F8362 /* locale_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = locale_descriptor.h; sourceTree = "<group>"; };
+		5774ADC91AAA33C9001F8362 /* locale_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = locale_descriptor_response.h; sourceTree = "<group>"; };
+		5774ADCA1AAA33C9001F8362 /* memory_object_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = memory_object_descriptor.h; sourceTree = "<group>"; };
+		5774ADCB1AAA33C9001F8362 /* memory_object_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = memory_object_descriptor_response.h; sourceTree = "<group>"; };
+		5774ADCC1AAA33C9001F8362 /* net_interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = net_interface.h; sourceTree = "<group>"; };
+		5774ADCD1AAA33C9001F8362 /* response_frame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = response_frame.h; sourceTree = "<group>"; };
+		5774ADCE1AAA33C9001F8362 /* stream_input_counters_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_input_counters_response.h; sourceTree = "<group>"; };
+		5774ADCF1AAA33C9001F8362 /* stream_input_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_input_descriptor.h; sourceTree = "<group>"; };
+		5774ADD01AAA33C9001F8362 /* stream_input_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_input_descriptor_response.h; sourceTree = "<group>"; };
+		5774ADD11AAA33C9001F8362 /* stream_input_get_rx_state_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_input_get_rx_state_response.h; sourceTree = "<group>"; };
+		5774ADD21AAA33C9001F8362 /* stream_input_get_stream_format_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_input_get_stream_format_response.h; sourceTree = "<group>"; };
+		5774ADD31AAA33C9001F8362 /* stream_input_get_stream_info_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_input_get_stream_info_response.h; sourceTree = "<group>"; };
+		5774ADD41AAA33C9001F8362 /* stream_output_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_output_descriptor.h; sourceTree = "<group>"; };
+		5774ADD51AAA33C9001F8362 /* stream_output_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_output_descriptor_response.h; sourceTree = "<group>"; };
+		5774ADD61AAA33C9001F8362 /* stream_output_get_stream_format_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_output_get_stream_format_response.h; sourceTree = "<group>"; };
+		5774ADD71AAA33C9001F8362 /* stream_output_get_stream_info_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_output_get_stream_info_response.h; sourceTree = "<group>"; };
+		5774ADD81AAA33C9001F8362 /* stream_output_get_tx_connection_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_output_get_tx_connection_response.h; sourceTree = "<group>"; };
+		5774ADD91AAA33C9001F8362 /* stream_output_get_tx_state_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_output_get_tx_state_response.h; sourceTree = "<group>"; };
+		5774ADDA1AAA33C9001F8362 /* stream_port_input_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_port_input_descriptor.h; sourceTree = "<group>"; };
+		5774ADDB1AAA33C9001F8362 /* stream_port_input_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_port_input_descriptor_response.h; sourceTree = "<group>"; };
+		5774ADDC1AAA33C9001F8362 /* stream_port_output_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_port_output_descriptor.h; sourceTree = "<group>"; };
+		5774ADDD1AAA33C9001F8362 /* stream_port_output_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_port_output_descriptor_response.h; sourceTree = "<group>"; };
+		5774ADDE1AAA33C9001F8362 /* strings_descriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = strings_descriptor.h; sourceTree = "<group>"; };
+		5774ADDF1AAA33C9001F8362 /* strings_descriptor_response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = strings_descriptor_response.h; sourceTree = "<group>"; };
+		5774ADE01AAA33C9001F8362 /* system.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = system.h; sourceTree = "<group>"; };
+		5774ADE11AAA33C9001F8362 /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = util.h; sourceTree = "<group>"; };
 		5798AE381A8FB19600A011A4 /* avdecc-app.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "avdecc-app.h"; path = "avdecc-widget/include/avdecc-app.h"; sourceTree = SOURCE_ROOT; };
 		5798AE3A1A8FB73500A011A4 /* notif_log.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = notif_log.h; path = "avdecc-widget/include/notif_log.h"; sourceTree = SOURCE_ROOT; };
 		5798AE3B1A8FB99A00A011A4 /* end_station_details.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = end_station_details.cpp; sourceTree = "<group>"; };
@@ -1814,86 +1814,16 @@
 			name = wxWidget_dylibs;
 			sourceTree = "<group>";
 		};
-		574BDE121A80054400F08D6C /* include */ = {
-			isa = PBXGroup;
-			children = (
-				574BDE131A80054400F08D6C /* audio_cluster_descriptor.h */,
-				574BDE141A80054400F08D6C /* audio_cluster_descriptor_response.h */,
-				574BDE151A80054400F08D6C /* audio_map_descriptor.h */,
-				574BDE161A80054400F08D6C /* audio_map_descriptor_response.h */,
-				574BDE171A80054400F08D6C /* audio_unit_descriptor.h */,
-				574BDE181A80054400F08D6C /* audio_unit_descriptor_response.h */,
-				574BDE191A80054400F08D6C /* audio_unit_get_sampling_rate_response.h */,
-				574BDE1A1A80054400F08D6C /* avb_counters_response.h */,
-				574BDE1B1A80054400F08D6C /* avb_interface_descriptor.h */,
-				574BDE1C1A80054400F08D6C /* avb_interface_descriptor_response.h */,
-				574BDE1D1A80054400F08D6C /* build.h */,
-				574BDE1E1A80054400F08D6C /* clock_domain_counters_response.h */,
-				574BDE1F1A80054400F08D6C /* clock_domain_descriptor.h */,
-				574BDE201A80054400F08D6C /* clock_domain_descriptor_response.h */,
-				574BDE211A80054400F08D6C /* clock_domain_get_clock_source_response.h */,
-				574BDE221A80054400F08D6C /* clock_source_descriptor.h */,
-				574BDE231A80054400F08D6C /* clock_source_descriptor_response.h */,
-				574BDE241A80054400F08D6C /* configuration_descriptor.h */,
-				574BDE251A80054400F08D6C /* control_descriptor.h */,
-				574BDE261A80054400F08D6C /* control_descriptor_response.h */,
-				574BDE271A80054400F08D6C /* controller.h */,
-				574BDE281A80054400F08D6C /* descriptor_base.h */,
-				574BDE291A80054400F08D6C /* descriptor_field.h */,
-				574BDE2A1A80054400F08D6C /* descriptor_field_flags.h */,
-				574BDE2B1A80054400F08D6C /* end_station.h */,
-				574BDE2C1A80054400F08D6C /* entity_descriptor.h */,
-				574BDE2D1A80054400F08D6C /* entity_descriptor_response.h */,
-				574BDE2E1A80054400F08D6C /* enumeration.h */,
-				574BDE2F1A80054400F08D6C /* external_port_input_descriptor.h */,
-				574BDE301A80054400F08D6C /* external_port_input_descriptor_response.h */,
-				574BDE311A80054400F08D6C /* external_port_output_descriptor.h */,
-				574BDE321A80054400F08D6C /* external_port_output_descriptor_response.h */,
-				574BDE331A80054400F08D6C /* jack_input_descriptor.h */,
-				574BDE341A80054400F08D6C /* jack_input_descriptor_response.h */,
-				574BDE351A80054400F08D6C /* jack_output_descriptor.h */,
-				574BDE361A80054400F08D6C /* jack_output_descriptor_response.h */,
-				574BDE371A80054400F08D6C /* locale_descriptor.h */,
-				574BDE381A80054400F08D6C /* locale_descriptor_response.h */,
-				574BDE391A80054400F08D6C /* memory_object_descriptor.h */,
-				574BDE3A1A80054400F08D6C /* memory_object_descriptor_response.h */,
-				574BDE3B1A80054400F08D6C /* net_interface.h */,
-				574BDE3C1A80054400F08D6C /* response_frame.h */,
-				574BDE3D1A80054400F08D6C /* stream_input_counters_response.h */,
-				574BDE3E1A80054400F08D6C /* stream_input_descriptor.h */,
-				574BDE3F1A80054400F08D6C /* stream_input_descriptor_response.h */,
-				574BDE401A80054400F08D6C /* stream_input_get_rx_state_response.h */,
-				574BDE411A80054400F08D6C /* stream_input_get_stream_format_response.h */,
-				574BDE421A80054400F08D6C /* stream_input_get_stream_info_response.h */,
-				574BDE431A80054400F08D6C /* stream_output_descriptor.h */,
-				574BDE441A80054400F08D6C /* stream_output_descriptor_response.h */,
-				574BDE451A80054400F08D6C /* stream_output_get_stream_format_response.h */,
-				574BDE461A80054400F08D6C /* stream_output_get_stream_info_response.h */,
-				574BDE471A80054400F08D6C /* stream_output_get_tx_connection_response.h */,
-				574BDE481A80054400F08D6C /* stream_output_get_tx_state_response.h */,
-				574BDE491A80054400F08D6C /* stream_port_input_descriptor.h */,
-				574BDE4A1A80054400F08D6C /* stream_port_input_descriptor_response.h */,
-				574BDE4B1A80054400F08D6C /* stream_port_output_descriptor.h */,
-				574BDE4C1A80054400F08D6C /* stream_port_output_descriptor_response.h */,
-				574BDE4D1A80054400F08D6C /* strings_descriptor.h */,
-				574BDE4E1A80054400F08D6C /* strings_descriptor_response.h */,
-				574BDE4F1A80054400F08D6C /* system.h */,
-				574BDE501A80054400F08D6C /* util.h */,
-			);
-			name = include;
-			path = "avdecc-widget/include";
-			sourceTree = "<group>";
-		};
 		575C14801A7D51C100A29984 = {
 			isa = PBXGroup;
 			children = (
+				5774ADA31AAA33C9001F8362 /* include */,
 				5741D0241A96B870000D0DF7 /* cmd_line.h */,
 				5741D0251A96B870000D0DF7 /* cli_argument.h */,
 				5741D0261A96B870000D0DF7 /* cli_command_format.h */,
 				5741D0271A96B870000D0DF7 /* cli_command.h */,
 				5798AE461A8FBB9300A011A4 /* cmd_line_help.h */,
 				574BDE511A8007B300F08D6C /* libcontroller.dylib */,
-				574BDE121A80054400F08D6C /* include */,
 				572307BF1A7DBA52002800EB /* wxWidget_dylibs */,
 				575C148B1A7D51C100A29984 /* avdecc-widget */,
 				575C14A21A7D51C100A29984 /* avdecc-widgetTests */,
@@ -3816,6 +3746,76 @@
 				575C1AE91A7D568B00A29984 /* xmlreshandler.h */,
 			);
 			path = xrc;
+			sourceTree = "<group>";
+		};
+		5774ADA31AAA33C9001F8362 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				5774ADA41AAA33C9001F8362 /* audio_cluster_descriptor.h */,
+				5774ADA51AAA33C9001F8362 /* audio_cluster_descriptor_response.h */,
+				5774ADA61AAA33C9001F8362 /* audio_map_descriptor.h */,
+				5774ADA71AAA33C9001F8362 /* audio_map_descriptor_response.h */,
+				5774ADA81AAA33C9001F8362 /* audio_unit_descriptor.h */,
+				5774ADA91AAA33C9001F8362 /* audio_unit_descriptor_response.h */,
+				5774ADAA1AAA33C9001F8362 /* audio_unit_get_sampling_rate_response.h */,
+				5774ADAB1AAA33C9001F8362 /* avb_counters_response.h */,
+				5774ADAC1AAA33C9001F8362 /* avb_interface_descriptor.h */,
+				5774ADAD1AAA33C9001F8362 /* avb_interface_descriptor_response.h */,
+				5774ADAE1AAA33C9001F8362 /* build.h */,
+				5774ADAF1AAA33C9001F8362 /* clock_domain_counters_response.h */,
+				5774ADB01AAA33C9001F8362 /* clock_domain_descriptor.h */,
+				5774ADB11AAA33C9001F8362 /* clock_domain_descriptor_response.h */,
+				5774ADB21AAA33C9001F8362 /* clock_domain_get_clock_source_response.h */,
+				5774ADB31AAA33C9001F8362 /* clock_source_descriptor.h */,
+				5774ADB41AAA33C9001F8362 /* clock_source_descriptor_response.h */,
+				5774ADB51AAA33C9001F8362 /* configuration_descriptor.h */,
+				5774ADB61AAA33C9001F8362 /* control_descriptor.h */,
+				5774ADB71AAA33C9001F8362 /* control_descriptor_response.h */,
+				5774ADB81AAA33C9001F8362 /* controller.h */,
+				5774ADB91AAA33C9001F8362 /* descriptor_base.h */,
+				5774ADBA1AAA33C9001F8362 /* descriptor_field.h */,
+				5774ADBB1AAA33C9001F8362 /* descriptor_field_flags.h */,
+				5774ADBC1AAA33C9001F8362 /* end_station.h */,
+				5774ADBD1AAA33C9001F8362 /* entity_descriptor.h */,
+				5774ADBE1AAA33C9001F8362 /* entity_descriptor_response.h */,
+				5774ADBF1AAA33C9001F8362 /* enumeration.h */,
+				5774ADC01AAA33C9001F8362 /* external_port_input_descriptor.h */,
+				5774ADC11AAA33C9001F8362 /* external_port_input_descriptor_response.h */,
+				5774ADC21AAA33C9001F8362 /* external_port_output_descriptor.h */,
+				5774ADC31AAA33C9001F8362 /* external_port_output_descriptor_response.h */,
+				5774ADC41AAA33C9001F8362 /* jack_input_descriptor.h */,
+				5774ADC51AAA33C9001F8362 /* jack_input_descriptor_response.h */,
+				5774ADC61AAA33C9001F8362 /* jack_output_descriptor.h */,
+				5774ADC71AAA33C9001F8362 /* jack_output_descriptor_response.h */,
+				5774ADC81AAA33C9001F8362 /* locale_descriptor.h */,
+				5774ADC91AAA33C9001F8362 /* locale_descriptor_response.h */,
+				5774ADCA1AAA33C9001F8362 /* memory_object_descriptor.h */,
+				5774ADCB1AAA33C9001F8362 /* memory_object_descriptor_response.h */,
+				5774ADCC1AAA33C9001F8362 /* net_interface.h */,
+				5774ADCD1AAA33C9001F8362 /* response_frame.h */,
+				5774ADCE1AAA33C9001F8362 /* stream_input_counters_response.h */,
+				5774ADCF1AAA33C9001F8362 /* stream_input_descriptor.h */,
+				5774ADD01AAA33C9001F8362 /* stream_input_descriptor_response.h */,
+				5774ADD11AAA33C9001F8362 /* stream_input_get_rx_state_response.h */,
+				5774ADD21AAA33C9001F8362 /* stream_input_get_stream_format_response.h */,
+				5774ADD31AAA33C9001F8362 /* stream_input_get_stream_info_response.h */,
+				5774ADD41AAA33C9001F8362 /* stream_output_descriptor.h */,
+				5774ADD51AAA33C9001F8362 /* stream_output_descriptor_response.h */,
+				5774ADD61AAA33C9001F8362 /* stream_output_get_stream_format_response.h */,
+				5774ADD71AAA33C9001F8362 /* stream_output_get_stream_info_response.h */,
+				5774ADD81AAA33C9001F8362 /* stream_output_get_tx_connection_response.h */,
+				5774ADD91AAA33C9001F8362 /* stream_output_get_tx_state_response.h */,
+				5774ADDA1AAA33C9001F8362 /* stream_port_input_descriptor.h */,
+				5774ADDB1AAA33C9001F8362 /* stream_port_input_descriptor_response.h */,
+				5774ADDC1AAA33C9001F8362 /* stream_port_output_descriptor.h */,
+				5774ADDD1AAA33C9001F8362 /* stream_port_output_descriptor_response.h */,
+				5774ADDE1AAA33C9001F8362 /* strings_descriptor.h */,
+				5774ADDF1AAA33C9001F8362 /* strings_descriptor_response.h */,
+				5774ADE01AAA33C9001F8362 /* system.h */,
+				5774ADE11AAA33C9001F8362 /* util.h */,
+			);
+			name = include;
+			path = "../../avdecc-lib/controller/lib/include";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

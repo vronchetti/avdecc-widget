@@ -67,7 +67,7 @@ wxString end_station_configuration::get_fw_ver()
     return fw_ver;
 }
 
-uint32_t end_station_configuration::get_init_sample_rate()
+uint32_t end_station_configuration::get_sample_rate()
 {
     return sample_rate;
 }

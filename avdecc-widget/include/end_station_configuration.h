@@ -41,7 +41,7 @@ public:
     wxString get_default_name();
     wxString get_mac();
     wxString get_fw_ver();
-    uint32_t get_init_sample_rate();
+    uint32_t get_sample_rate();
     int set_sample_rate(uint32_t sampling_rate);
 
 private:

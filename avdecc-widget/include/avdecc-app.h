@@ -85,8 +85,13 @@ public:
     
     void CreateEndStationListFormat();
     void CreateEndStationList();
-    int get_current_entity_and_decriptor(avdecc_lib::end_station *end_station,
+    int get_current_entity_and_descriptor(avdecc_lib::end_station *end_station,
                                          avdecc_lib::entity_descriptor **entity, avdecc_lib::configuration_descriptor **configuration);
+    
+    int get_current_end_station_entity_and_descriptor(avdecc_lib::end_station **end_station,
+                                                      avdecc_lib::entity_descriptor **entity, avdecc_lib::configuration_descriptor **configuration);
+    
+    int get_current_end_station(avdecc_lib::end_station **end_station) const;
 private:
     //main window objects
     wxTextCtrl *notif_text;
@@ -110,7 +115,8 @@ private:
     uint32_t get_next_notification_id();
     
     int cmd_set_sampling_rate(uint32_t new_sampling_rate);
-    
+    int cmd_set_stream_format(wxString desc_name, uint16_t desc_index, unsigned int stream_format_index);
+    unsigned int channel_count_and_sample_rate_to_stream_index(unsigned int channel_count, uint32_t sampling_rate);
     
     // any class wishing to process wxWidgets events must use this macro
     wxDECLARE_EVENT_TABLE();

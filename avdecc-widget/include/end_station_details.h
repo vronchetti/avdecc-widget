@@ -90,14 +90,21 @@ public:
     int ShowModal();
     
     uint32_t m_sampling_rate;
-    bool IsApplied = false;
+    unsigned int m_stream_input_count;
+    unsigned int m_stream_output_count;
+    
+    stream_configuration * m_stream_config;
+    end_station_configuration * m_end_station_config;
 
 private:
     wxDialog *EndStation_Details_Dialog;
     
     uint64_t channel_count;
-    unsigned int m_stream_input_count;
-    unsigned int m_stream_output_count;
+    wxString m_mac;
+    wxString m_default_name;
+    wxString m_entity_id;
+    wxString m_fw_ver;
+    wxString m_entity_name;
 
     wxTextCtrl *name;
     wxTextCtrl *default_name;
