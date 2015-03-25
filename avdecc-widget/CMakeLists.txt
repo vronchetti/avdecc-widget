@@ -28,29 +28,30 @@ elseif (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
 endif ()
 
 # wxWidgets
-find_package(wxWidgets COMPONENTS core base REQUIRED)
+find_package(wxWidgets COMPONENTS core base adv REQUIRED)
 include(${wxWidgets_USE_FILE})
 
 include_directories(include ../../avdecc-lib/controller/lib/include ../../jdksavdecc-c/include)
 
-file(GLOB_RECURSE CMDLINE_INCLUDES "*.h" )
+file(GLOB_RECURSE AVBGUI_INCLUDES "*.h" )
+file(GLOB_RECURSE AVBGUI_SRC "*.cpp" )
 
-file(GLOB_RECURSE CMDLINE_SRC "*.cpp" )
+set(AVDECCLIB_DIR ${PROJECT_BINARY_DIR}/../avdecc-lib/controller/lib/${CMAKE_CFG_INTDIR})
+add_library(controller SHARED IMPORTED)
+set_property(TARGET controller PROPERTY IMPORTED_LOCATION ${AVDECCLIB_DIR}/controller.dll)
+set_property(TARGET controller PROPERTY IMPORTED_IMPLIB ${AVDECCLIB_DIR}/controller.lib)
 
 if(APPLE)
-  add_executable (avbgui ${CMDLINE_INCLUDES} ${CMDLINE_SRC})
+  add_executable (avbgui ${AVBGUI_INCLUDES} ${AVBGUI_SRC})
 elseif(UNIX)
-  add_executable (avbgui ${CMDLINE_INCLUDES} ${CMDLINE_SRC})
+  add_executable (avbgui ${AVBGUI_INCLUDES} ${AVBGUI_SRC})
   target_link_libraries(avbgui rt)
 elseif(WIN32)
   add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-  add_executable (avbgui ${CMDLINE_INCLUDES} ${CMDLINE_SRC})
+  add_executable (avbgui WIN32 ${AVBGUI_INCLUDES} ${AVBGUI_SRC})
 endif()
 
 target_link_libraries(avbgui controller)
-
-target_link_libraries(avbgui ${PCAP_NAME})
-
 target_link_libraries(avbgui ${wxWidgets_LIBRARIES})
 
 

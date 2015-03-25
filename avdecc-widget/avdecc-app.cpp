@@ -35,7 +35,7 @@
 class AVDECC_App : public wxApp
 {
 public:
-    virtual bool OnInit() wxOVERRIDE { (new AVDECC_Controller())->Show(); return true; }
+    virtual bool OnInit() { (new AVDECC_Controller())->Show(); return true; }
 };
 
 // ----------------------------------------------------------------------------
@@ -55,7 +55,7 @@ AVDECC_Controller::AVDECC_Controller()
           wxDefaultPosition, wxSize(600,300))
 {
     netif = avdecc_lib::create_net_interface();
-    netif->select_interface_by_num(7);
+    netif->select_interface_by_num(1);
     controller_obj = avdecc_lib::create_controller(netif, notification_callback, log_callback, log_level);
     sys = avdecc_lib::create_system(avdecc_lib::system::LAYER2_MULTITHREADED_CALLBACK, netif, controller_obj);
     sys->process_start();

@@ -71,6 +71,27 @@
 #include "enumeration.h"
 #include "util.h"
 
+
+class AtomicOut : public std::ostream
+{
+public:
+	AtomicOut() : std::ostream(0), buffer()
+	{
+		this->init(buffer.rdbuf());
+	}
+
+	~AtomicOut()
+	{
+		// Use printf as cout seems to still be interleaved
+		printf("%s", buffer.str().c_str());
+	}
+
+private:
+	std::ostringstream buffer;
+};
+
+#define atomic_cout AtomicOut()
+
 class AVDECC_Controller : public wxFrame
 {
 public:
