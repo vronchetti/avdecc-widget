@@ -43,6 +43,9 @@
 #include <inttypes.h>
 
 #include "end_station.h"
+#include "controller.h"
+#include "system.h"
+#include "net_interface.h"
 #include "entity_descriptor.h"
 #include "configuration_descriptor.h"
 #include "audio_unit_descriptor.h"
@@ -65,11 +68,29 @@
 #include "descriptor_field.h"
 #include "descriptor_field_flags.h"
 #include "control_descriptor.h"
+#include "enumeration.h"
 #include "util.h"
-#include "cmdline.h"
-#include "cli_argument.h"
-#include "cli_command_format.h"
-#include "cli_command.h"
+
+
+class AtomicOut : public std::ostream
+{
+public:
+	AtomicOut() : std::ostream(0), buffer()
+	{
+		this->init(buffer.rdbuf());
+	}
+
+	~AtomicOut()
+	{
+		// Use printf as cout seems to still be interleaved
+		printf("%s", buffer.str().c_str());
+	}
+
+private:
+	std::ostringstream buffer;
+};
+
+#define atomic_cout AtomicOut()
 
 class AVDECC_Controller : public wxFrame
 {

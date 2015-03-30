@@ -21,6 +21,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#include <cstdint>
+
+#include <wx/listbox.h>
+#include <wx/listctrl.h>
+#include <wx/notebook.h>
+#include <wx/utils.h>
+
 #include "avdecc-app.h"
 #include "notif_log.h"
 #include "../sample.xpm"
@@ -28,7 +35,7 @@
 class AVDECC_App : public wxApp
 {
 public:
-    virtual bool OnInit() wxOVERRIDE { (new AVDECC_Controller())->Show(); return true; }
+    virtual bool OnInit() { (new AVDECC_Controller())->Show(); return true; }
 };
 
 // ----------------------------------------------------------------------------
@@ -48,7 +55,7 @@ AVDECC_Controller::AVDECC_Controller()
           wxDefaultPosition, wxSize(600,300))
 {
     netif = avdecc_lib::create_net_interface();
-    netif->select_interface_by_num(7);
+    netif->select_interface_by_num(1);
     controller_obj = avdecc_lib::create_controller(netif, notification_callback, log_callback, log_level);
     sys = avdecc_lib::create_system(avdecc_lib::system::LAYER2_MULTITHREADED_CALLBACK, netif, controller_obj);
     sys->process_start();
@@ -90,13 +97,11 @@ AVDECC_Controller::~AVDECC_Controller()
     netif->destroy();
     m_timer->Stop();
     delete wxLog::SetActiveTarget(NULL);
-    delete config;
-    delete stream_config;
 }
 
 void AVDECC_Controller::CreateEndStationList()
 {
-    sleep(1); //delay to process end stations
+	wxMilliSleep(1000); //delay to process end stations (will be replaced by timer method)
 
     for (unsigned int i = 0; i < controller_obj->get_end_station_count(); i++)
     {
@@ -349,6 +354,8 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
     {
         //not supported
     }
+	delete config;
+	delete stream_config;
 }
 
 unsigned int AVDECC_Controller::channel_count_and_sample_rate_to_stream_index(unsigned int channel_count, uint32_t sampling_rate)
