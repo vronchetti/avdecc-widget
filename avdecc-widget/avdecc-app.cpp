@@ -97,8 +97,6 @@ AVDECC_Controller::~AVDECC_Controller()
     netif->destroy();
     m_timer->Stop();
     delete wxLog::SetActiveTarget(NULL);
-    delete config;
-    delete stream_config;
 }
 
 void AVDECC_Controller::CreateEndStationList()
@@ -356,6 +354,8 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
     {
         //not supported
     }
+	delete config;
+	delete stream_config;
 }
 
 unsigned int AVDECC_Controller::channel_count_and_sample_rate_to_stream_index(unsigned int channel_count, uint32_t sampling_rate)
