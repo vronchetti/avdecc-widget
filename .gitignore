@@ -29,6 +29,10 @@ latex/
 *.ear
 *.py[cod]
 
+# Xcode
+*.xcbkptlist
+*.xcuserstate
+
 bin
 *.tlog
 *.manifest
