@@ -23,8 +23,6 @@
 
 /**
  * avdecc-app.h
- *
- * 
  */
 
 #include "end_station_details.h"
@@ -98,33 +96,24 @@ public:
     AVDECC_Controller();
     virtual ~AVDECC_Controller();
     
-    // event handlers
-    void OnQuit(wxCommandEvent& event);
-    
+    // avdecc-app event handlers
     void OnEndStationDClick(wxListEvent& event);
+    void OnInterfaceSelect(wxCommandEvent& event);
     void OnIncrementTimer(wxTimerEvent& event);
+
+private:
+    //avdecc-app objects
+    wxListCtrl * details_list;
+    wxTimer * avdecc_app_timer;
+    wxChoice * interface_choice;
     
+    //avdecc-app methods
+    uint64_t channel_count_and_sample_rate_to_stream_format(unsigned int channel_count, uint32_t sampling_rate);
+    void PrintAndSelectInterface();
     void CreateEndStationListFormat();
     void CreateEndStationList();
-    int get_current_entity_and_descriptor(avdecc_lib::end_station *end_station,
-                                         avdecc_lib::entity_descriptor **entity, avdecc_lib::configuration_descriptor **configuration);
-    
-    int get_current_end_station_entity_and_descriptor(avdecc_lib::end_station **end_station,
-                                                      avdecc_lib::entity_descriptor **entity, avdecc_lib::configuration_descriptor **configuration);
-    
-    int get_current_end_station(avdecc_lib::end_station **end_station) const;
-private:
-    //main window objects
-    wxTextCtrl *notif_text;
-    wxTextCtrl *log_text;
-    wxListCtrl * details_list;
-    wxTimer * m_timer;
 
-    end_station_details * details;
-    end_station_configuration * config;
-    stream_configuration * stream_config;
-    
-    //avdecc-lib objects, variables
+    //avdecc-lib objects
     avdecc_lib::controller *controller_obj;
     avdecc_lib::system *sys;
     avdecc_lib::net_interface *netif;
@@ -133,45 +122,23 @@ private:
     unsigned int m_end_station_count;
     long current_end_station_index;
     uint32_t init_sample_rate;
+    
+    //avdecc-lib methods
     uint32_t get_next_notification_id();
-    
+    int get_current_entity_and_descriptor(avdecc_lib::end_station *end_station,
+                                          avdecc_lib::entity_descriptor **entity, avdecc_lib::configuration_descriptor **configuration);
+    int get_current_end_station_entity_and_descriptor(avdecc_lib::end_station **end_station,
+                                                      avdecc_lib::entity_descriptor **entity, avdecc_lib::configuration_descriptor **configuration);
+    int get_current_end_station(avdecc_lib::end_station **end_station) const;
     int cmd_set_sampling_rate(uint32_t new_sampling_rate);
-    int cmd_set_stream_format(wxString desc_name, uint16_t desc_index, unsigned int stream_format_index);
-    unsigned int channel_count_and_sample_rate_to_stream_index(unsigned int channel_count, uint32_t sampling_rate);
-    
-    // any class wishing to process wxWidgets events must use this macro
+    int cmd_set_stream_format(wxString desc_name, uint16_t desc_index, uint64_t stream_format_index);
+
     wxDECLARE_EVENT_TABLE();
 };
 
-// ----------------------------------------------------------------------------
-// constants
-// ----------------------------------------------------------------------------
-
-// IDs for the controls and the menu commands
 enum
 {
-    // menu items
-    HtmlLbox_CustomBox = 1,
-    HtmlLbox_SimpleBox,
-    HtmlLbox_Quit,
-    
-    HtmlLbox_SetMargins,
-    HtmlLbox_DrawSeparator,
-    HtmlLbox_ToggleMulti,
-    HtmlLbox_SelectAll,
-    HtmlLbox_UpdateItem,
-    HtmlLbox_GetItemRect,
-    
-    HtmlLbox_SetBgCol,
-    HtmlLbox_SetSelBgCol,
-    HtmlLbox_SetSelFgCol,
-    
-    HtmlLbox_Clear,
+    AVDECC_GUI_Quit,
     EndStationTimer,
-    
-    
-    // it is important for the id corresponding to the "About" command to have
-    // this standard value as otherwise it won't be handled properly under Mac
-    // (where it is special and put into the "Apple" menu)
-    HtmlLbox_About = wxID_ABOUT
+    InterfaceSelect = 233
 };

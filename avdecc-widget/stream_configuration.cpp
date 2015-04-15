@@ -47,6 +47,16 @@ unsigned int stream_configuration::get_stream_output_count()
     return m_stream_output_count;
 }
 
+size_t stream_configuration::get_input_maps_count()
+{
+    return stream_port_input_audio_mappings.size();
+}
+
+size_t stream_configuration::get_output_maps_count()
+{
+    return stream_port_output_audio_mappings.size();
+}
+
 int stream_configuration::get_stream_input_details_by_index(unsigned int index, struct stream_configuration_details &stream_details)
 {
     if (index >= m_stream_input_count)

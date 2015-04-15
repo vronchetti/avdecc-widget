@@ -33,6 +33,14 @@
 struct stream_configuration_details {
     wxString stream_name;
     unsigned int channel_count;
+    bool clk_sync_src_flag;
+};
+
+struct audio_mapping {
+    uint16_t stream_index;
+    uint16_t stream_channel;
+    uint16_t cluster_offset;
+    uint16_t cluster_channel;
 };
 
 class stream_configuration
@@ -44,13 +52,20 @@ public:
     std::vector<struct stream_configuration_details> input_stream_config;
     std::vector<struct stream_configuration_details> output_stream_config;
     
+    std::vector <struct audio_mapping> stream_port_input_audio_mappings;
+    std::vector <struct audio_mapping> stream_port_output_audio_mappings;
+
     unsigned int get_stream_input_count();
     unsigned int get_stream_output_count();
+    size_t get_input_maps_count();
+    size_t get_output_maps_count();
+
     int get_stream_input_details_by_index(unsigned int index, struct stream_configuration_details &stream_details);
     int get_stream_output_details_by_index(unsigned int index, struct stream_configuration_details &stream_details);
 
 private:
     unsigned int m_stream_input_count;
     unsigned int m_stream_output_count;
+    unsigned int m_input_maps_count;
+    unsigned int m_output_maps_count;
 };
-

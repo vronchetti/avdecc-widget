@@ -28,34 +28,31 @@
 
 #include "end_station_details.h"
 
-wxBEGIN_EVENT_TABLE(end_station_details, wxFrame)
-    EVT_GRID_CELL_CHANGED(end_station_details::OnGridCellChange)
-wxEND_EVENT_TABLE()
-
-
 end_station_details::end_station_details(wxWindow *parent, end_station_configuration *config, stream_configuration *stream_config)
 {
     EndStation_Details_Dialog = new wxDialog(parent, wxID_ANY, wxT("End Station Configuration"),
                                             wxDefaultPosition,
-                                            wxSize(500, 700));
+                                            wxSize(500, 700), wxRESIZE_BORDER);
     
+    m_stream_input_count = stream_config->get_stream_input_count();
+    m_stream_output_count = stream_config->get_stream_output_count();
+
+    m_end_station_config = config;
+    m_stream_config = new stream_configuration(m_stream_input_count, m_stream_output_count);
+
     m_entity_name = config->get_entity_name();
     m_default_name = config->get_default_name();
     m_entity_id = config->get_entity_id();
     m_mac = config->get_mac();
     m_fw_ver = config->get_fw_ver();
     m_sampling_rate = config->get_sample_rate();
-    
-    
+
     CreateEndStationDetailsPanel(m_entity_name, m_default_name,
                                  m_sampling_rate, m_entity_id,
                                  m_mac, m_fw_ver);
-    
-    m_stream_input_count = stream_config->get_stream_input_count();
-    m_stream_output_count = stream_config->get_stream_output_count();
-    
+
     CreateAndSizeGrid(m_stream_input_count, m_stream_output_count);
-    
+
     for(unsigned int i = 0; i < m_stream_input_count; i++)
     {
         struct stream_configuration_details m_stream_details;
@@ -74,10 +71,48 @@ end_station_details::end_station_details(wxWindow *parent, end_station_configura
         SetOutputChannelCount(i, m_stream_details.channel_count, m_stream_output_count);
     }
     
+    m_input_maps_count = (unsigned int) stream_config->get_input_maps_count();
+    m_output_maps_count = (unsigned int) stream_config->get_output_maps_count();
+    
+    for(unsigned int i = 0; i < m_output_maps_count; i++)
+    {
+        SetInputMappings(stream_config->stream_port_input_audio_mappings.at(i));
+    }
+    
+    for(unsigned int i = 0; i < m_output_maps_count; i++)
+    {
+        SetOutputMappings(stream_config->stream_port_output_audio_mappings.at(i));
+    }
+    
+    for(unsigned int i = 0; i < m_stream_input_count; i++)
+    {
+        struct stream_configuration_details m_stream_details;
+        
+        stream_config->get_stream_input_details_by_index(i, m_stream_details);
+        if(m_stream_details.clk_sync_src_flag)
+        {
+            input_stream_grid->HideRow(i); //Hide Media Clock Input
+        }
+    }
+    
+    for(unsigned int i = 0; i < m_stream_output_count; i++)
+    {
+        struct stream_configuration_details m_stream_details;
+        
+        stream_config->get_stream_output_details_by_index(i, m_stream_details);
+        if(m_stream_details.clk_sync_src_flag)
+        {
+            output_stream_grid->HideRow(i); //Hide Media Clock Output
+        }
+    }
+    
     EndStation_Details_Dialog->Show();
 }
 
-end_station_details::~end_station_details(){}
+end_station_details::~end_station_details()
+{
+    delete m_stream_config;
+}
 
 void end_station_details::CreateEndStationDetailsPanel(wxString Entity_Name, wxString Default_Name,
                                                        uint32_t Sampling_Rate, wxString Entity_ID,
@@ -171,6 +206,40 @@ void end_station_details::SetChannelChoice(unsigned int stream_input_count, unsi
         output_channel_choice = new wxGridCellChoiceEditor(str);
         output_stream_grid->SetCellEditor(j, 1, output_channel_choice);
     }
+}
+
+void end_station_details::SetInputMappings(struct audio_mapping &map)
+{
+    int16_t stream_index = 0;
+    int16_t stream_channel = 0;
+    int16_t cluster_offset = 0;
+    int16_t cluster_channel = 0;
+    
+    stream_index = map.stream_index;
+    stream_channel = map.stream_channel + 2; //to skip the columns containing stream name/channel count
+    cluster_offset = map.cluster_offset;
+    cluster_channel = map.cluster_channel;
+    
+    wxString cluster_offset_str = wxString::Format(wxT("%i"), cluster_offset);
+    
+    input_stream_grid->SetCellValue(stream_index, stream_channel, cluster_offset_str);
+}
+
+void end_station_details::SetOutputMappings(struct audio_mapping &map)
+{
+    int16_t stream_index = 0;
+    int16_t stream_channel = 0;
+    int16_t cluster_offset = 0;
+    int16_t cluster_channel = 0;
+    
+    stream_index = map.stream_index;
+    stream_channel = map.stream_channel + 2;
+    cluster_offset = map.cluster_offset;
+    cluster_channel = map.cluster_channel;
+    
+    wxString cluster_offset_str = wxString::Format(wxT("%i"), cluster_offset);
+    
+    output_stream_grid->SetCellValue(stream_index, stream_channel, cluster_offset_str);
 }
 
 void end_station_details::SetInputChannelName(unsigned int stream_index, wxString name)
@@ -365,17 +434,14 @@ void end_station_details::CreateAndSizeGrid(unsigned int stream_input_count, uns
 void end_station_details::OnOK()
 {
     int n = sampling_rate->GetSelection(); //return index
-    m_sampling_rate = atoi(sampling_rate->GetString(n)); //return dialog sampling_rate
-    
-    m_end_station_config = new end_station_configuration(m_entity_name, m_entity_id, m_default_name,
-                                                         m_mac, m_fw_ver, m_sampling_rate);
-    
-    m_stream_config = new stream_configuration(m_stream_input_count, m_stream_output_count);
-    
+    uint32_t set_sampling_rate_value = atoi(sampling_rate->GetString(n)); //return dialog sampling_rate
+
+    m_end_station_config->set_sample_rate(set_sampling_rate_value);
+
     for(int i = 0; i < m_stream_input_count; i++)
     {
         struct stream_configuration_details input_stream_details;
-        
+    
         input_stream_details.stream_name = input_stream_grid->GetCellValue(i, 0);
         input_stream_details.channel_count = wxAtoi(input_stream_grid->GetCellValue(i, 1));
         
@@ -401,8 +467,4 @@ void end_station_details::OnCancel()
 int end_station_details::ShowModal()
 {
     return EndStation_Details_Dialog->ShowModal();
-}
-void end_station_details::OnGridCellChange(wxGridEvent &event)
-{
-    std::cout << "grid changed" << std::endl;
 }
