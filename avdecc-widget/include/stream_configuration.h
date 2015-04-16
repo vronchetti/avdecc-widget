@@ -26,6 +26,7 @@
  *
  */
 
+#include <stdint.h>
 #include <iostream>
 #include <vector>
 #include <wx/string.h>

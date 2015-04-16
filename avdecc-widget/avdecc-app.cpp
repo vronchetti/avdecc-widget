@@ -121,7 +121,7 @@ void AVDECC_Controller::CreateEndStationList()
 
 void AVDECC_Controller::PrintAndSelectInterface()
 {
-    char *interface = NULL;
+    char *port = NULL;
 
     int interface_num = 1;
     wxArrayString str;
@@ -129,13 +129,13 @@ void AVDECC_Controller::PrintAndSelectInterface()
     for(uint32_t i = 1; i < netif->devs_count() + 1; i++)
     {
         char *dev_desc = netif->get_dev_desc_by_index(i - 1);
-        if (!interface)
+        if (!port)
         {
             str.Add(dev_desc);
         }
         else
         {
-            if (strcmp(dev_desc, interface) == 0)
+            if (strcmp(dev_desc, port) == 0)
             {
                 interface_num = i;
                 break;
