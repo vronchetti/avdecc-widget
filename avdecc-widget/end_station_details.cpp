@@ -257,29 +257,29 @@ void end_station_details::SetInputChannelCount(unsigned int stream_index, unsign
 {
     input_stream_grid->SetCellValue(stream_index, 1, wxString::Format("%u-Channel", channel_count));
     
-    for(unsigned int j = 0; j < stream_input_count; j++)
+    for(unsigned int i = 0; i < stream_input_count; i++)
     {
-        input_stream_grid->SetRowSize(j, 25);
+        input_stream_grid->SetRowSize(i, 25);
         
         for(unsigned int j = 2; j < 10; j++)
         {
             input_stream_grid->SetColSize(j, 25);
         }
         
-        if(input_stream_grid->GetCellValue(j, 1) == "1-Channel")
+        if(input_stream_grid->GetCellValue(i, 1) == "1-Channel")
         {
             for(unsigned int k = 3; k < 10; k++)
             {
-                input_stream_grid->SetReadOnly(j, k);
-                input_stream_grid->SetCellBackgroundColour(j, k, *wxLIGHT_GREY);
+                input_stream_grid->SetReadOnly(i, k);
+                input_stream_grid->SetCellBackgroundColour(i, k, *wxLIGHT_GREY);
             }
         }
-        else if(input_stream_grid->GetCellValue(j, 1) == "2-Channel")
+        else if(input_stream_grid->GetCellValue(i, 1) == "2-Channel")
         {
             for(unsigned int k = 4; k < 10; k++)
             {
-                input_stream_grid->SetReadOnly(j, k);
-                input_stream_grid->SetCellBackgroundColour(j, k, *wxLIGHT_GREY);
+                input_stream_grid->SetReadOnly(i, k);
+                input_stream_grid->SetCellBackgroundColour(i, k, *wxLIGHT_GREY);
             }
         }
         else
@@ -294,29 +294,29 @@ void end_station_details::SetOutputChannelCount(unsigned int stream_index, unsig
 {
     output_stream_grid->SetCellValue(stream_index, 1, wxString::Format("%u-Channel", channel_count));
     
-    for(unsigned int j = 0; j < stream_output_count; j++)
+    for(unsigned int i = 0; i < stream_output_count; i++)
     {
-        output_stream_grid->SetRowSize(j, 25);
+        output_stream_grid->SetRowSize(i, 25);
         
         for(unsigned int j = 2; j < 10; j++)
         {
             output_stream_grid->SetColSize(j, 25);
         }
         
-        if(output_stream_grid->GetCellValue(j, 1) == "1-Channel")
+        if(output_stream_grid->GetCellValue(i, 1) == "1-Channel")
         {
             for(unsigned int k = 3; k < 10; k++)
             {
-                output_stream_grid->SetReadOnly(j, k);
-                output_stream_grid->SetCellBackgroundColour(j, k, *wxLIGHT_GREY);
+                output_stream_grid->SetReadOnly(i, k);
+                output_stream_grid->SetCellBackgroundColour(i, k, *wxLIGHT_GREY);
             }
         }
-        else if(output_stream_grid->GetCellValue(j, 1) == "2-Channel")
+        else if(output_stream_grid->GetCellValue(i, 1) == "2-Channel")
         {
             for(unsigned int k = 4; k < 10; k++)
             {
-                output_stream_grid->SetReadOnly(j, k);
-                output_stream_grid->SetCellBackgroundColour(j, k, *wxLIGHT_GREY);
+                output_stream_grid->SetReadOnly(i, k);
+                output_stream_grid->SetCellBackgroundColour(i, k, *wxLIGHT_GREY);
             }
         }
         else

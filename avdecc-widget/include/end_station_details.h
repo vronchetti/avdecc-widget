@@ -25,6 +25,7 @@
  * end_station_details.h
  */
 
+#include <wx/aui/framemanager.h>
 #include "wx/wxprec.h"
 #include "wx/app.h"
 #include "wx/frame.h"
@@ -76,6 +77,7 @@ public:
 private:
     //Dialog object
     wxDialog *EndStation_Details_Dialog;
+    wxAuiManager *aui_manager;
     
     //End Station Details objects
     wxTextCtrl *name;
