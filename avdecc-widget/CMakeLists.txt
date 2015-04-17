@@ -49,6 +49,10 @@ elseif(UNIX)
 elseif(WIN32)
   add_definitions(-D_CRT_SECURE_NO_WARNINGS)
   add_executable (avbgui WIN32 ${AVBGUI_INCLUDES} ${AVBGUI_SRC})
+  add_custom_command(TARGET avbgui POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${CMAKE_CURRENT_BINARY_DIR}/../avdecc-lib/controller/lib/$<CONFIGURATION>"
+    "$<TARGET_FILE_DIR:avbgui>")
 endif()
 
 target_link_libraries(avbgui controller)
