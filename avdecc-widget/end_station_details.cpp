@@ -438,7 +438,7 @@ void end_station_details::OnOK()
 
     m_end_station_config->set_sample_rate(set_sampling_rate_value);
 
-    for(int i = 0; i < m_stream_input_count; i++)
+    for(unsigned int i = 0; i < m_stream_input_count; i++)
     {
         struct stream_configuration_details input_stream_details;
     
@@ -448,7 +448,7 @@ void end_station_details::OnOK()
         m_stream_config->input_stream_config.push_back(input_stream_details);
     }
     
-    for(int i = 0; i < m_stream_output_count; i++)
+    for(unsigned int i = 0; i < m_stream_output_count; i++)
     {
         struct stream_configuration_details output_stream_details;
         

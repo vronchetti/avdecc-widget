@@ -384,7 +384,7 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
             //same value
         }
         
-        for(int i = 0; i < details->m_stream_input_count; i++)
+        for(unsigned int i = 0; i < details->m_stream_input_count; i++)
         {
             struct stream_configuration_details avdecc_stream_input_details;
             struct stream_configuration_details dialog_stream_input_details;
@@ -411,7 +411,7 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
             }
         }
         
-        for(int i = 0; i < details->m_stream_output_count; i++)
+        for(unsigned int i = 0; i < details->m_stream_output_count; i++)
         {
             struct stream_configuration_details avdecc_stream_output_details;
             struct stream_configuration_details dialog_stream_output_details;
@@ -502,7 +502,7 @@ int AVDECC_Controller::get_current_end_station_entity_and_descriptor(avdecc_lib:
 
 int AVDECC_Controller::get_current_end_station(avdecc_lib::end_station **end_station) const
 {
-    if (current_end_station_index >= controller_obj->get_end_station_count())
+    if ((size_t) current_end_station_index >= controller_obj->get_end_station_count())
     {
         atomic_cout << "No End Stations available" << std::endl;
         *end_station = NULL;
