@@ -56,7 +56,7 @@ AVDECC_Controller::AVDECC_Controller()
 {
     m_end_station_count = 0;
     avdecc_app_timer = new wxTimer(this, EndStationTimer);
-    avdecc_app_timer->Start(1000, wxTIMER_CONTINUOUS);
+    avdecc_app_timer->Start(200, wxTIMER_CONTINUOUS);
     notification_id = 1;
 
     netif = avdecc_lib::create_net_interface();
@@ -524,12 +524,30 @@ void AVDECC_Controller::OnIncrementTimer(wxTimerEvent& event)
     {
         //no added end stations found
     }
+    
+    std::streambuf *sbOld = std::cout.rdbuf();
+    std::cout.rdbuf(notifs);
+    
+    for(size_t i = 0; i < pending_notification_msgs.size(); i++)
+    {
+        struct notification_info notification;
+        
+        notification = pending_notification_msgs.at(i);
+        
+        std::cout << notification.cmd_type << std::endl;
+    }
+    
+    pending_notification_msgs.clear();
+
+    std::cout.rdbuf(sbOld);
 }
 
 void AVDECC_Controller::CreateEndStationListFormat()
 {
     details_list = new wxListCtrl(this, wxID_ANY, wxDefaultPosition,
                                   wxSize(600,200), wxLC_REPORT);
+    
+    notifs = new wxTextCtrl(this, wxID_ANY, "", wxDefaultPosition, wxSize(600,50), wxTE_MULTILINE);
     
     wxListItem col0;
     col0.SetId(0);
@@ -562,12 +580,15 @@ void AVDECC_Controller::CreateEndStationListFormat()
     details_list->InsertColumn(4, col4);
     
     wxBoxSizer * sizer1 = new wxBoxSizer(wxVERTICAL);
+    wxStaticBoxSizer *sizer4 = new wxStaticBoxSizer(wxVERTICAL, this, "Messages");
+    sizer4->Add(notifs);
     wxStaticBoxSizer *sizer3 = new wxStaticBoxSizer(wxVERTICAL, this, "Select Interface");
     sizer3->Add(interface_choice);
     wxStaticBoxSizer *sizer2 = new wxStaticBoxSizer(wxVERTICAL, this, "End Station List");
     sizer2->Add(details_list, 1, wxGROW);
     sizer1->Add(sizer3);
     sizer1->Add(sizer2);
+    sizer1->Add(sizer4);
 
     SetSizer(sizer1);
 }

@@ -106,6 +106,7 @@ private:
     wxListCtrl * details_list;
     wxTimer * avdecc_app_timer;
     wxChoice * interface_choice;
+    wxTextCtrl * notifs;
     
     //avdecc-app methods
     uint64_t channel_count_and_sample_rate_to_stream_format(unsigned int channel_count, uint32_t sampling_rate);

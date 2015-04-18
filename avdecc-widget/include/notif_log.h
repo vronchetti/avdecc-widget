@@ -21,7 +21,28 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#include <stdint.h>
+#include <stdio.h>
 
+struct notification_info
+{
+    uint32_t notification_type;
+    uint64_t entity_id;
+    uint16_t cmd_type;
+    uint16_t desc_type;
+    uint16_t desc_index;
+    uint32_t cmd_status;
+    void * notification_id;
+};
+
+struct log_info
+{
+    int32_t log_level;
+    const char *log_msg;
+};
+
+std::vector<struct notification_info> pending_notification_msgs;
+std::vector<struct log_info> pending_log_msgs;
 
 extern "C" void notification_callback(void *user_obj, int32_t notification_type, uint64_t entity_id, uint16_t cmd_type,
                                       uint16_t desc_type, uint16_t desc_index, uint32_t cmd_status,
@@ -66,9 +87,28 @@ extern "C" void notification_callback(void *user_obj, int32_t notification_type,
                cmd_status,
                notification_id);
     }
+    
+    notification_info m_notification_info;
+    
+    m_notification_info.notification_type = notification_type;
+    m_notification_info.entity_id = entity_id;
+    m_notification_info.cmd_type = cmd_type;
+    m_notification_info.desc_type = desc_type;
+    m_notification_info.desc_index = desc_index;
+    m_notification_info.cmd_status = cmd_status;
+    m_notification_info.notification_id = notification_id;
+    
+    pending_notification_msgs.push_back(m_notification_info);
 }
 
 extern "C" void log_callback(void *user_obj, int32_t log_level, const char *log_msg, int32_t time_stamp_ms)
 {
     printf("\n[LOG] %s (%s)\n", avdecc_lib::utility::logging_level_value_to_name(log_level), log_msg);
+    
+    log_info m_log_info;
+    
+    m_log_info.log_level = log_level;
+    m_log_info.log_msg = log_msg;
+    
+    pending_log_msgs.push_back(m_log_info);
 }
