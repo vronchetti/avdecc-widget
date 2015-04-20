@@ -54,6 +54,7 @@ AVDECC_Controller::AVDECC_Controller()
 : wxFrame(NULL, wxID_ANY, wxT("AVDECC-LIB Controller widget"),
           wxDefaultPosition, wxSize(600,300))
 {
+	notifs = new wxTextCtrl(this, wxID_ANY, "", wxDefaultPosition, wxSize(600, 300), wxTE_MULTILINE);
     m_end_station_count = 0;
     avdecc_app_timer = new wxTimer(this, EndStationTimer);
     avdecc_app_timer->Start(200, wxTIMER_CONTINUOUS);
@@ -533,8 +534,46 @@ void AVDECC_Controller::OnIncrementTimer(wxTimerEvent& event)
         struct notification_info notification;
         
         notification = pending_notification_msgs.at(i);
-        
-        std::cout << notification.cmd_type << std::endl;
+		if (notification.notification_type == avdecc_lib::COMMAND_TIMEOUT || notification.notification_type == avdecc_lib::RESPONSE_RECEIVED)
+		{
+			const char *cmd_name;
+			const char *desc_name;
+			const char *cmd_status_name;
+
+			if (notification.cmd_type < avdecc_lib::CMD_LOOKUP)
+			{
+				cmd_name = avdecc_lib::utility::aem_cmd_value_to_name(notification.cmd_type);
+				desc_name = avdecc_lib::utility::aem_desc_value_to_name(notification.desc_type);
+				cmd_status_name = avdecc_lib::utility::aem_cmd_status_value_to_name(notification.cmd_status);
+			}
+			else
+			{
+				cmd_name = avdecc_lib::utility::acmp_cmd_value_to_name(notification.cmd_type - avdecc_lib::CMD_LOOKUP);
+				desc_name = "NULL";
+				cmd_status_name = avdecc_lib::utility::acmp_cmd_status_value_to_name(notification.cmd_status);
+			}
+
+			std::cout << "[NOTIFICATION] " <<
+				avdecc_lib::utility::notification_value_to_name(notification.notification_type) << " " <<
+				wxString::Format("0x%llx", notification.entity_id) << " " <<
+				cmd_name << " " <<
+				desc_name << " " <<
+				notification.desc_index << " " <<
+				cmd_status_name << " " <<
+				notification.notification_id << std::endl;
+		}
+		else
+		{
+			std::cout << "[NOTIFICATION] " <<
+				avdecc_lib::utility::notification_value_to_name(notification.notification_type) << " " <<
+				wxString::Format("0x%llx", notification.entity_id) << " " <<
+				notification.cmd_type << " " <<
+				notification.desc_type << " " <<
+				notification.desc_index << " " <<
+				notification.cmd_status << " " <<
+				notification.notification_id << std::endl;
+		}
+
     }
     
     pending_notification_msgs.clear();
@@ -546,8 +585,6 @@ void AVDECC_Controller::CreateEndStationListFormat()
 {
     details_list = new wxListCtrl(this, wxID_ANY, wxDefaultPosition,
                                   wxSize(600,200), wxLC_REPORT);
-    
-    notifs = new wxTextCtrl(this, wxID_ANY, "", wxDefaultPosition, wxSize(600,50), wxTE_MULTILINE);
     
     wxListItem col0;
     col0.SetId(0);
