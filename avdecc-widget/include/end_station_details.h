@@ -65,8 +65,9 @@ public:
     unsigned int m_stream_output_count;
     unsigned int m_input_maps_count;
     unsigned int m_output_maps_count;
-
+    
     //public dialog return methods
+    void OnIncrementTimer(wxTimerEvent& event);
     void OnOK();
     void OnCancel();
     int ShowModal();
@@ -132,4 +133,11 @@ private:
     void CreateOutputStreamGridHeader();
     void SetInputChannelName(unsigned int stream_index, wxString name);
     void SetOutputChannelName(unsigned int stream_index, wxString name);
+    wxDECLARE_EVENT_TABLE();
 };
+
+enum
+{
+    DetailsTimer
+};
+

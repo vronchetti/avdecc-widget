@@ -28,11 +28,17 @@
 
 #include "end_station_details.h"
 
+wxBEGIN_EVENT_TABLE(end_station_details, wxFrame)
+    EVT_TIMER(DetailsTimer, end_station_details::OnIncrementTimer)
+wxEND_EVENT_TABLE()
+
 end_station_details::end_station_details(wxWindow *parent, end_station_configuration *config, stream_configuration *stream_config)
 {
-    EndStation_Details_Dialog = new wxDialog(parent, wxID_ANY, wxT("End Station Configuration"),
+    EndStation_Details_Dialog = new wxDialog(this, wxID_ANY, wxT("End Station Configuration"),
                                             wxDefaultPosition,
                                             wxSize(500, 700), wxRESIZE_BORDER);
+    wxTimer *details_timer = new wxTimer(this, DetailsTimer);
+    details_timer->Start(2000, wxTIMER_CONTINUOUS);
     
     m_stream_input_count = stream_config->get_stream_input_count();
     m_stream_output_count = stream_config->get_stream_output_count();
@@ -276,6 +282,8 @@ void end_station_details::SetInputChannelCount(unsigned int stream_index, unsign
         }
         else if(input_stream_grid->GetCellValue(i, 1) == "2-Channel")
         {
+            input_stream_grid->SetReadOnly(i, 3, false); //writable
+            input_stream_grid->SetCellBackgroundColour(i, 3, *wxWHITE);
             for(unsigned int k = 4; k < 10; k++)
             {
                 input_stream_grid->SetReadOnly(i, k);
@@ -284,7 +292,11 @@ void end_station_details::SetInputChannelCount(unsigned int stream_index, unsign
         }
         else
         {
-            //8 channel
+            for(unsigned int k = 3; k < 10; k++)
+            {
+                input_stream_grid->SetReadOnly(i, k, false);
+                input_stream_grid->SetCellBackgroundColour(i, k, *wxWHITE);
+            }
         }
     }
 }
@@ -313,6 +325,8 @@ void end_station_details::SetOutputChannelCount(unsigned int stream_index, unsig
         }
         else if(output_stream_grid->GetCellValue(i, 1) == "2-Channel")
         {
+            output_stream_grid->SetReadOnly(i, 3, false); //writable
+            output_stream_grid->SetCellBackgroundColour(i, 3, *wxWHITE);
             for(unsigned int k = 4; k < 10; k++)
             {
                 output_stream_grid->SetReadOnly(i, k);
@@ -321,7 +335,11 @@ void end_station_details::SetOutputChannelCount(unsigned int stream_index, unsig
         }
         else
         {
-            //8 channel
+            for(unsigned int k = 3; k < 10; k++)
+            {
+                output_stream_grid->SetReadOnly(i, k, false);
+                output_stream_grid->SetCellBackgroundColour(i, k, *wxWHITE);
+            }
         }
     }
 }
@@ -441,30 +459,121 @@ void end_station_details::OnOK()
     for(unsigned int i = 0; i < m_stream_input_count; i++)
     {
         struct stream_configuration_details input_stream_details;
+        struct audio_mapping input_audio_mapping;
+        unsigned int channel_count;
     
         input_stream_details.stream_name = input_stream_grid->GetCellValue(i, 0);
-        input_stream_details.channel_count = wxAtoi(input_stream_grid->GetCellValue(i, 1));
+        channel_count = wxAtoi(input_stream_grid->GetCellValue(i, 1));
+        input_stream_details.channel_count = channel_count;
         
         m_stream_config->input_stream_config.push_back(input_stream_details);
+        
+        switch(channel_count)
+        {
+            case 1:
+                input_audio_mapping.cluster_offset = wxAtoi(input_stream_grid->GetCellValue(i, 2));
+                input_audio_mapping.cluster_channel = 0; //cluster only has 1 channel
+                input_audio_mapping.stream_index = (uint16_t) i;
+                input_audio_mapping.stream_channel = 1;
+                m_stream_config->stream_port_input_audio_mappings.push_back(input_audio_mapping);
+                break;
+            case 2:
+                for(unsigned int j = 2; j < 3; j++)
+                {
+                    input_audio_mapping.cluster_offset = wxAtoi(input_stream_grid->GetCellValue(i, j));
+                    input_audio_mapping.cluster_channel = 0; //cluster only has 1 channel
+                    input_audio_mapping.stream_index = (uint16_t) i;
+                    input_audio_mapping.stream_channel = (j - 1);
+                    m_stream_config->stream_port_input_audio_mappings.push_back(input_audio_mapping);
+                }
+                break;
+            case 8:
+                for(unsigned int j = 2; j < 9; j++)
+                {
+                    input_audio_mapping.cluster_offset = wxAtoi(input_stream_grid->GetCellValue(i, j));
+                    input_audio_mapping.cluster_channel = 0; //cluster only has 1 channel
+                    input_audio_mapping.stream_index = (uint16_t) i;
+                    input_audio_mapping.stream_channel = (j - 1);
+                    m_stream_config->stream_port_input_audio_mappings.push_back(input_audio_mapping);
+                }
+                break;
+            default:
+                //unsupported channel count
+                break;
+        }
     }
     
     for(unsigned int i = 0; i < m_stream_output_count; i++)
     {
         struct stream_configuration_details output_stream_details;
-        
+        struct audio_mapping output_audio_mapping;
+        unsigned int channel_count;
+
         output_stream_details.stream_name = output_stream_grid->GetCellValue(i, 0);
-        output_stream_details.channel_count = wxAtoi(output_stream_grid->GetCellValue(i, 1));
-        
+        channel_count = wxAtoi(output_stream_grid->GetCellValue(i, 1));
+        output_stream_details.channel_count = channel_count;
+
         m_stream_config->output_stream_config.push_back(output_stream_details);
+        
+        switch(channel_count)
+        {
+            case 1:
+                output_audio_mapping.cluster_offset = wxAtoi(output_stream_grid->GetCellValue(i, 2));
+                output_audio_mapping.cluster_channel = 0; //cluster only has 1 channel
+                output_audio_mapping.stream_index = (uint16_t) i;
+                output_audio_mapping.stream_channel = 1;
+                m_stream_config->stream_port_output_audio_mappings.push_back(output_audio_mapping);
+                break;
+            case 2:
+                for(unsigned int j = 2; j < 3; j++)
+                {
+                    output_audio_mapping.cluster_offset = wxAtoi(output_stream_grid->GetCellValue(i, j));
+                    output_audio_mapping.cluster_channel = 0; //cluster only has 1 channel
+                    output_audio_mapping.stream_index = (uint16_t) i;
+                    output_audio_mapping.stream_channel = (j - 1);
+                    m_stream_config->stream_port_output_audio_mappings.push_back(output_audio_mapping);
+                }
+                break;
+            case 8:
+                for(unsigned int j = 2; j < 9; j++)
+                {
+                    output_audio_mapping.cluster_offset = wxAtoi(output_stream_grid->GetCellValue(i, j));
+                    output_audio_mapping.cluster_channel = 0; //cluster only has 1 channel
+                    output_audio_mapping.stream_index = (uint16_t) i;
+                    output_audio_mapping.stream_channel = (j - 1);
+                    m_stream_config->stream_port_output_audio_mappings.push_back(output_audio_mapping);
+                }
+                break;
+            default:
+                //unsupported channel count
+                break;
+        }
+
     }
 }
 
 void end_station_details::OnCancel()
 {
-    Destroy();
+    //Destroy();
 }
 
 int end_station_details::ShowModal()
 {
     return EndStation_Details_Dialog->ShowModal();
 }
+
+void end_station_details::OnIncrementTimer(wxTimerEvent &event)
+{
+    for(unsigned int i = 0; i < m_stream_input_count; i++)
+    {
+        unsigned int input_channel_count = wxAtoi(input_stream_grid->GetCellValue(i, 1));
+        SetInputChannelCount(i, input_channel_count, m_stream_input_count);
+    }
+    
+    for(unsigned int i = 0; i < m_stream_output_count; i++)
+    {
+        unsigned int output_channel_count = wxAtoi(output_stream_grid->GetCellValue(i, 1));
+        SetOutputChannelCount(i, output_channel_count, m_stream_output_count);
+    }
+}
+

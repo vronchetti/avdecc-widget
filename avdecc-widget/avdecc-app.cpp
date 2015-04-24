@@ -375,6 +375,8 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
     {
         details->OnOK();
         std::cout << "Apply" << std::endl;
+        
+        std::vector<audio_mapping> pending_audio_mappings;
 
         if(details->m_end_station_config->get_sample_rate() != init_sample_rate)
         {
@@ -438,7 +440,186 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
                 //same value
             }
         }
-        details->Destroy();
+        
+        bool input_mapping_found = false;
+        
+        for(size_t it = 0; it < details->m_stream_config->stream_port_input_audio_mappings.size(); it++)
+        {
+            struct audio_mapping dialog_mapping;
+            
+            dialog_mapping = details->m_stream_config->stream_port_input_audio_mappings.at(it);
+            
+            for(size_t j = 0; j < stream_config->stream_port_input_audio_mappings.size(); j++)
+            {
+                struct audio_mapping avdecc_mapping;
+                
+                avdecc_mapping = stream_config->stream_port_input_audio_mappings.at(j);
+                
+                if(dialog_mapping.stream_index == avdecc_mapping.stream_index &&
+                   dialog_mapping.stream_channel == avdecc_mapping.stream_channel &&
+                   dialog_mapping.cluster_offset == avdecc_mapping.cluster_offset &&
+                   dialog_mapping.cluster_channel == avdecc_mapping.cluster_channel)
+                {
+                    input_mapping_found = true;
+                }
+            }
+            
+            if(!input_mapping_found) //add
+            {
+                struct avdecc_lib::audio_map_mapping input_audio_map;
+                
+                input_audio_map.stream_channel = dialog_mapping.stream_channel;
+                input_audio_map.stream_index = dialog_mapping.stream_index;
+                input_audio_map.cluster_offset = dialog_mapping.cluster_offset;
+                input_audio_map.cluster_channel = dialog_mapping.cluster_channel;
+                
+                stream_port_input_desc_ref->store_pending_map(input_audio_map);
+            }
+        }
+
+        bool output_mapping_found = false;
+        
+        for(size_t it = 0; it < details->m_stream_config->stream_port_output_audio_mappings.size(); it++)
+        {
+            struct audio_mapping dialog_mapping;
+            
+            dialog_mapping = details->m_stream_config->stream_port_output_audio_mappings.at(it);
+            
+            for(size_t j = 0; j < stream_config->stream_port_output_audio_mappings.size(); j++)
+            {
+                struct audio_mapping avdecc_mapping;
+                
+                avdecc_mapping = stream_config->stream_port_output_audio_mappings.at(j);
+                
+                if(dialog_mapping.stream_index == avdecc_mapping.stream_index &&
+                   dialog_mapping.stream_channel == avdecc_mapping.stream_channel &&
+                   dialog_mapping.cluster_offset == avdecc_mapping.cluster_offset &&
+                   dialog_mapping.cluster_channel == avdecc_mapping.cluster_channel)
+                {
+                    output_mapping_found = true;
+                }
+            }
+            
+            if(!output_mapping_found) //add
+            {
+                struct avdecc_lib::audio_map_mapping output_audio_map;
+                
+                output_audio_map.stream_channel = dialog_mapping.stream_channel;
+                output_audio_map.stream_index = dialog_mapping.stream_index;
+                output_audio_map.cluster_offset = dialog_mapping.cluster_offset;
+                output_audio_map.cluster_channel = dialog_mapping.cluster_channel;
+                
+                stream_port_output_desc_ref->store_pending_map(output_audio_map);
+            }
+        }
+        
+        if(!input_mapping_found)
+        {
+            add_audio_mappings(avdecc_lib::AEM_DESC_STREAM_PORT_INPUT);
+        }
+        else
+        {
+            std::cout << "No added input mappings" << std::endl;
+        }
+        
+        if(!output_mapping_found)
+        {
+            add_audio_mappings(avdecc_lib::AEM_DESC_STREAM_PORT_OUTPUT);
+        }
+        else
+        {
+            std::cout << "No added output mappings" << std::endl;
+        }
+
+        bool input_mapping_not_found = false;
+        
+        for(size_t it = 0; it < stream_config->stream_port_input_audio_mappings.size(); it++)
+        {
+            struct audio_mapping avdecc_mapping;
+            
+            avdecc_mapping = stream_config->stream_port_input_audio_mappings.at(it);
+            
+            for(size_t j = 0; j < details->m_stream_config->stream_port_input_audio_mappings.size(); j++)
+            {
+                struct audio_mapping dialog_mapping;
+                
+                dialog_mapping = details->m_stream_config->stream_port_input_audio_mappings.at(j);
+                
+                if(dialog_mapping.stream_index == avdecc_mapping.stream_index &&
+                   dialog_mapping.stream_channel == avdecc_mapping.stream_channel &&
+                   dialog_mapping.cluster_offset == avdecc_mapping.cluster_offset &&
+                   dialog_mapping.cluster_channel == avdecc_mapping.cluster_channel)
+                {
+                    input_mapping_not_found = true;
+                }
+            }
+            
+            if(!input_mapping_not_found) //remove
+            {
+                struct avdecc_lib::audio_map_mapping input_audio_map;
+                
+                input_audio_map.stream_channel = avdecc_mapping.stream_channel;
+                input_audio_map.stream_index = avdecc_mapping.stream_index;
+                input_audio_map.cluster_offset = avdecc_mapping.cluster_offset;
+                input_audio_map.cluster_channel = avdecc_mapping.cluster_channel;
+                
+                stream_port_input_desc_ref->store_pending_map(input_audio_map);
+            }
+        }
+
+        bool output_mapping_not_found = false;
+        
+        for(size_t it = 0; it < stream_config->stream_port_output_audio_mappings.size(); it++)
+        {
+            struct audio_mapping avdecc_mapping;
+            
+            avdecc_mapping = stream_config->stream_port_output_audio_mappings.at(it);
+            
+            for(size_t j = 0; j < details->m_stream_config->stream_port_output_audio_mappings.size(); j++)
+            {
+                struct audio_mapping dialog_mapping;
+                
+                dialog_mapping = details->m_stream_config->stream_port_output_audio_mappings.at(j);
+                
+                if(dialog_mapping.stream_index == avdecc_mapping.stream_index &&
+                   dialog_mapping.stream_channel == avdecc_mapping.stream_channel &&
+                   dialog_mapping.cluster_offset == avdecc_mapping.cluster_offset &&
+                   dialog_mapping.cluster_channel == avdecc_mapping.cluster_channel)
+                {
+                    output_mapping_not_found = true;
+                }
+            }
+            
+            if(!output_mapping_not_found) //remove
+            {
+                struct avdecc_lib::audio_map_mapping output_audio_map;
+                
+                output_audio_map.stream_channel = avdecc_mapping.stream_channel;
+                output_audio_map.stream_index = avdecc_mapping.stream_index;
+                output_audio_map.cluster_offset = avdecc_mapping.cluster_offset;
+                output_audio_map.cluster_channel = avdecc_mapping.cluster_channel;
+                
+                stream_port_output_desc_ref->store_pending_map(output_audio_map);
+            }
+        }
+        
+        if(!input_mapping_not_found)
+        {
+            remove_audio_mappings(avdecc_lib::AEM_DESC_STREAM_PORT_INPUT);
+        }
+        else
+        {
+            std::cout << "No removed input mappings" << std::endl;
+        }
+        
+        if(!output_mapping_not_found)
+        {
+            remove_audio_mappings(avdecc_lib::AEM_DESC_STREAM_PORT_OUTPUT);
+        }
+        else
+        {
+            std::cout << "No removed output mappings" << std::endl;
+        }
     }
     else
     {
@@ -446,6 +627,71 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
     }
 	delete config;
 	delete stream_config;
+}
+
+int AVDECC_Controller::add_audio_mappings(uint16_t desc_type)
+{
+    uint16_t desc_index = 0; //1 stream_port?
+    avdecc_lib::end_station *end_station;
+    avdecc_lib::entity_descriptor *entity;
+    avdecc_lib::configuration_descriptor *configuration;
+    if (get_current_end_station_entity_and_descriptor(&end_station, &entity, &configuration))
+        return 0;
+    
+    if(desc_type == avdecc_lib::AEM_DESC_STREAM_PORT_INPUT)
+    {
+        intptr_t cmd_notification_id = get_next_notification_id();
+        sys->set_wait_for_next_cmd((void *)cmd_notification_id);
+        avdecc_lib::stream_port_input_descriptor *stream_port_input_desc_ref= configuration->get_stream_port_input_desc_by_index(desc_index);
+        stream_port_input_desc_ref->send_add_audio_mappings_cmd((void *)cmd_notification_id);
+        sys->get_last_resp_status();
+    }
+    else if(desc_type == avdecc_lib::AEM_DESC_STREAM_PORT_OUTPUT)
+    {
+        intptr_t cmd_notification_id = get_next_notification_id();
+        sys->set_wait_for_next_cmd((void *)cmd_notification_id);
+        avdecc_lib::stream_port_output_descriptor *stream_port_output_desc_ref= configuration->get_stream_port_output_desc_by_index(desc_index);
+        stream_port_output_desc_ref->send_add_audio_mappings_cmd((void *)cmd_notification_id);
+        sys->get_last_resp_status();
+    }
+    else
+    {
+        atomic_cout << "Invalid Descriptor" << std::endl;
+    }
+    
+    return 0;
+}
+
+int AVDECC_Controller::remove_audio_mappings(uint16_t desc_type)
+{
+    avdecc_lib::end_station *end_station;
+    avdecc_lib::entity_descriptor *entity;
+    avdecc_lib::configuration_descriptor *configuration;
+    if (get_current_end_station_entity_and_descriptor(&end_station, &entity, &configuration))
+        return 0;
+    
+    if(desc_type == avdecc_lib::AEM_DESC_STREAM_PORT_INPUT)
+    {
+        intptr_t cmd_notification_id = get_next_notification_id();
+        sys->set_wait_for_next_cmd((void *)cmd_notification_id);
+        avdecc_lib::stream_port_input_descriptor *stream_port_input_desc_ref= configuration->get_stream_port_input_desc_by_index(0);
+        stream_port_input_desc_ref->send_remove_audio_mappings_cmd((void *)cmd_notification_id);
+        sys->get_last_resp_status();
+    }
+    else if(desc_type == avdecc_lib::AEM_DESC_STREAM_PORT_OUTPUT)
+    {
+        intptr_t cmd_notification_id = get_next_notification_id();
+        sys->set_wait_for_next_cmd((void *)cmd_notification_id);
+        avdecc_lib::stream_port_output_descriptor *stream_port_output_desc_ref= configuration->get_stream_port_output_desc_by_index(0);
+        stream_port_output_desc_ref->send_remove_audio_mappings_cmd((void *)cmd_notification_id);
+        sys->get_last_resp_status();
+    }
+    else
+    {
+        atomic_cout << "Invalid Descriptor" << std::endl;
+    }
+    
+    return 0;
 }
 
 uint64_t AVDECC_Controller::channel_count_and_sample_rate_to_stream_format(unsigned int channel_count, uint32_t sampling_rate)

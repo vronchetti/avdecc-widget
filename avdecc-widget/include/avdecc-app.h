@@ -133,6 +133,8 @@ private:
     int get_current_end_station(avdecc_lib::end_station **end_station) const;
     int cmd_set_sampling_rate(uint32_t new_sampling_rate);
     int cmd_set_stream_format(wxString desc_name, uint16_t desc_index, uint64_t stream_format_index);
+    int add_audio_mappings(uint16_t desc_type);
+    int remove_audio_mappings(uint16_t desc_type);
 
     wxDECLARE_EVENT_TABLE();
 };
