@@ -135,6 +135,8 @@ private:
     int cmd_set_stream_format(wxString desc_name, uint16_t desc_index, uint64_t stream_format_index);
     int add_audio_mappings(uint16_t desc_type);
     int remove_audio_mappings(uint16_t desc_type);
+    int cmd_set_name(std::string desc_name, uint16_t desc_index, std::string new_name);
+    int cmd_display_desc_name(avdecc_lib::descriptor_base *desc, uint16_t name_index, bool is_entity);
 
     wxDECLARE_EVENT_TABLE();
 };
