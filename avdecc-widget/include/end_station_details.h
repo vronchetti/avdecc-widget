@@ -61,6 +61,8 @@ public:
     virtual ~end_station_details();
 
     uint32_t m_sampling_rate;
+    uint16_t m_clk_source;
+
     unsigned int m_stream_input_count;
     unsigned int m_stream_output_count;
     unsigned int m_input_maps_count;
@@ -84,6 +86,7 @@ private:
     wxTextCtrl *name;
     wxTextCtrl *default_name;
     wxChoice *sampling_rate;
+    wxChoice *clock_source;
     wxTextCtrl *entity_id;
     wxTextCtrl *mac;
     wxTextCtrl *fw_ver;
@@ -116,7 +119,8 @@ private:
     //Class methods
     void CreateEndStationDetailsPanel(wxString Entity_Name, wxString Default_Name,
                                       uint32_t Init_Sampling_Rate, wxString Entity_ID,
-                                      wxString Mac, wxString fw_ver);
+                                      wxString Mac, wxString fw_ver, uint16_t clk_source,
+                                      uint16_t clk_source_count);
     
     void CreateAndSizeGrid(unsigned int stream_input_count, unsigned int stream_output_count);
     void OnGridCellChange(wxGridEvent& event);

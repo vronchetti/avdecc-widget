@@ -122,7 +122,6 @@ private:
     intptr_t notification_id;
     unsigned int m_end_station_count;
     long current_end_station_index;
-    uint32_t init_sample_rate;
     
     //avdecc-lib methods
     uint32_t get_next_notification_id();

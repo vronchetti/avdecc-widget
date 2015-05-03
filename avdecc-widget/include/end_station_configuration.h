@@ -34,7 +34,8 @@ class end_station_configuration
 {
 public:
     end_station_configuration(wxString entity_name, wxString id_entity, wxString name_default,
-                              wxString mac_add, wxString firmware_ver, uint32_t initial_sample_rate);
+                              wxString mac_add, wxString firmware_ver, uint32_t initial_sample_rate,
+                              uint16_t clk_source, uint16_t clk_source_count);
     virtual ~end_station_configuration();
     
     wxString get_entity_name();
@@ -43,7 +44,10 @@ public:
     wxString get_mac();
     wxString get_fw_ver();
     uint32_t get_sample_rate();
+    uint16_t get_clock_source();
+    uint16_t get_clock_source_count();
     int set_sample_rate(uint32_t sampling_rate);
+    int set_clock_source(uint16_t sampling_rate);
 
 private:
     wxString name;
@@ -52,4 +56,6 @@ private:
     wxString mac;
     wxString fw_ver;
     uint32_t sample_rate;
+    uint16_t clock_source;
+    uint16_t clock_source_count;
 };

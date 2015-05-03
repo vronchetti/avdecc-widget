@@ -170,6 +170,9 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
     avdecc_lib::audio_unit_descriptor_response *audio_unit_resp_ref = audio_unit_desc->get_audio_unit_response();
     avdecc_lib::strings_descriptor *strings_desc = configuration->get_strings_desc_by_index(0);
     avdecc_lib::strings_descriptor_response *strings_resp_ref = strings_desc->get_strings_response();
+    
+    avdecc_lib::clock_domain_descriptor *clk_domain_desc = configuration->get_clock_domain_desc_by_index(0);
+    avdecc_lib::clock_domain_descriptor_response *clk_domain_resp_ref = clk_domain_desc->get_clock_domain_response();
 
     uint16_t number_of_stream_input_ports = configuration->stream_input_desc_count();
     uint16_t number_of_stream_output_ports = configuration->stream_output_desc_count();
@@ -181,9 +184,13 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
     wxString default_name = strings_resp_ref->get_string_by_index(1);
     wxString mac = wxString::Format("%llx",end_station->mac());
     wxString fw_ver = (const char *)entity_desc_resp->firmware_version();
-    init_sample_rate = audio_unit_resp_ref->current_sampling_rate();
+    uint32_t init_sample_rate = audio_unit_resp_ref->current_sampling_rate();
+    uint16_t init_clock_source = clk_domain_resp_ref->get_clock_source_by_index(clk_domain_resp_ref->clock_source_index());
+    uint16_t clock_source_count = clk_domain_resp_ref->clock_sources_count();
     
-    end_station_configuration * config = new end_station_configuration(entity_name, entity_id, default_name, mac, fw_ver, init_sample_rate); //end station details class
+    end_station_configuration * config = new end_station_configuration(entity_name, entity_id, default_name,
+                                                                       mac, fw_ver, init_sample_rate,
+                                                                       init_clock_source, clock_source_count); //end station details class
     stream_configuration * stream_config = new stream_configuration(number_of_stream_input_ports, number_of_stream_output_ports); //new stream config class
 
     delete audio_unit_resp_ref;

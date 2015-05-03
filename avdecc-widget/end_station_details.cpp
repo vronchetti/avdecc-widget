@@ -52,10 +52,12 @@ end_station_details::end_station_details(wxWindow *parent, end_station_configura
     m_mac = config->get_mac();
     m_fw_ver = config->get_fw_ver();
     m_sampling_rate = config->get_sample_rate();
+    m_clk_source = config->get_clock_source();
+    uint16_t m_clk_source_count = config->get_clock_source_count();
 
     CreateEndStationDetailsPanel(m_entity_name, m_default_name,
                                  m_sampling_rate, m_entity_id,
-                                 m_mac, m_fw_ver);
+                                 m_mac, m_fw_ver, m_clk_source, m_clk_source_count);
 
     CreateAndSizeGrid(m_stream_input_count, m_stream_output_count);
 
@@ -122,7 +124,8 @@ end_station_details::~end_station_details()
 
 void end_station_details::CreateEndStationDetailsPanel(wxString Entity_Name, wxString Default_Name,
                                                        uint32_t Sampling_Rate, wxString Entity_ID,
-                                                       wxString Mac, wxString fw_version)
+                                                       wxString Mac, wxString Fw_version,
+                                                       uint16_t clk_source, uint16_t clk_source_count)
 {
     wxBoxSizer* Sizer1  = new wxBoxSizer(wxHORIZONTAL);
     Sizer1->Add(new wxStaticText(EndStation_Details_Dialog, wxID_ANY, "End Station Name: ", wxDefaultPosition, wxSize(125,25)));
@@ -141,6 +144,9 @@ void end_station_details::CreateEndStationDetailsPanel(wxString Entity_Name, wxS
     
     wxBoxSizer* Sizer6  = new wxBoxSizer(wxHORIZONTAL);
     Sizer6->Add(new wxStaticText(EndStation_Details_Dialog, wxID_ANY, "Firmware Version: ", wxDefaultPosition, wxSize(125,25)));
+    
+    wxBoxSizer* Sizer7  = new wxBoxSizer(wxHORIZONTAL);
+    Sizer7->Add(new wxStaticText(EndStation_Details_Dialog, wxID_ANY, "Clock Source: ", wxDefaultPosition, wxSize(125,25)));
 
     name = new wxTextCtrl(EndStation_Details_Dialog, wxID_ANY, Entity_Name, wxDefaultPosition, wxSize(150,25));
     Sizer1->Add(name);
@@ -170,6 +176,18 @@ void end_station_details::CreateEndStationDetailsPanel(wxString Entity_Name, wxS
 
     Sizer3->Add(sampling_rate);
     
+    wxArrayString str2;
+    for(unsigned int i = 0; i < clk_source_count; i++)
+    {
+        wxString index = wxString::Format("%u", i);
+        str2.Add(index);
+    }
+
+    clock_source = new wxChoice(EndStation_Details_Dialog, wxID_ANY, wxDefaultPosition, wxSize(150,25), str2);
+    clock_source->SetSelection(clk_source);
+    
+    Sizer7->Add(clock_source);
+    
     entity_id = new wxTextCtrl(EndStation_Details_Dialog, wxID_ANY, Entity_ID, wxDefaultPosition, wxSize(150,25));
     entity_id->SetBackgroundColour(*wxLIGHT_GREY);
     Sizer4->Add(entity_id);
@@ -179,7 +197,7 @@ void end_station_details::CreateEndStationDetailsPanel(wxString Entity_Name, wxS
     mac->SetBackgroundColour(*wxLIGHT_GREY);
     Sizer5->Add(mac);
     
-    fw_ver = new wxTextCtrl(EndStation_Details_Dialog, wxID_ANY, fw_version,
+    fw_ver = new wxTextCtrl(EndStation_Details_Dialog, wxID_ANY, Fw_version,
                             wxDefaultPosition, wxSize(150,25), wxTE_READONLY);
     fw_ver->SetBackgroundColour(*wxLIGHT_GREY);
     Sizer6->Add(fw_ver);
@@ -191,6 +209,7 @@ void end_station_details::CreateEndStationDetailsPanel(wxString Entity_Name, wxS
     Details_Sizer->Add(Sizer4);
     Details_Sizer->Add(Sizer5);
     Details_Sizer->Add(Sizer6);
+    Details_Sizer->Add(Sizer7);
 }
 
 void end_station_details::SetChannelChoice(unsigned int stream_input_count, unsigned int stream_output_count)

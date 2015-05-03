@@ -30,7 +30,8 @@
 
 
 end_station_configuration::end_station_configuration(wxString entity_name, wxString id_entity, wxString name_default,
-                                                     wxString mac_add, wxString firmware_ver, uint32_t sampling_rate)
+                                                     wxString mac_add, wxString firmware_ver, uint32_t sampling_rate,
+                                                     uint16_t clk_source, uint16_t clk_source_count)
 {
     name = entity_name;
     entity_id = id_entity;
@@ -38,6 +39,8 @@ end_station_configuration::end_station_configuration(wxString entity_name, wxStr
     mac = mac_add;
     fw_ver = firmware_ver;
     sample_rate = sampling_rate;
+    clock_source = clk_source;
+    clock_source_count = clk_source_count;
 }
 
 end_station_configuration::~end_station_configuration() {}
@@ -72,8 +75,24 @@ uint32_t end_station_configuration::get_sample_rate()
     return sample_rate;
 }
 
+uint16_t end_station_configuration::get_clock_source()
+{
+    return clock_source;
+}
+
+uint16_t end_station_configuration::get_clock_source_count()
+{
+    return clock_source_count;
+}
+
 int end_station_configuration::set_sample_rate(uint32_t sampling_rate)
 {
     sample_rate = sampling_rate;
+    return 0;
+}
+
+int end_station_configuration::set_clock_source(uint16_t clk_source)
+{
+    clock_source = clk_source;
     return 0;
 }
