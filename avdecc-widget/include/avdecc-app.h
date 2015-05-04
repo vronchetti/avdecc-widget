@@ -108,11 +108,25 @@ private:
     wxChoice * interface_choice;
     wxTextCtrl * notifs;
     
+    stream_configuration * stream_config;
+    end_station_configuration * config;
+    end_station_details * details;
+    
     //avdecc-app methods
     uint64_t channel_count_and_sample_rate_to_stream_format(unsigned int channel_count, uint32_t sampling_rate);
     void PrintAndSelectInterface();
     void CreateEndStationListFormat();
     void CreateEndStationList();
+    
+    int GetEndStationDetails();
+    int GetClockSource();
+    int GetStreamInfo();
+    int GetAudioMappings();
+    int SetSamplingRate();
+    int SetStreamFormatAndName();
+    int SetClockSource();
+    int SetAudioMappings();
+    int SetEntityName();
 
     //avdecc-lib objects
     avdecc_lib::controller *controller_obj;
@@ -122,6 +136,17 @@ private:
     intptr_t notification_id;
     unsigned int m_end_station_count;
     long current_end_station_index;
+    uint32_t init_sample_rate;
+    uint16_t init_clock_source;
+    wxString init_entity_name;
+    wxString entity_id;
+    wxString default_name;
+    wxString mac;
+    wxString fw_ver;
+    uint16_t clock_source_count;
+    
+    uint16_t number_of_stream_input_ports;
+    uint16_t number_of_stream_output_ports;
     
     //avdecc-lib methods
     uint32_t get_next_notification_id();
@@ -135,6 +160,7 @@ private:
     int add_audio_mappings(uint16_t desc_type);
     int remove_audio_mappings(uint16_t desc_type);
     int cmd_set_name(std::string desc_name, uint16_t desc_index, std::string new_name);
+    int cmd_set_clock_source(uint16_t new_clk_src_index);
     int cmd_display_desc_name(avdecc_lib::descriptor_base *desc, uint16_t name_index, bool is_entity);
 
     wxDECLARE_EVENT_TABLE();

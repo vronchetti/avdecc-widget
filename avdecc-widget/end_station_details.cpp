@@ -38,7 +38,7 @@ end_station_details::end_station_details(wxWindow *parent, end_station_configura
                                             wxDefaultPosition,
                                             wxSize(500, 700), wxRESIZE_BORDER);
     wxTimer *details_timer = new wxTimer(this, DetailsTimer);
-    details_timer->Start(2000, wxTIMER_CONTINUOUS);
+    details_timer->Start(500, wxTIMER_CONTINUOUS);
     
     m_stream_input_count = stream_config->get_stream_input_count();
     m_stream_output_count = stream_config->get_stream_output_count();
@@ -54,6 +54,19 @@ end_station_details::end_station_details(wxWindow *parent, end_station_configura
     m_sampling_rate = config->get_sample_rate();
     m_clk_source = config->get_clock_source();
     uint16_t m_clk_source_count = config->get_clock_source_count();
+    
+    for(int i = 0; i < m_clk_source_count; i++)
+    {
+        if(i <= config->clock_source_descriptions.size())
+        {
+            wxString clock_src_description = config->clock_source_descriptions.at(i);
+            m_clock_source_descriptions.push_back(clock_src_description);
+        }
+        else
+        {
+            std::cout << "out of bounds" << std::endl;
+        }
+    }
 
     CreateEndStationDetailsPanel(m_entity_name, m_default_name,
                                  m_sampling_rate, m_entity_id,
@@ -179,8 +192,14 @@ void end_station_details::CreateEndStationDetailsPanel(wxString Entity_Name, wxS
     wxArrayString str2;
     for(unsigned int i = 0; i < clk_source_count; i++)
     {
-        wxString index = wxString::Format("%u", i);
-        str2.Add(index);
+        if(i <= m_clock_source_descriptions.size())
+        {
+            str2.Add(m_clock_source_descriptions.at(i));
+        }
+        else
+        {
+            //errorr
+        }
     }
 
     clock_source = new wxChoice(EndStation_Details_Dialog, wxID_ANY, wxDefaultPosition, wxSize(150,25), str2);
@@ -212,7 +231,7 @@ void end_station_details::CreateEndStationDetailsPanel(wxString Entity_Name, wxS
     Details_Sizer->Add(Sizer7);
 }
 
-void end_station_details::SetChannelChoice(unsigned int stream_input_count, unsigned int stream_output_count)
+void end_station_details::SetChannelChoice(size_t stream_input_count, size_t stream_output_count)
                                             
 {
     wxArrayString str;
@@ -277,10 +296,10 @@ void end_station_details::SetOutputChannelName(unsigned int stream_index, wxStri
     output_stream_grid->SetCellValue(stream_index, 0, name);
 }
 
-void end_station_details::SetInputChannelCount(unsigned int stream_index, unsigned int channel_count,
-                                               unsigned int stream_input_count)
+void end_station_details::SetInputChannelCount(unsigned int stream_index, size_t channel_count,
+                                               size_t stream_input_count)
 {
-    input_stream_grid->SetCellValue(stream_index, 1, wxString::Format("%u-Channel", channel_count));
+    input_stream_grid->SetCellValue(stream_index, 1, wxString::Format("%u-Channel", (int) channel_count));
     
     for(unsigned int i = 0; i < stream_input_count; i++)
     {
@@ -320,10 +339,10 @@ void end_station_details::SetInputChannelCount(unsigned int stream_index, unsign
     }
 }
 
-void end_station_details::SetOutputChannelCount(unsigned int stream_index, unsigned int channel_count,
-                                                unsigned int stream_output_count)
+void end_station_details::SetOutputChannelCount(unsigned int stream_index, size_t channel_count,
+                                                size_t stream_output_count)
 {
-    output_stream_grid->SetCellValue(stream_index, 1, wxString::Format("%u-Channel", channel_count));
+    output_stream_grid->SetCellValue(stream_index, 1, wxString::Format("%u-Channel", (int) channel_count));
     
     for(unsigned int i = 0; i < stream_output_count; i++)
     {
@@ -334,6 +353,69 @@ void end_station_details::SetOutputChannelCount(unsigned int stream_index, unsig
             output_stream_grid->SetColSize(j, 25);
         }
         
+        if(output_stream_grid->GetCellValue(i, 1) == "1-Channel")
+        {
+            for(unsigned int k = 3; k < 10; k++)
+            {
+                output_stream_grid->SetReadOnly(i, k);
+                output_stream_grid->SetCellBackgroundColour(i, k, *wxLIGHT_GREY);
+            }
+        }
+        else if(output_stream_grid->GetCellValue(i, 1) == "2-Channel")
+        {
+            output_stream_grid->SetReadOnly(i, 3, false); //writable
+            output_stream_grid->SetCellBackgroundColour(i, 3, *wxWHITE);
+            for(unsigned int k = 4; k < 10; k++)
+            {
+                output_stream_grid->SetReadOnly(i, k);
+                output_stream_grid->SetCellBackgroundColour(i, k, *wxLIGHT_GREY);
+            }
+        }
+        else
+        {
+            for(unsigned int k = 3; k < 10; k++)
+            {
+                output_stream_grid->SetReadOnly(i, k, false);
+                output_stream_grid->SetCellBackgroundColour(i, k, *wxWHITE);
+            }
+        }
+    }
+}
+
+void end_station_details::UpdateChannelCount()
+{
+    for(unsigned int i = 0; i < m_stream_input_count; i++)
+    {
+        if(input_stream_grid->GetCellValue(i, 1) == "1-Channel")
+        {
+            for(unsigned int k = 3; k < 10; k++)
+            {
+                input_stream_grid->SetReadOnly(i, k);
+                input_stream_grid->SetCellBackgroundColour(i, k, *wxLIGHT_GREY);
+            }
+        }
+        else if(input_stream_grid->GetCellValue(i, 1) == "2-Channel")
+        {
+            input_stream_grid->SetReadOnly(i, 3, false); //writable
+            input_stream_grid->SetCellBackgroundColour(i, 3, *wxWHITE);
+            for(unsigned int k = 4; k < 10; k++)
+            {
+                input_stream_grid->SetReadOnly(i, k);
+                input_stream_grid->SetCellBackgroundColour(i, k, *wxLIGHT_GREY);
+            }
+        }
+        else
+        {
+            for(unsigned int k = 3; k < 10; k++)
+            {
+                input_stream_grid->SetReadOnly(i, k, false);
+                input_stream_grid->SetCellBackgroundColour(i, k, *wxWHITE);
+            }
+        }
+    }
+    
+    for(unsigned int i = 0; i < m_stream_output_count; i++)
+    {
         if(output_stream_grid->GetCellValue(i, 1) == "1-Channel")
         {
             for(unsigned int k = 3; k < 10; k++)
@@ -415,7 +497,7 @@ void end_station_details::CreateOutputStreamGridHeader()
     output_stream_header_sizer->Add(channel8_label);
 }
 
-void end_station_details::CreateAndSizeGrid(unsigned int stream_input_count, unsigned int stream_output_count)
+void end_station_details::CreateAndSizeGrid(size_t stream_input_count, size_t stream_output_count)
 {
     apply_button = new wxButton(EndStation_Details_Dialog, wxID_OK, wxT("Apply"));
     cancel_button = new wxButton(EndStation_Details_Dialog, wxID_CANCEL, wxT("Cancel"));
@@ -439,8 +521,8 @@ void end_station_details::CreateAndSizeGrid(unsigned int stream_input_count, uns
     output_stream_grid->SetRowLabelSize(0);
     output_stream_grid->SetColLabelSize(0);
 
-    grid_base = new wxGridStringTable(stream_input_count, 10);
-    grid_base2 = new wxGridStringTable(stream_output_count, 10);
+    grid_base = new wxGridStringTable((int) stream_input_count, 10);
+    grid_base2 = new wxGridStringTable((int)stream_output_count, 10);
 
     input_stream_grid->SetTable(grid_base);
     output_stream_grid->SetTable(grid_base2);
@@ -470,10 +552,22 @@ void end_station_details::CreateAndSizeGrid(unsigned int stream_input_count, uns
 
 void end_station_details::OnOK()
 {
-    int n = sampling_rate->GetSelection(); //return index
-    uint32_t set_sampling_rate_value = atoi(sampling_rate->GetString(n)); //return dialog sampling_rate
+    if(name->GetNumberOfLines() == 1)
+    {
+        wxString set_entity_name = name->GetLineText(0);
+        m_end_station_config->set_entity_name(set_entity_name);
+    }
+    else
+    {
+        //Set name error
+    }
 
+    int sample_rate_index = sampling_rate->GetSelection(); //return sample rate choice index
+    uint32_t set_sampling_rate_value = atoi(sampling_rate->GetString(sample_rate_index)); //return dialog sampling_rate selection
     m_end_station_config->set_sample_rate(set_sampling_rate_value);
+    
+    uint16_t clock_source_index = (uint16_t) clock_source->GetSelection(); //return clock source choice index
+    m_end_station_config->set_clock_source(clock_source_index); //return dialog clock_source index selection
 
     for(unsigned int i = 0; i < m_stream_input_count; i++)
     {
@@ -567,7 +661,6 @@ void end_station_details::OnOK()
                 //unsupported channel count
                 break;
         }
-
     }
 }
 
@@ -583,16 +676,6 @@ int end_station_details::ShowModal()
 
 void end_station_details::OnIncrementTimer(wxTimerEvent &event)
 {
-    for(unsigned int i = 0; i < m_stream_input_count; i++)
-    {
-        unsigned int input_channel_count = wxAtoi(input_stream_grid->GetCellValue(i, 1));
-        SetInputChannelCount(i, input_channel_count, m_stream_input_count);
-    }
-    
-    for(unsigned int i = 0; i < m_stream_output_count; i++)
-    {
-        unsigned int output_channel_count = wxAtoi(output_stream_grid->GetCellValue(i, 1));
-        SetOutputChannelCount(i, output_channel_count, m_stream_output_count);
-    }
+    UpdateChannelCount();
 }
 

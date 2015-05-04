@@ -28,6 +28,7 @@
 
 #include <stdint.h>
 #include <iostream>
+#include <vector>
 #include <wx/string.h>
 
 class end_station_configuration
@@ -38,6 +39,8 @@ public:
                               uint16_t clk_source, uint16_t clk_source_count);
     virtual ~end_station_configuration();
     
+    std::vector<wxString> clock_source_descriptions;
+    
     wxString get_entity_name();
     wxString get_entity_id();
     wxString get_default_name();
@@ -47,7 +50,8 @@ public:
     uint16_t get_clock_source();
     uint16_t get_clock_source_count();
     int set_sample_rate(uint32_t sampling_rate);
-    int set_clock_source(uint16_t sampling_rate);
+    int set_clock_source(uint16_t clock_source_index);
+    int set_entity_name(wxString entity_name);
 
 private:
     wxString name;

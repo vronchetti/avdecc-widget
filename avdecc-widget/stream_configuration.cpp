@@ -30,19 +30,19 @@
 #include "stream_configuration.h"
 
 
-stream_configuration::stream_configuration(unsigned int stream_input_count, unsigned int stream_output_count)
+stream_configuration::stream_configuration(size_t stream_input_count, size_t stream_output_count)
 {
     m_stream_input_count = stream_input_count;
     m_stream_output_count = stream_output_count;
 }
 stream_configuration::~stream_configuration() {}
 
-unsigned int stream_configuration::get_stream_input_count()
+size_t stream_configuration::get_stream_input_count()
 {
     return m_stream_input_count;
 }
 
-unsigned int stream_configuration::get_stream_output_count()
+size_t stream_configuration::get_stream_output_count()
 {
     return m_stream_output_count;
 }

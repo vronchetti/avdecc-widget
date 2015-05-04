@@ -91,8 +91,14 @@ int end_station_configuration::set_sample_rate(uint32_t sampling_rate)
     return 0;
 }
 
-int end_station_configuration::set_clock_source(uint16_t clk_source)
+int end_station_configuration::set_clock_source(uint16_t clock_source_index)
 {
-    clock_source = clk_source;
+    clock_source = clock_source_index;
+    return 0;
+}
+
+int end_station_configuration::set_entity_name(wxString entity_name)
+{
+    name = entity_name;
     return 0;
 }

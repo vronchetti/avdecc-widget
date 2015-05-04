@@ -63,8 +63,8 @@ public:
     uint32_t m_sampling_rate;
     uint16_t m_clk_source;
 
-    unsigned int m_stream_input_count;
-    unsigned int m_stream_output_count;
+    size_t m_stream_input_count;
+    size_t m_stream_output_count;
     unsigned int m_input_maps_count;
     unsigned int m_output_maps_count;
     
@@ -108,6 +108,8 @@ private:
     wxString m_fw_ver;
     wxString m_entity_name;
     uint64_t channel_count;
+    
+    std::vector<wxString> m_clock_source_descriptions;
 
     //End Station Details sizers
     wxStaticBoxSizer *Details_Sizer;
@@ -122,13 +124,13 @@ private:
                                       wxString Mac, wxString fw_ver, uint16_t clk_source,
                                       uint16_t clk_source_count);
     
-    void CreateAndSizeGrid(unsigned int stream_input_count, unsigned int stream_output_count);
+    void CreateAndSizeGrid(size_t stream_input_count, size_t stream_output_count);
     void OnGridCellChange(wxGridEvent& event);
-    void SetChannelChoice(unsigned int stream_input_count, unsigned int stream_output_count);
-    void SetInputChannelCount(unsigned int stream_index, unsigned int channel_count,
-                              unsigned int stream_input_count);
-    void SetOutputChannelCount(unsigned int stream_index, unsigned int channel_count,
-                               unsigned int stream_input_count);
+    void SetChannelChoice(size_t stream_input_count, size_t stream_output_count);
+    void SetInputChannelCount(unsigned int stream_index, size_t channel_count,
+                              size_t stream_input_count);
+    void SetOutputChannelCount(unsigned int stream_index, size_t channel_count,
+                               size_t stream_input_count);
     
     void SetInputMappings(struct audio_mapping &map);
     void SetOutputMappings(struct audio_mapping &map);
@@ -137,6 +139,7 @@ private:
     void CreateOutputStreamGridHeader();
     void SetInputChannelName(unsigned int stream_index, wxString name);
     void SetOutputChannelName(unsigned int stream_index, wxString name);
+    void UpdateChannelCount();
     wxDECLARE_EVENT_TABLE();
 };
 

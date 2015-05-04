@@ -47,7 +47,7 @@ struct audio_mapping {
 class stream_configuration
 {
 public:
-    stream_configuration(unsigned int stream_input_count, unsigned int stream_output_count);
+    stream_configuration(size_t stream_input_count, size_t stream_output_count);
     virtual ~stream_configuration();
 
     std::vector<struct stream_configuration_details> input_stream_config;
@@ -56,8 +56,8 @@ public:
     std::vector <struct audio_mapping> stream_port_input_audio_mappings;
     std::vector <struct audio_mapping> stream_port_output_audio_mappings;
 
-    unsigned int get_stream_input_count();
-    unsigned int get_stream_output_count();
+    size_t get_stream_input_count();
+    size_t get_stream_output_count();
     size_t get_input_maps_count();
     size_t get_output_maps_count();
 
@@ -65,8 +65,8 @@ public:
     int get_stream_output_details_by_index(unsigned int index, struct stream_configuration_details &stream_details);
 
 private:
-    unsigned int m_stream_input_count;
-    unsigned int m_stream_output_count;
+    size_t m_stream_input_count;
+    size_t m_stream_output_count;
     unsigned int m_input_maps_count;
     unsigned int m_output_maps_count;
 };
