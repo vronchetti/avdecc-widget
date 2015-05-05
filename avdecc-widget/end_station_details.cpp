@@ -57,15 +57,8 @@ end_station_details::end_station_details(wxWindow *parent, end_station_configura
     
     for(int i = 0; i < m_clk_source_count; i++)
     {
-        if(i <= config->clock_source_descriptions.size())
-        {
-            wxString clock_src_description = config->clock_source_descriptions.at(i);
-            m_clock_source_descriptions.push_back(clock_src_description);
-        }
-        else
-        {
-            std::cout << "out of bounds" << std::endl;
-        }
+        wxString clock_src_description = config->clock_source_descriptions.at(i);
+        m_clock_source_descriptions.push_back(clock_src_description);
     }
 
     CreateEndStationDetailsPanel(m_entity_name, m_default_name,
@@ -95,7 +88,7 @@ end_station_details::end_station_details(wxWindow *parent, end_station_configura
     m_input_maps_count = (unsigned int) stream_config->get_input_maps_count();
     m_output_maps_count = (unsigned int) stream_config->get_output_maps_count();
     
-    for(unsigned int i = 0; i < m_output_maps_count; i++)
+    for(unsigned int i = 0; i < m_input_maps_count; i++)
     {
         SetInputMappings(stream_config->stream_port_input_audio_mappings.at(i));
     }
@@ -260,13 +253,12 @@ void end_station_details::SetInputMappings(struct audio_mapping &map)
     int16_t cluster_channel = 0;
     
     stream_index = map.stream_index;
-    stream_channel = map.stream_channel + 2; //to skip the columns containing stream name/channel count
+    stream_channel = map.stream_channel;
     cluster_offset = map.cluster_offset;
     cluster_channel = map.cluster_channel;
     
     wxString cluster_offset_str = wxString::Format(wxT("%i"), cluster_offset);
-    
-    input_stream_grid->SetCellValue(stream_index, stream_channel, cluster_offset_str);
+    input_stream_grid->SetCellValue(stream_index, stream_channel + 2, cluster_offset_str);
 }
 
 void end_station_details::SetOutputMappings(struct audio_mapping &map)
@@ -277,13 +269,12 @@ void end_station_details::SetOutputMappings(struct audio_mapping &map)
     int16_t cluster_channel = 0;
     
     stream_index = map.stream_index;
-    stream_channel = map.stream_channel + 2;
+    stream_channel = map.stream_channel;
     cluster_offset = map.cluster_offset;
     cluster_channel = map.cluster_channel;
     
     wxString cluster_offset_str = wxString::Format(wxT("%i"), cluster_offset);
-    
-    output_stream_grid->SetCellValue(stream_index, stream_channel, cluster_offset_str);
+    output_stream_grid->SetCellValue(stream_index, stream_channel + 2, cluster_offset_str);
 }
 
 void end_station_details::SetInputChannelName(unsigned int stream_index, wxString name)
@@ -576,43 +567,81 @@ void end_station_details::OnOK()
         unsigned int channel_count;
     
         input_stream_details.stream_name = input_stream_grid->GetCellValue(i, 0);
+
         channel_count = wxAtoi(input_stream_grid->GetCellValue(i, 1));
         input_stream_details.channel_count = channel_count;
         
         m_stream_config->input_stream_config.push_back(input_stream_details);
-        
-        switch(channel_count)
+
+        if(i == 0)
         {
-            case 1:
-                input_audio_mapping.cluster_offset = wxAtoi(input_stream_grid->GetCellValue(i, 2));
-                input_audio_mapping.cluster_channel = 0; //cluster only has 1 channel
-                input_audio_mapping.stream_index = (uint16_t) i;
-                input_audio_mapping.stream_channel = 1;
-                m_stream_config->stream_port_input_audio_mappings.push_back(input_audio_mapping);
-                break;
-            case 2:
-                for(unsigned int j = 2; j < 3; j++)
+            //skip
+        }
+        else
+        {
+            switch(channel_count)
+            {
+                case 1:
                 {
-                    input_audio_mapping.cluster_offset = wxAtoi(input_stream_grid->GetCellValue(i, j));
-                    input_audio_mapping.cluster_channel = 0; //cluster only has 1 channel
-                    input_audio_mapping.stream_index = (uint16_t) i;
-                    input_audio_mapping.stream_channel = (j - 1);
-                    m_stream_config->stream_port_input_audio_mappings.push_back(input_audio_mapping);
+                    wxString ret = input_stream_grid->GetCellValue(i, 2);
+                    if(ret == wxEmptyString)
+                    {
+                        //Empty Box
+                    }
+                    else
+                    {
+                        input_audio_mapping.cluster_offset = wxAtoi(input_stream_grid->GetCellValue(i, 2));
+                        input_audio_mapping.cluster_channel = 0; //cluster only has 1 channel
+                        input_audio_mapping.stream_index = (uint16_t) i;
+                        input_audio_mapping.stream_channel = 0;
+                        m_stream_config->stream_port_input_audio_mappings.push_back(input_audio_mapping);
+                    }
+                    break;
                 }
-                break;
-            case 8:
-                for(unsigned int j = 2; j < 9; j++)
+                case 2:
                 {
-                    input_audio_mapping.cluster_offset = wxAtoi(input_stream_grid->GetCellValue(i, j));
-                    input_audio_mapping.cluster_channel = 0; //cluster only has 1 channel
-                    input_audio_mapping.stream_index = (uint16_t) i;
-                    input_audio_mapping.stream_channel = (j - 1);
-                    m_stream_config->stream_port_input_audio_mappings.push_back(input_audio_mapping);
+                    for(unsigned int j = 2; j <= 3; j++)
+                    {
+                        wxString ret = input_stream_grid->GetCellValue(i, j);
+                        if(ret == wxEmptyString)
+                        {
+                            //Empty
+                        }
+                        else
+                        {
+                            input_audio_mapping.cluster_offset = wxAtoi(input_stream_grid->GetCellValue(i, j));
+                            input_audio_mapping.cluster_channel = 0; //cluster only has 1 channel
+                            input_audio_mapping.stream_index = (uint16_t) i;
+                            input_audio_mapping.stream_channel = (j - 2);
+                            m_stream_config->stream_port_input_audio_mappings.push_back(input_audio_mapping);
+                        }
+                    }
+                    break;
                 }
-                break;
-            default:
-                //unsupported channel count
-                break;
+                case 8:
+                {
+                    for(unsigned int j = 2; j <= 9; j++)
+                    {
+                        wxString ret = input_stream_grid->GetCellValue(i, j);
+                        if(ret == wxEmptyString)
+                        {
+                            //Empty
+                        }
+                        else
+                        {
+                            input_audio_mapping.cluster_offset = wxAtoi(input_stream_grid->GetCellValue(i, j));
+                            input_audio_mapping.cluster_channel = 0; //cluster only has 1 channel
+                            input_audio_mapping.stream_index = (uint16_t) i;
+                            input_audio_mapping.stream_channel = (j - 2);
+                            m_stream_config->stream_port_input_audio_mappings.push_back(input_audio_mapping);
+                        }
+                    }
+                    break;
+                }
+                default:
+                    //unsupported channel count
+                    break;
+            }
         }
     }
     
@@ -628,38 +657,75 @@ void end_station_details::OnOK()
 
         m_stream_config->output_stream_config.push_back(output_stream_details);
         
-        switch(channel_count)
+        if(i == 0)
         {
-            case 1:
-                output_audio_mapping.cluster_offset = wxAtoi(output_stream_grid->GetCellValue(i, 2));
-                output_audio_mapping.cluster_channel = 0; //cluster only has 1 channel
-                output_audio_mapping.stream_index = (uint16_t) i;
-                output_audio_mapping.stream_channel = 1;
-                m_stream_config->stream_port_output_audio_mappings.push_back(output_audio_mapping);
-                break;
-            case 2:
-                for(unsigned int j = 2; j < 3; j++)
+            //skip
+        }
+        else
+        {
+            switch(channel_count)
+            {
+                case 1:
                 {
-                    output_audio_mapping.cluster_offset = wxAtoi(output_stream_grid->GetCellValue(i, j));
-                    output_audio_mapping.cluster_channel = 0; //cluster only has 1 channel
-                    output_audio_mapping.stream_index = (uint16_t) i;
-                    output_audio_mapping.stream_channel = (j - 1);
-                    m_stream_config->stream_port_output_audio_mappings.push_back(output_audio_mapping);
+                    wxString ret = output_stream_grid->GetCellValue(i, 2);
+                    if(ret == wxEmptyString)
+                    {
+                        //Empty Box
+                    }
+                    else
+                    {
+                        output_audio_mapping.cluster_offset = wxAtoi(output_stream_grid->GetCellValue(i, 2));
+                        output_audio_mapping.cluster_channel = 0; //cluster only has 1 channel
+                        output_audio_mapping.stream_index = (uint16_t) i;
+                        output_audio_mapping.stream_channel = 0;
+                        m_stream_config->stream_port_output_audio_mappings.push_back(output_audio_mapping);
+                    }
+                    break;
                 }
-                break;
-            case 8:
-                for(unsigned int j = 2; j < 9; j++)
+                case 2:
                 {
-                    output_audio_mapping.cluster_offset = wxAtoi(output_stream_grid->GetCellValue(i, j));
-                    output_audio_mapping.cluster_channel = 0; //cluster only has 1 channel
-                    output_audio_mapping.stream_index = (uint16_t) i;
-                    output_audio_mapping.stream_channel = (j - 1);
-                    m_stream_config->stream_port_output_audio_mappings.push_back(output_audio_mapping);
+                    for(unsigned int j = 2; j <= 3; j++)
+                    {
+                        wxString ret = output_stream_grid->GetCellValue(i, j);
+                        if(ret == wxEmptyString)
+                        {
+                            //Empty
+                        }
+                        else
+                        {
+                            output_audio_mapping.cluster_offset = wxAtoi(output_stream_grid->GetCellValue(i, j));
+                            output_audio_mapping.cluster_channel = 0; //cluster only has 1 channel
+                            output_audio_mapping.stream_index = (uint16_t) i;
+                            output_audio_mapping.stream_channel = (j - 2); //2 columns for name/channel count
+                            m_stream_config->stream_port_output_audio_mappings.push_back(output_audio_mapping);
+                        }
+                    }
+                    break;
                 }
-                break;
-            default:
-                //unsupported channel count
-                break;
+                case 8:
+                {
+                    for(unsigned int j = 2; j <= 9; j++)
+                    {
+                        wxString ret = output_stream_grid->GetCellValue(i, j);
+                        if(ret == wxEmptyString)
+                        {
+                            //Empty
+                        }
+                        else
+                        {
+                            output_audio_mapping.cluster_offset = wxAtoi(output_stream_grid->GetCellValue(i, j));
+                            output_audio_mapping.cluster_channel = 0; //cluster only has 1 channel
+                            output_audio_mapping.stream_index = (uint16_t) i;
+                            output_audio_mapping.stream_channel = (j - 2);
+                            m_stream_config->stream_port_output_audio_mappings.push_back(output_audio_mapping);
+                        }
+                    }
+                    break;
+                }
+                default:
+                    //unsupported channel count
+                    break;
+            }
         }
     }
 }
