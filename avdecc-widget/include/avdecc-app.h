@@ -70,7 +70,6 @@
 #include "enumeration.h"
 #include "util.h"
 
-
 class AtomicOut : public std::ostream
 {
 public:
@@ -103,6 +102,11 @@ public:
     void OnIncrementTimer(wxTimerEvent& event);
 
 private:
+    //avdecc-lib objects
+    avdecc_lib::controller *controller_obj;
+    avdecc_lib::system *sys;
+    avdecc_lib::net_interface *netif;
+    
     //avdecc-app controls
     wxListCtrl * details_list;
     wxTimer * avdecc_app_timer;
@@ -110,8 +114,8 @@ private:
     wxTextCtrl * logs_notifs;
     
     //child class objects
-    stream_configuration * stream_config;
     end_station_configuration * config;
+    stream_configuration * stream_config;
     end_station_details * details;
     
     //avdecc-app methods
@@ -122,52 +126,17 @@ private:
     void PrintAndSelectInterface();
     void CreateEndStationListFormat();
     void CreateEndStationList();
-    
-    int GetEndStationDetails();
-    int GetClockSource();
-    int GetStreamInfo();
-    int GetAudioMappings();
-    int SetSamplingRate();
-    int SetStreamFormatAndName();
-    int SetClockSource();
-    int SetAudioMappings();
-    int SetEntityName();
 
-    //avdecc-lib objects
-    avdecc_lib::controller *controller_obj;
-    avdecc_lib::system *sys;
-    avdecc_lib::net_interface *netif;
-    
     //avdecc-lib variables
     int32_t log_level = avdecc_lib::LOGGING_LEVEL_ERROR;
     intptr_t notification_id;
     size_t m_end_station_count;
     long current_end_station_index;
-
-    uint32_t init_sample_rate;
-    uint16_t init_clock_source;
-    wxString init_entity_name;
-    wxString entity_id;
-    wxString default_name;
-    wxString mac;
-    wxString fw_ver;
-    uint16_t clock_source_count;
     
     //avdecc-lib methods
     uint32_t get_next_notification_id();
     int get_current_entity_and_descriptor(avdecc_lib::end_station *end_station,
                                           avdecc_lib::entity_descriptor **entity, avdecc_lib::configuration_descriptor **configuration);
-    int get_current_end_station_entity_and_descriptor(avdecc_lib::end_station **end_station,
-                                                      avdecc_lib::entity_descriptor **entity, avdecc_lib::configuration_descriptor **configuration);
-    int get_current_end_station(avdecc_lib::end_station **end_station) const;
-    int cmd_set_sampling_rate(uint32_t new_sampling_rate);
-    int cmd_set_stream_format(wxString desc_name, uint16_t desc_index, uint64_t stream_format_index);
-    int add_audio_mappings(uint16_t desc_type);
-    int remove_audio_mappings(uint16_t desc_type);
-    int cmd_set_name(std::string desc_name, uint16_t desc_index, std::string new_name);
-    int cmd_set_clock_source(uint16_t new_clk_src_index);
-    int cmd_display_desc_name(avdecc_lib::descriptor_base *desc, uint16_t name_index, bool is_entity);
-    const uint8_t * LocalizedDescToString(uint16_t local_desc);
 
     wxDECLARE_EVENT_TABLE();
 };
@@ -178,5 +147,5 @@ enum
     EndStationTimer,
     InterfaceSelect,
     TIMER_INCREMENT = 200, //200 ms
-    END_STATION_PROCESS_DELAY = 2000, 
+    END_STATION_PROCESS_DELAY = 2000,
 };

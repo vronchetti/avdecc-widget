@@ -54,7 +54,7 @@
 #include "end_station_configuration.h"
 #include "stream_configuration.h"
 
-class end_station_details : public wxFrame
+class end_station_details : public wxDialog
 {
 public:
     end_station_details(wxWindow *parent, end_station_configuration *config, stream_configuration *stream_config);
@@ -65,22 +65,20 @@ public:
 
     size_t m_stream_input_count;
     size_t m_stream_output_count;
+    size_t m_input_cluster_count;
+    size_t  m_output_cluster_count;
     unsigned int m_input_maps_count;
     unsigned int m_output_maps_count;
     
     //public dialog return methods
-    void OnIncrementTimer(wxTimerEvent& event);
     void OnOK();
     void OnCancel();
-    int ShowModal();
 
     stream_configuration * m_stream_config;
     end_station_configuration * m_end_station_config;
 
 private:
-    //Dialog object
-    wxDialog *EndStation_Details_Dialog;
-    wxAuiManager *aui_manager;
+    wxTimer * details_timer;
     
     //End Station Details objects
     wxTextCtrl *name;
@@ -125,7 +123,7 @@ private:
                                       uint16_t clk_source_count);
     
     void CreateAndSizeGrid(size_t stream_input_count, size_t stream_output_count);
-    void OnGridCellChange(wxGridEvent& event);
+    void OnGridChange(wxGridEvent& event);
     void SetChannelChoice(size_t stream_input_count, size_t stream_output_count);
     void SetInputChannelCount(unsigned int stream_index, size_t channel_count,
                               size_t stream_input_count);
@@ -140,11 +138,14 @@ private:
     void SetInputChannelName(unsigned int stream_index, wxString name);
     void SetOutputChannelName(unsigned int stream_index, wxString name);
     void UpdateChannelCount();
+    int ConvertClusterOffsetToAvdecc(uint16_t user_cluster_offset, uint16_t &avdecc_cluster_offset, wxString stream_type);
     wxDECLARE_EVENT_TABLE();
 };
 
 enum
 {
-    DetailsTimer
+    DetailsTimer,
+    INPUT_GRID_ID,
+    OUTPUT_GRID_ID
 };
 
