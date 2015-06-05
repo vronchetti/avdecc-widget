@@ -190,7 +190,6 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
     {
         details->OnOK();
         std::cout << "Apply" << std::endl;
-        details->Destroy();
     }
     else
     {
@@ -200,6 +199,7 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
     std::cout.rdbuf(sbOld);
 	delete config;
 	delete stream_config;
+    details->Destroy();
     delete details;
 }
 
