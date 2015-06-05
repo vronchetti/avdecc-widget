@@ -30,6 +30,7 @@
 
 wxBEGIN_EVENT_TABLE(end_station_details, wxDialog)
     EVT_GRID_CELL_CHANGED(end_station_details::OnGridChange)
+    EVT_CHOICE(CHANNEL_CHANGE, end_station_details::OnChannelChange)
 wxEND_EVENT_TABLE()
 
 end_station_details::end_station_details(wxWindow *parent, end_station_configuration *config, stream_configuration *stream_config) :
@@ -106,6 +107,9 @@ wxDialog(parent, wxID_ANY, wxT("End Station Configuration"),
         if(m_stream_details.clk_sync_src_flag)
         {
             input_stream_grid->HideRow(i); //Hide Media Clock Input
+            input_stream_name_grid->HideRow(i);
+            wxChoice * channel_count = input_channel_counts.at(i);
+            channel_count->Hide();
         }
     }
     
@@ -117,10 +121,14 @@ wxDialog(parent, wxID_ANY, wxT("End Station Configuration"),
         if(m_stream_details.clk_sync_src_flag)
         {
             output_stream_grid->HideRow(i); //Hide Media Clock Output
+            output_stream_name_grid->HideRow(i);
+            wxChoice * channel_count = output_channel_counts.at(i);
+            channel_count->Hide();
         }
     }
-    
-    this->Show();
+
+    SetSizerAndFit(dialog_sizer);
+    Show();
 }
 
 end_station_details::~end_station_details() {}
@@ -228,17 +236,30 @@ void end_station_details::SetChannelChoice(size_t stream_input_count, size_t str
     str.Add("1-Channel");
     str.Add("2-Channel");
     str.Add("8-Channel");
+
+    input_channel_count_choice_sizer = new wxBoxSizer(wxVERTICAL);
+    output_channel_count_choice_sizer = new wxBoxSizer(wxVERTICAL);
     
-    for(unsigned int j = 0; j < stream_input_count; j++)
+    for(int i = 0; i < stream_input_count; i++)
     {
-        input_channel_choice = new wxGridCellChoiceEditor(str);
-        input_stream_grid->SetCellEditor(j, 1, input_channel_choice);
+        wxChoice * channel_count;
+        
+        channel_count = new wxChoice(this, CHANNEL_CHANGE, wxDefaultPosition,
+                                     wxSize(100, 25), str);
+        
+        input_channel_count_choice_sizer->Add(channel_count);
+        input_channel_counts.push_back(channel_count);
     }
     
-    for(unsigned int j = 0; j < stream_output_count; j++)
+    for(int i = 0; i < stream_output_count; i++)
     {
-        output_channel_choice = new wxGridCellChoiceEditor(str);
-        output_stream_grid->SetCellEditor(j, 1, output_channel_choice);
+        wxChoice * channel_count;
+        
+        channel_count = new wxChoice(this, CHANNEL_CHANGE, wxDefaultPosition,
+                                     wxSize(100, 25), str);
+        
+        output_channel_count_choice_sizer->Add(channel_count);
+        output_channel_counts.push_back(channel_count);
     }
 }
 
@@ -255,7 +276,7 @@ void end_station_details::SetInputMappings(struct audio_mapping &map)
     cluster_channel = map.cluster_channel;
     
     wxString cluster_offset_str = wxString::Format(wxT("%i"), cluster_offset);
-    input_stream_grid->SetCellValue(stream_index, stream_channel + 2, cluster_offset_str);
+    input_stream_grid->SetCellValue(stream_index, stream_channel, cluster_offset_str);
 }
 
 void end_station_details::SetOutputMappings(struct audio_mapping &map)
@@ -271,54 +292,69 @@ void end_station_details::SetOutputMappings(struct audio_mapping &map)
     cluster_channel = map.cluster_channel;
     
     wxString cluster_offset_str = wxString::Format(wxT("%i"), cluster_offset);
-    output_stream_grid->SetCellValue(stream_index, stream_channel + 2, cluster_offset_str);
+    output_stream_grid->SetCellValue(stream_index, stream_channel, cluster_offset_str);
 }
 
 void end_station_details::SetInputChannelName(unsigned int stream_index, wxString name)
 {
-    input_stream_grid->SetCellValue(stream_index, 0, name);
+    //input_stream_grid->SetCellValue(stream_index, 0, name);
+    input_stream_name_grid->SetCellValue(stream_index, 0, name);
 }
 
 void end_station_details::SetOutputChannelName(unsigned int stream_index, wxString name)
 {
-    output_stream_grid->SetCellValue(stream_index, 0, name);
+    //output_stream_grid->SetCellValue(stream_index, 0, name);
+    output_stream_name_grid->SetCellValue(stream_index, 0, name);
 }
 
 void end_station_details::SetInputChannelCount(unsigned int stream_index, size_t channel_count,
                                                size_t stream_input_count)
 {
-    input_stream_grid->SetCellValue(stream_index, 1, wxString::Format("%u-Channel", (int) channel_count));
-    
+    //input_stream_grid->SetCellValue(stream_index, 1, wxString::Format("%u-Channel", (int) channel_count));
+
+    if(channel_count == 1)
+    {
+        input_channel_counts.at(stream_index)->SetSelection(0);
+    }
+    else if(channel_count == 2)
+    {
+        input_channel_counts.at(stream_index)->SetSelection(1);
+    }
+    else
+    {
+        input_channel_counts.at(stream_index)->SetSelection(2);
+    }
+
     for(unsigned int i = 0; i < stream_input_count; i++)
     {
         input_stream_grid->SetRowSize(i, 25);
         
-        for(unsigned int j = 2; j < 10; j++)
+        for(unsigned int j = 0; j < 8; j++)
         {
             input_stream_grid->SetColSize(j, 25);
         }
         
-        if(input_stream_grid->GetCellValue(i, 1) == "1-Channel")
+        if(input_channel_counts.at(i)->GetSelection() == 0) //1 channel
         {
-            for(unsigned int k = 3; k < 10; k++)
+            for(unsigned int k = 1; k < 8; k++)
             {
                 input_stream_grid->SetReadOnly(i, k);
                 input_stream_grid->SetCellBackgroundColour(i, k, *wxLIGHT_GREY);
             }
         }
-        else if(input_stream_grid->GetCellValue(i, 1) == "2-Channel")
+        else if(input_channel_counts.at(i)->GetSelection() == 1) //2 channel
         {
-            input_stream_grid->SetReadOnly(i, 3, false); //writable
-            input_stream_grid->SetCellBackgroundColour(i, 3, *wxWHITE);
-            for(unsigned int k = 4; k < 10; k++)
+            input_stream_grid->SetReadOnly(i, 1, false); //writable
+            input_stream_grid->SetCellBackgroundColour(i, 1, *wxWHITE);
+            for(unsigned int k = 2; k < 8; k++)
             {
                 input_stream_grid->SetReadOnly(i, k);
                 input_stream_grid->SetCellBackgroundColour(i, k, *wxLIGHT_GREY);
             }
         }
-        else
+        else //8 channel
         {
-            for(unsigned int k = 3; k < 10; k++)
+            for(unsigned int k = 1; k < 8; k++)
             {
                 input_stream_grid->SetReadOnly(i, k, false);
                 input_stream_grid->SetCellBackgroundColour(i, k, *wxWHITE);
@@ -330,30 +366,43 @@ void end_station_details::SetInputChannelCount(unsigned int stream_index, size_t
 void end_station_details::SetOutputChannelCount(unsigned int stream_index, size_t channel_count,
                                                 size_t stream_output_count)
 {
-    output_stream_grid->SetCellValue(stream_index, 1, wxString::Format("%u-Channel", (int) channel_count));
+    //output_stream_grid->SetCellValue(stream_index, 1, wxString::Format("%u-Channel", (int) channel_count));
+    
+    if(channel_count == 1)
+    {
+        output_channel_counts.at(stream_index)->SetSelection(0);
+    }
+    else if(channel_count == 2)
+    {
+        output_channel_counts.at(stream_index)->SetSelection(1);
+    }
+    else
+    {
+        output_channel_counts.at(stream_index)->SetSelection(2);
+    }
     
     for(unsigned int i = 0; i < stream_output_count; i++)
     {
         output_stream_grid->SetRowSize(i, 25);
         
-        for(unsigned int j = 2; j < 10; j++)
+        for(unsigned int j = 0; j < 8; j++)
         {
             output_stream_grid->SetColSize(j, 25);
         }
         
-        if(output_stream_grid->GetCellValue(i, 1) == "1-Channel")
+        if(output_channel_counts.at(i)->GetSelection() == 0)
         {
-            for(unsigned int k = 3; k < 10; k++)
+            for(unsigned int k = 1; k < 8; k++)
             {
                 output_stream_grid->SetReadOnly(i, k);
                 output_stream_grid->SetCellBackgroundColour(i, k, *wxLIGHT_GREY);
             }
         }
-        else if(output_stream_grid->GetCellValue(i, 1) == "2-Channel")
+        else if(output_channel_counts.at(i)->GetSelection() == 1)
         {
             output_stream_grid->SetReadOnly(i, 3, false); //writable
             output_stream_grid->SetCellBackgroundColour(i, 3, *wxWHITE);
-            for(unsigned int k = 4; k < 10; k++)
+            for(unsigned int k = 2; k < 8; k++)
             {
                 output_stream_grid->SetReadOnly(i, k);
                 output_stream_grid->SetCellBackgroundColour(i, k, *wxLIGHT_GREY);
@@ -361,7 +410,7 @@ void end_station_details::SetOutputChannelCount(unsigned int stream_index, size_
         }
         else
         {
-            for(unsigned int k = 3; k < 10; k++)
+            for(unsigned int k = 1; k < 8; k++)
             {
                 output_stream_grid->SetReadOnly(i, k, false);
                 output_stream_grid->SetCellBackgroundColour(i, k, *wxWHITE);
@@ -374,19 +423,19 @@ void end_station_details::UpdateChannelCount()
 {
     for(unsigned int i = 0; i < m_stream_input_count; i++)
     {
-        if(input_stream_grid->GetCellValue(i, 1) == "1-Channel")
+        if(input_channel_counts.at(i)->GetSelection() == 0)
         {
-            for(unsigned int k = 3; k < 10; k++)
+            for(unsigned int k = 1; k < 8; k++)
             {
                 input_stream_grid->SetReadOnly(i, k);
                 input_stream_grid->SetCellBackgroundColour(i, k, *wxLIGHT_GREY);
             }
         }
-        else if(input_stream_grid->GetCellValue(i, 1) == "2-Channel")
+        else if(input_channel_counts.at(i)->GetSelection() == 1)
         {
-            input_stream_grid->SetReadOnly(i, 3, false); //writable
-            input_stream_grid->SetCellBackgroundColour(i, 3, *wxWHITE);
-            for(unsigned int k = 4; k < 10; k++)
+            input_stream_grid->SetReadOnly(i, 1, false); //writable
+            input_stream_grid->SetCellBackgroundColour(i, 1, *wxWHITE);
+            for(unsigned int k = 2; k < 8; k++)
             {
                 input_stream_grid->SetReadOnly(i, k);
                 input_stream_grid->SetCellBackgroundColour(i, k, *wxLIGHT_GREY);
@@ -394,7 +443,7 @@ void end_station_details::UpdateChannelCount()
         }
         else
         {
-            for(unsigned int k = 3; k < 10; k++)
+            for(unsigned int k = 1; k < 8; k++)
             {
                 input_stream_grid->SetReadOnly(i, k, false);
                 input_stream_grid->SetCellBackgroundColour(i, k, *wxWHITE);
@@ -404,19 +453,19 @@ void end_station_details::UpdateChannelCount()
     
     for(unsigned int i = 0; i < m_stream_output_count; i++)
     {
-        if(output_stream_grid->GetCellValue(i, 1) == "1-Channel")
+        if(output_channel_counts.at(i)->GetSelection() == 0)
         {
-            for(unsigned int k = 3; k < 10; k++)
+            for(unsigned int k = 1; k < 8; k++)
             {
                 output_stream_grid->SetReadOnly(i, k);
                 output_stream_grid->SetCellBackgroundColour(i, k, *wxLIGHT_GREY);
             }
         }
-        else if(output_stream_grid->GetCellValue(i, 1) == "2-Channel")
+        else if(output_channel_counts.at(i)->GetSelection() == 1)
         {
-            output_stream_grid->SetReadOnly(i, 3, false); //writable
-            output_stream_grid->SetCellBackgroundColour(i, 3, *wxWHITE);
-            for(unsigned int k = 4; k < 10; k++)
+            output_stream_grid->SetReadOnly(i, 1, false); //writable
+            output_stream_grid->SetCellBackgroundColour(i, 1, *wxWHITE);
+            for(unsigned int k = 2; k < 8; k++)
             {
                 output_stream_grid->SetReadOnly(i, k);
                 output_stream_grid->SetCellBackgroundColour(i, k, *wxLIGHT_GREY);
@@ -424,13 +473,16 @@ void end_station_details::UpdateChannelCount()
         }
         else
         {
-            for(unsigned int k = 3; k < 10; k++)
+            for(unsigned int k = 1; k < 8; k++)
             {
                 output_stream_grid->SetReadOnly(i, k, false);
                 output_stream_grid->SetCellBackgroundColour(i, k, *wxWHITE);
             }
         }
     }
+    
+    input_stream_grid->ForceRefresh();
+    output_stream_grid->ForceRefresh();
 }
 
 void end_station_details::CreateInputStreamGridHeader()
@@ -438,7 +490,7 @@ void end_station_details::CreateInputStreamGridHeader()
     input_stream_header_sizer = new wxBoxSizer(wxHORIZONTAL);
     wxStaticText *Name_label = new wxStaticText(this, wxID_ANY, "Stream Input", wxDefaultPosition, wxSize(125,25));
     input_stream_header_sizer->Add(Name_label);
-    wxStaticText *Channel_type = new wxStaticText(this, wxID_ANY, " Channels", wxDefaultPosition, wxSize(85,25));
+    wxStaticText *Channel_type = new wxStaticText(this, wxID_ANY, " Channels", wxDefaultPosition, wxSize(110,25));
     input_stream_header_sizer->Add(Channel_type, wxCENTER);
     
     wxStaticText * channel1_label = new wxStaticText(this, wxID_ANY, "1", wxDefaultPosition, wxSize(25,25));
@@ -464,7 +516,7 @@ void end_station_details::CreateOutputStreamGridHeader()
     output_stream_header_sizer = new wxBoxSizer(wxHORIZONTAL);
     wxStaticText *Name_label = new wxStaticText(this, wxID_ANY, "Stream Output", wxDefaultPosition, wxSize(125,25));
     output_stream_header_sizer->Add(Name_label);
-    wxStaticText *Channel_type = new wxStaticText(this, wxID_ANY, " Channels", wxDefaultPosition, wxSize(85,25));
+    wxStaticText *Channel_type = new wxStaticText(this, wxID_ANY, " Channels", wxDefaultPosition, wxSize(110,25));
     output_stream_header_sizer->Add(Channel_type, wxCENTER);
     
     wxStaticText * channel1_label = new wxStaticText(this, wxID_ANY, "1", wxDefaultPosition, wxSize(25,25));
@@ -493,49 +545,86 @@ void end_station_details::CreateAndSizeGrid(size_t stream_input_count, size_t st
     input_stream_grid = new wxGrid(this, INPUT_GRID_ID, wxDefaultPosition, wxDefaultSize);
     output_stream_grid = new wxGrid(this, OUTPUT_GRID_ID, wxDefaultPosition, wxDefaultSize);
     
-    Input_Stream_Sizer = new wxStaticBoxSizer(wxVERTICAL,
-                                              this, "Input Streams");
-    Output_Stream_Sizer = new wxStaticBoxSizer(wxVERTICAL,
-                                              this, "Output Streams");
+    Input_Stream_Sizer = new wxBoxSizer(wxVERTICAL);
+    Output_Stream_Sizer = new wxBoxSizer(wxVERTICAL);
+    input_stream_name_sizer = new wxBoxSizer(wxHORIZONTAL);
+    output_stream_name_sizer = new wxBoxSizer(wxHORIZONTAL);
     
+    input_stream_name_grid = new wxGrid(this, wxID_ANY, wxDefaultPosition, wxDefaultSize);
+    output_stream_name_grid = new wxGrid(this, wxID_ANY, wxDefaultPosition, wxDefaultSize);
+    
+    input_stream_name_sizer->Add(input_stream_name_grid);
+    output_stream_name_sizer->Add(output_stream_name_grid);
+
     CreateInputStreamGridHeader();
     CreateOutputStreamGridHeader();
     
     input_stream_grid->EnableGridLines();
+    input_stream_name_grid->EnableGridLines();
     input_stream_grid->SetRowLabelSize(0);
+    input_stream_name_grid->SetRowLabelSize(0);
     input_stream_grid->SetColLabelSize(0);
+    input_stream_name_grid->SetColLabelSize(0);
     
     output_stream_grid->EnableGridLines();
+    output_stream_name_grid->EnableGridLines();
     output_stream_grid->SetRowLabelSize(0);
+    output_stream_name_grid->SetRowLabelSize(0);
     output_stream_grid->SetColLabelSize(0);
+    output_stream_name_grid->SetColLabelSize(0);
 
-    grid_base = new wxGridStringTable((int) stream_input_count, 10);
-    grid_base2 = new wxGridStringTable((int)stream_output_count, 10);
+    grid_base = new wxGridStringTable((int) stream_input_count, 8);
+    grid_base2 = new wxGridStringTable((int)stream_output_count, 8);
+    wxGridStringTable *input_name_grid_base = new wxGridStringTable((int) stream_input_count, 1);
+    wxGridStringTable *output_name_grid_base = new wxGridStringTable((int) stream_output_count, 1);
 
     input_stream_grid->SetTable(grid_base);
     output_stream_grid->SetTable(grid_base2);
+    input_stream_name_grid->SetTable(input_name_grid_base);
+    output_stream_name_grid->SetTable(output_name_grid_base);
     SetChannelChoice(stream_input_count, stream_output_count);
 
-    wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+    dialog_sizer = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer *button_sizer = new wxBoxSizer(wxHORIZONTAL);
 
-    sizer->Add(Details_Sizer);
-    Input_Stream_Sizer->Add(input_stream_header_sizer);
+    dialog_sizer->Add(Details_Sizer);
+    dialog_sizer->Add(input_stream_header_sizer);
+    input_stream_name_sizer->Add(input_channel_count_choice_sizer);
+    input_stream_name_sizer->Add(Input_Stream_Sizer);
     Input_Stream_Sizer->Add(input_stream_grid);
-    sizer->Add(Input_Stream_Sizer);
+    dialog_sizer->Add(input_stream_name_sizer);
     
-    Output_Stream_Sizer->Add(output_stream_header_sizer);
+    dialog_sizer->Add(output_stream_header_sizer);
+    output_stream_name_sizer->Add(output_channel_count_choice_sizer);
+    output_stream_name_sizer->Add(Output_Stream_Sizer);
     Output_Stream_Sizer->Add(output_stream_grid);
-    sizer->Add(Output_Stream_Sizer);
+    dialog_sizer->Add(output_stream_name_sizer);
     
     button_sizer->Add(apply_button);
     button_sizer->Add(cancel_button);
-    sizer->Add(button_sizer);
-
-    this->SetSizer(sizer, true);
+    dialog_sizer->Add(button_sizer);
     
     input_stream_grid->SetColSize(0, 130);
+    input_stream_name_grid->SetColSize(0, 130);
+    input_stream_name_grid->SetDefaultRowSize(25);
     output_stream_grid->SetColSize(0, 130);
+    output_stream_name_grid->SetColSize(0, 130);
+    output_stream_name_grid->SetDefaultRowSize(25);
+}
+
+unsigned int end_station_details::index_to_channel_count(unsigned int index)
+{
+    switch(index)
+    {
+        case 0:
+            return 1;
+        case 1:
+            return 2;
+        case 2:
+            return 8;
+        default:
+            return 0;
+    }
 }
 
 void end_station_details::OnOK()
@@ -566,17 +655,15 @@ void end_station_details::OnOK()
         struct stream_configuration_details input_stream_details;
         struct audio_mapping input_audio_mapping;
         unsigned int channel_count;
-    
-        input_stream_details.stream_name = input_stream_grid->GetCellValue(i, 0);
 
-        channel_count = wxAtoi(input_stream_grid->GetCellValue(i, 1));
+        input_stream_details.stream_name = input_stream_name_grid->GetCellValue(i, 0);
+        channel_count = index_to_channel_count(input_channel_counts.at(i)->GetSelection());
         input_stream_details.channel_count = channel_count;
-        
         m_stream_config->dialog_input_stream_config.push_back(input_stream_details);
 
-        if(i == 0)
+        if(!input_stream_grid->IsRowShown(i))
         {
-            //skip
+            //skip media clock
         }
         else
         {
@@ -584,14 +671,14 @@ void end_station_details::OnOK()
             {
                 case 1:
                 {
-                    wxString ret = input_stream_grid->GetCellValue(i, 2);
+                    wxString ret = input_stream_grid->GetCellValue(i, 0);
                     if(ret == wxEmptyString)
                     {
                         //Empty Box
                     }
                     else
                     {
-                        ConvertClusterOffsetToAvdecc(wxAtoi(input_stream_grid->GetCellValue(i, 2)), input_audio_mapping.cluster_offset, "STREAM_INPUT");
+                        ConvertClusterOffsetToAvdecc(wxAtoi(input_stream_grid->GetCellValue(i, 0)), input_audio_mapping.cluster_offset, "STREAM_INPUT");
                         input_audio_mapping.cluster_channel = 0; //cluster only has 1 channel
                         input_audio_mapping.stream_index = (uint16_t) i;
                         input_audio_mapping.stream_channel = 0;
@@ -601,7 +688,7 @@ void end_station_details::OnOK()
                 }
                 case 2:
                 {
-                    for(unsigned int j = 2; j <= 3; j++)
+                    for(unsigned int j = 0; j < 2; j++)
                     {
                         wxString ret = input_stream_grid->GetCellValue(i, j);
                         if(ret == wxEmptyString)
@@ -613,7 +700,7 @@ void end_station_details::OnOK()
                             ConvertClusterOffsetToAvdecc(wxAtoi(input_stream_grid->GetCellValue(i, j)), input_audio_mapping.cluster_offset, "STREAM_INPUT");
                             input_audio_mapping.cluster_channel = 0; //cluster only has 1 channel
                             input_audio_mapping.stream_index = (uint16_t) i;
-                            input_audio_mapping.stream_channel = (j - 2);
+                            input_audio_mapping.stream_channel = j;
                             m_stream_config->dialog_stream_port_input_audio_mappings.push_back(input_audio_mapping);
                         }
                     }
@@ -621,7 +708,7 @@ void end_station_details::OnOK()
                 }
                 case 8:
                 {
-                    for(unsigned int j = 2; j <= 9; j++)
+                    for(unsigned int j = 0; j < 8; j++)
                     {
                         wxString ret = input_stream_grid->GetCellValue(i, j);
                         if(ret == wxEmptyString)
@@ -633,7 +720,7 @@ void end_station_details::OnOK()
                             ConvertClusterOffsetToAvdecc(wxAtoi(input_stream_grid->GetCellValue(i, j)), input_audio_mapping.cluster_offset, "STREAM_INPUT");
                             input_audio_mapping.cluster_channel = 0; //cluster only has 1 channel
                             input_audio_mapping.stream_index = (uint16_t) i;
-                            input_audio_mapping.stream_channel = (j - 2);
+                            input_audio_mapping.stream_channel = j;
                             m_stream_config->dialog_stream_port_input_audio_mappings.push_back(input_audio_mapping);
                         }
                     }
@@ -652,14 +739,12 @@ void end_station_details::OnOK()
         struct audio_mapping output_audio_mapping;
         unsigned int channel_count;
 
-        output_stream_details.stream_name = output_stream_grid->GetCellValue(i, 0);
-        channel_count = wxAtoi(output_stream_grid->GetCellValue(i, 1));
-        std::cout << channel_count << std::endl;
+        output_stream_details.stream_name = output_stream_name_grid->GetCellValue(i, 0);
+        channel_count = index_to_channel_count(output_channel_counts.at(i)->GetSelection());
         output_stream_details.channel_count = channel_count;
-
         m_stream_config->dialog_output_stream_config.push_back(output_stream_details);
         
-        if(i == 0)
+        if(!output_stream_grid->IsRowShown(i))
         {
             //skip
         }
@@ -669,14 +754,14 @@ void end_station_details::OnOK()
             {
                 case 1:
                 {
-                    wxString ret = output_stream_grid->GetCellValue(i, 2);
+                    wxString ret = output_stream_grid->GetCellValue(i, 0);
                     if(ret == wxEmptyString)
                     {
                         //Empty Box
                     }
                     else
                     {
-                        ConvertClusterOffsetToAvdecc(wxAtoi(output_stream_grid->GetCellValue(i, 2)), output_audio_mapping.cluster_offset, "STREAM_OUTPUT");
+                        ConvertClusterOffsetToAvdecc(wxAtoi(output_stream_grid->GetCellValue(i, 0)), output_audio_mapping.cluster_offset, "STREAM_OUTPUT");
                         output_audio_mapping.cluster_channel = 0; //cluster only has 1 channel
                         output_audio_mapping.stream_index = (uint16_t) i;
                         output_audio_mapping.stream_channel = 0;
@@ -686,30 +771,9 @@ void end_station_details::OnOK()
                 }
                 case 2:
                 {
-                    for(unsigned int j = 2; j <= 3; j++)
+                    for(unsigned int j = 0; j < 2; j++)
                     {
                         wxString ret = output_stream_grid->GetCellValue(i, j);
-                        if(ret == wxEmptyString)
-                        {
-                          //  //Empty
-                        }
-                        else
-                        {
-                            ConvertClusterOffsetToAvdecc(wxAtoi(output_stream_grid->GetCellValue(i, j)), output_audio_mapping.cluster_offset, "STREAM_OUTPUT");
-                            output_audio_mapping.cluster_channel = 0; //cluster only has 1 channel
-                            output_audio_mapping.stream_index = (uint16_t) i;
-                            output_audio_mapping.stream_channel = (j - 2); //2 columns for name/channel count
-                            m_stream_config->dialog_stream_port_output_audio_mappings.push_back(output_audio_mapping);
-                        }
-                    }
-                    break;
-                }
-                case 8:
-                {
-                    for(unsigned int j = 2; j <= 9; j++)
-                    {
-                        wxString ret = output_stream_grid->GetCellValue(i, j);
-                        
                         if(ret == wxEmptyString)
                         {
                             //Empty
@@ -719,7 +783,27 @@ void end_station_details::OnOK()
                             ConvertClusterOffsetToAvdecc(wxAtoi(output_stream_grid->GetCellValue(i, j)), output_audio_mapping.cluster_offset, "STREAM_OUTPUT");
                             output_audio_mapping.cluster_channel = 0; //cluster only has 1 channel
                             output_audio_mapping.stream_index = (uint16_t) i;
-                            output_audio_mapping.stream_channel = (j - 2);
+                            output_audio_mapping.stream_channel = j; //2 columns for name/channel count
+                            m_stream_config->dialog_stream_port_output_audio_mappings.push_back(output_audio_mapping);
+                        }
+                    }
+                    break;
+                }
+                case 8:
+                {
+                    for(unsigned int j = 0; j < 8; j++)
+                    {
+                        wxString ret = output_stream_grid->GetCellValue(i, j);
+                        if(ret == wxEmptyString)
+                        {
+                            //Empty
+                        }
+                        else
+                        {
+                            ConvertClusterOffsetToAvdecc(wxAtoi(output_stream_grid->GetCellValue(i, j)), output_audio_mapping.cluster_offset, "STREAM_OUTPUT");
+                            output_audio_mapping.cluster_channel = 0; //cluster only has 1 channel
+                            output_audio_mapping.stream_index = (uint16_t) i;
+                            output_audio_mapping.stream_channel = j;
                             m_stream_config->dialog_stream_port_output_audio_mappings.push_back(output_audio_mapping);
                             
                         }
@@ -745,58 +829,63 @@ void end_station_details::OnCancel()
 
 void end_station_details::OnGridChange(wxGridEvent &event)
 {
-    int row, col, id;
+    int selected_row, selected_col, id;
     std::cout << "change" << std::endl;
-    
-    row = event.GetRow();
-    col = event.GetCol();
-    id = event.GetId();
-    
-    input_stream_grid->SetCellTextColour(row, col, *wxBLACK);
-    output_stream_grid->SetCellTextColour(row, col, *wxBLACK);
 
-    if(col == 1)
+    id = event.GetId();
+    selected_row = event.GetRow();
+    selected_col = event.GetCol();
+
+    if(id == INPUT_GRID_ID)
     {
-        UpdateChannelCount();
-    }
-    else if(col >= 2)
-    {
-        if(id == INPUT_GRID_ID)
+        std::set<int> cluster_offsets;
+        int num_rows = input_stream_grid->GetNumberRows();
+        int num_cols = input_stream_grid->GetNumberCols();
+
+        int val = wxAtoi(input_stream_grid->GetCellValue(selected_row, selected_col));
+        
+        if(val > m_input_cluster_count)
         {
-            if(wxAtoi(input_stream_grid->GetCellValue(row, col)) > m_input_cluster_count)
+            input_stream_grid->SetCellTextColour(selected_row, selected_col, *wxRED);
+        }
+        
+        
+        for(int row = 1; row < num_rows; row++)
+        {
+            for(int col = 0; col < num_cols; col++)
             {
-                input_stream_grid->SetCellTextColour(row, col, *wxRED); 
-            }
-            
-            for(int i = 0; i < input_stream_grid->GetNumberRows(); i++) //duplicate cluster offsets not allowed
-            {
-                for(int j = 0; j < input_stream_grid->GetNumberCols(); j++)
+                if(input_stream_grid->GetCellValue(row, col) != wxEmptyString)
                 {
-                    if(row == i && col == j)
+                    int val = wxAtoi(input_stream_grid->GetCellValue(row, col));
+                    
+                    std::set<int>::iterator it = cluster_offsets.find(val);
+                    if(it == cluster_offsets.end() && val <= m_input_cluster_count)
                     {
-                        continue;
+                        cluster_offsets.insert(val);
+                        input_stream_grid->SetCellTextColour(row, col, *wxBLACK);
                     }
                     else
                     {
-                        if(input_stream_grid->GetCellValue(row, col).IsSameAs(input_stream_grid->GetCellValue(i,j)))
-                        {
-                            input_stream_grid->SetCellTextColour(row, col, *wxRED);
-                        }
+                        input_stream_grid->SetCellTextColour(row, col, *wxRED);
                     }
                 }
             }
         }
-        else if(id == OUTPUT_GRID_ID)
+    }
+    else if(id == OUTPUT_GRID_ID)
+    {
+        if(wxAtoi(output_stream_grid->GetCellValue(selected_row, selected_col)) > m_output_cluster_count)
         {
-            if(wxAtoi(output_stream_grid->GetCellValue(row, col)) > m_output_cluster_count)
-            {
-                output_stream_grid->SetCellTextColour(row, col, *wxRED);
-            }
+            output_stream_grid->SetCellTextColour(selected_row, selected_col, *wxRED);
+        }
+        else
+        {
+            output_stream_grid->SetCellTextColour(selected_row, selected_col, *wxBLACK);
         }
     }
     else
     {
-        //stream name change handled
+        //unsupported
     }
 }
 
@@ -828,4 +917,7 @@ int end_station_details::ConvertClusterOffsetToAvdecc(uint16_t user_cluster_offs
     return 0;
 }
 
-
+void end_station_details::OnChannelChange(wxCommandEvent &event)
+{
+    UpdateChannelCount();
+}

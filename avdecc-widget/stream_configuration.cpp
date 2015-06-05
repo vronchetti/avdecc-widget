@@ -606,14 +606,14 @@ int stream_configuration::SetAudioMappings()
                     }
                 }
                 
-                if(added_input_audio_map.cluster_offset > 0 && added_input_audio_map.cluster_offset <
+                if(added_input_audio_map.cluster_offset >= 0 && added_input_audio_map.cluster_offset <
                    m_stream_input_cluster_count && !duplicate_cluster_offset_found)
                 {
                     stream_port_input_desc_ref->store_pending_map(added_input_audio_map);
                 }
                 else
                 {
-                    std::cout << "not sending bad mapping" << std::endl;
+                    std::cout << "not sending bad input mapping" << std::endl;
                 }
             }
         }
@@ -650,7 +650,7 @@ int stream_configuration::SetAudioMappings()
                 added_output_audio_map.cluster_offset = dialog_mapping.cluster_offset;
                 added_output_audio_map.cluster_channel = dialog_mapping.cluster_channel;
                 
-                if(added_output_audio_map.cluster_offset > 0 && added_output_audio_map.cluster_offset <
+                if(added_output_audio_map.cluster_offset >= m_stream_input_cluster_count && added_output_audio_map.cluster_offset <
                    m_stream_input_cluster_count + m_stream_output_cluster_count)
                 {
                     stream_port_output_desc_ref->store_pending_map(added_output_audio_map);

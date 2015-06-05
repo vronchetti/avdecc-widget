@@ -54,6 +54,7 @@ AVDECC_Controller::AVDECC_Controller()
     CreateController();
     PrintAndSelectInterface();
     CreateEndStationListFormat();
+    SetSizerAndFit(app_sizer);
 }
 
 AVDECC_Controller::~AVDECC_Controller()
@@ -306,18 +307,17 @@ void AVDECC_Controller::CreateEndStationListFormat()
     col4.SetWidth(150);
     details_list->InsertColumn(4, col4);
     
-    wxBoxSizer * sizer1 = new wxBoxSizer(wxVERTICAL);
+    app_sizer = new wxBoxSizer(wxVERTICAL);
     wxStaticBoxSizer *sizer4 = new wxStaticBoxSizer(wxVERTICAL, this, "Messages");
     sizer4->Add(logs_notifs);
     wxStaticBoxSizer *sizer3 = new wxStaticBoxSizer(wxVERTICAL, this, "Select Interface");
     sizer3->Add(interface_choice);
     wxStaticBoxSizer *sizer2 = new wxStaticBoxSizer(wxVERTICAL, this, "End Station List");
     sizer2->Add(details_list, 1, wxGROW);
-    sizer1->Add(sizer3);
-    sizer1->Add(sizer2);
-    sizer1->Add(sizer4);
+    app_sizer->Add(sizer3);
+    app_sizer->Add(sizer2);
+    app_sizer->Add(sizer4);
 
-    SetSizer(sizer1);
 }
 
 uint32_t AVDECC_Controller::get_next_notification_id()

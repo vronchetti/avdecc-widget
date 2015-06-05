@@ -25,6 +25,8 @@
  * end_station_details.h
  */
 
+#include <set>
+
 #include <wx/aui/framemanager.h>
 #include "wx/wxprec.h"
 #include "wx/app.h"
@@ -70,6 +72,8 @@ public:
     unsigned int m_input_maps_count;
     unsigned int m_output_maps_count;
     
+    
+    void OnChannelChange(wxCommandEvent& event);
     //public dialog return methods
     void OnOK();
     void OnCancel();
@@ -93,7 +97,9 @@ private:
     wxButton * cancel_button;
 
     wxGrid * input_stream_grid;
+    wxGrid * input_stream_name_grid;
     wxGrid * output_stream_grid;
+    wxGrid * output_stream_name_grid;
     wxGridCellChoiceEditor *input_channel_choice;
     wxGridCellChoiceEditor *output_channel_choice;
     wxGridStringTable *grid_base;
@@ -106,15 +112,24 @@ private:
     wxString m_fw_ver;
     wxString m_entity_name;
     uint64_t channel_count;
-    
+
     std::vector<wxString> m_clock_source_descriptions;
+    std::vector<wxChoice *> input_channel_counts;
+    std::vector<wxChoice *> output_channel_counts;
 
     //End Station Details sizers
     wxStaticBoxSizer *Details_Sizer;
-    wxStaticBoxSizer *Input_Stream_Sizer;
+    wxBoxSizer * Input_Stream_Sizer;
     wxBoxSizer * input_stream_header_sizer;
-    wxStaticBoxSizer *Output_Stream_Sizer;
+    wxBoxSizer * Output_Stream_Sizer;
     wxBoxSizer * output_stream_header_sizer;
+    
+    wxBoxSizer * input_stream_name_sizer;
+    wxBoxSizer * output_stream_name_sizer;
+    wxBoxSizer * input_channel_count_choice_sizer;
+    wxBoxSizer * output_channel_count_choice_sizer;
+    
+    wxBoxSizer *dialog_sizer;
     
     //Class methods
     void CreateEndStationDetailsPanel(wxString Entity_Name, wxString Default_Name,
@@ -139,6 +154,7 @@ private:
     void SetOutputChannelName(unsigned int stream_index, wxString name);
     void UpdateChannelCount();
     int ConvertClusterOffsetToAvdecc(uint16_t user_cluster_offset, uint16_t &avdecc_cluster_offset, wxString stream_type);
+    unsigned int index_to_channel_count(unsigned int index);
     wxDECLARE_EVENT_TABLE();
 };
 
@@ -146,6 +162,7 @@ enum
 {
     DetailsTimer,
     INPUT_GRID_ID,
-    OUTPUT_GRID_ID
+    OUTPUT_GRID_ID,
+    CHANNEL_CHANGE
 };
 

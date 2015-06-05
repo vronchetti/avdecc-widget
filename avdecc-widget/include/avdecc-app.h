@@ -113,6 +113,8 @@ private:
     wxChoice * interface_choice;
     wxTextCtrl * logs_notifs;
     
+    wxBoxSizer * app_sizer;
+    
     //child class objects
     end_station_configuration * config;
     stream_configuration * stream_config;
