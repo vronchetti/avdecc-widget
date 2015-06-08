@@ -58,8 +58,11 @@ wxDialog(parent, wxID_ANY, wxT("End Station Configuration"),
     
     for(int i = 0; i < m_clk_source_count; i++)
     {
-        wxString clock_src_description = config->clock_source_descriptions.at(i);
-        m_clock_source_descriptions.push_back(clock_src_description);
+        if(config->clock_source_descriptions.size() > i)
+        {
+            wxString clock_src_description = config->clock_source_descriptions.at(i);
+            m_clock_source_descriptions.push_back(clock_src_description);
+        }
     }
 
     CreateEndStationDetailsPanel(m_entity_name, m_default_name,
@@ -188,16 +191,9 @@ void end_station_details::CreateEndStationDetailsPanel(wxString Entity_Name, wxS
     Sizer3->Add(sampling_rate);
     
     wxArrayString str2;
-    for(unsigned int i = 0; i < clk_source_count; i++)
+    for(unsigned int i = 0; i < m_clock_source_descriptions.size(); i++)
     {
-        if(i <= m_clock_source_descriptions.size())
-        {
-            str2.Add(m_clock_source_descriptions.at(i));
-        }
-        else
-        {
-            //errorr
-        }
+        str2.Add(m_clock_source_descriptions.at(i));
     }
 
     clock_source = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxSize(150,25), str2);
@@ -674,7 +670,11 @@ void end_station_details::OnOK()
                     wxString ret = input_stream_grid->GetCellValue(i, 0);
                     if(ret == wxEmptyString)
                     {
-                        //Empty Box
+                        //skip
+                    }
+                    else if (input_stream_grid->GetCellTextColour(i, 0) == *wxRED)
+                    {
+                        std::cout << "entered invalid cluster" << std::endl;
                     }
                     else
                     {
@@ -695,6 +695,10 @@ void end_station_details::OnOK()
                         {
                             //Empty
                         }
+                        else if (input_stream_grid->GetCellTextColour(i, j) == *wxRED)
+                        {
+                            std::cout << "entered invalid cluster" << std::endl;
+                        }
                         else
                         {
                             ConvertClusterOffsetToAvdecc(wxAtoi(input_stream_grid->GetCellValue(i, j)), input_audio_mapping.cluster_offset, "STREAM_INPUT");
@@ -714,6 +718,10 @@ void end_station_details::OnOK()
                         if(ret == wxEmptyString)
                         {
                             //Empty
+                        }
+                        else if (input_stream_grid->GetCellTextColour(i, j) == *wxRED)
+                        {
+                            std::cout << "entered invalid cluster" << std::endl;
                         }
                         else
                         {
@@ -759,6 +767,10 @@ void end_station_details::OnOK()
                     {
                         //Empty Box
                     }
+                    else if (output_stream_grid->GetCellTextColour(i, 0) == *wxRED)
+                    {
+                        std::cout << "entered invalid cluster" << std::endl;
+                    }
                     else
                     {
                         ConvertClusterOffsetToAvdecc(wxAtoi(output_stream_grid->GetCellValue(i, 0)), output_audio_mapping.cluster_offset, "STREAM_OUTPUT");
@@ -777,6 +789,10 @@ void end_station_details::OnOK()
                         if(ret == wxEmptyString)
                         {
                             //Empty
+                        }
+                        else if (output_stream_grid->GetCellTextColour(i, j) == *wxRED)
+                        {
+                            std::cout << "entered invalid cluster" << std::endl;
                         }
                         else
                         {
@@ -797,6 +813,10 @@ void end_station_details::OnOK()
                         if(ret == wxEmptyString)
                         {
                             //Empty
+                        }
+                        else if (output_stream_grid->GetCellTextColour(i, j) == *wxRED)
+                        {
+                            std::cout << "entered invalid cluster" << std::endl;
                         }
                         else
                         {

@@ -564,7 +564,6 @@ int stream_configuration::SetAudioMappings()
         for(size_t it = 0; it < this->dialog_stream_port_input_audio_mappings.size(); it++)
         {
             bool dialog_input_mapping_found = false;
-            bool duplicate_cluster_offset_found = false;
 
             struct audio_mapping dialog_mapping;
             
@@ -593,21 +592,9 @@ int stream_configuration::SetAudioMappings()
                 added_input_audio_map.stream_channel = dialog_mapping.stream_channel;
                 added_input_audio_map.cluster_offset = dialog_mapping.cluster_offset;
                 added_input_audio_map.cluster_channel = dialog_mapping.cluster_channel;
-                
-                for(size_t j = 0; j < this->avdecc_stream_port_input_audio_mappings.size(); j++)
-                {
-                    struct audio_mapping avdecc_mapping;
-                    
-                    avdecc_mapping = this->avdecc_stream_port_input_audio_mappings.at(j);
-                    
-                    if(added_input_audio_map.cluster_offset == avdecc_mapping.cluster_offset)
-                    {
-                        duplicate_cluster_offset_found = true;
-                    }
-                }
-                
+
                 if(added_input_audio_map.cluster_offset >= 0 && added_input_audio_map.cluster_offset <
-                   m_stream_input_cluster_count && !duplicate_cluster_offset_found)
+                   m_stream_input_cluster_count)
                 {
                     stream_port_input_desc_ref->store_pending_map(added_input_audio_map);
                 }

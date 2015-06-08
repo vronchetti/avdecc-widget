@@ -74,7 +74,7 @@ int end_station_configuration::FillEndStationDetails()
     if(clk_domain_desc)
     {
         avdecc_lib::clock_domain_descriptor_response *clk_domain_resp_ref = clk_domain_desc->get_clock_domain_response();
-        clock_source= clk_domain_resp_ref->get_clock_source_by_index(clk_domain_resp_ref->clock_source_index());
+        clock_source = clk_domain_resp_ref->get_clock_source_by_index(clk_domain_resp_ref->clock_source_index());
         clock_source_count = clk_domain_resp_ref->clock_sources_count();
         delete clk_domain_resp_ref;
     }
@@ -84,21 +84,29 @@ int end_station_configuration::FillEndStationDetails()
         avdecc_lib::clock_source_descriptor *clk_src_desc = configuration->get_clock_source_desc_by_index(i);
         if(clk_src_desc)
         {
+            avdecc_lib::clock_source_descriptor_response *clk_src_resp_ref = clk_src_desc->get_clock_source_response();
+            uint8_t * clk_src_name = clk_src_resp_ref->object_name();
+            uint8_t * clk_src_description;
             size_t string_desc_index;
             size_t string_index;
-            avdecc_lib::clock_source_descriptor_response *clk_src_resp_ref = clk_src_desc->get_clock_source_response();
-            
-            int ret = configuration->get_strings_desc_string_by_reference(clk_src_resp_ref->localized_description(),
-                                                                          string_desc_index, string_index);
-            if(ret == 0)
+            if(clk_src_name[0] == '\0')
             {
-                avdecc_lib::strings_descriptor *strings_desc = configuration->get_strings_desc_by_index(string_desc_index);
-                avdecc_lib::strings_descriptor_response *strings_resp_ref = strings_desc->get_strings_response();
-                
-                clock_source_descriptions.push_back(strings_resp_ref->get_string_by_index(string_index));
-                delete strings_resp_ref;
+                int ret = configuration->get_strings_desc_string_by_reference(clk_src_resp_ref->localized_description(),
+                                                                              string_desc_index, string_index);
+                if(ret == 0)
+                {
+                    avdecc_lib::strings_descriptor * desc = configuration->get_strings_desc_by_index(string_desc_index);
+                    avdecc_lib::strings_descriptor_response *strings_resp_ref = desc->get_strings_response();
+                    clk_src_description = strings_resp_ref->get_string_by_index(string_index);
+                    delete strings_resp_ref;
+                }
+            }
+            else
+            {
+                clk_src_description = clk_src_name;
             }
             
+            clock_source_descriptions.push_back(clk_src_description);
             delete clk_src_resp_ref;
         }
         else
@@ -106,7 +114,6 @@ int end_station_configuration::FillEndStationDetails()
             std::cout << "get clock_source desc error" << std::endl;
         }
     }
-    
     return 0;
 }
 
