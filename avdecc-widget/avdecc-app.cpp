@@ -65,7 +65,7 @@ AVDECC_Controller::~AVDECC_Controller()
     netif->destroy();
     avdecc_app_timer->Stop();
     delete wxLog::SetActiveTarget(NULL);
-    //Destroy();
+    Destroy();
 }
 
 void AVDECC_Controller::SetTimer()

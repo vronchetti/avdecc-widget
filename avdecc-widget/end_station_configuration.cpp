@@ -98,15 +98,16 @@ int end_station_configuration::FillEndStationDetails()
                     avdecc_lib::strings_descriptor * desc = configuration->get_strings_desc_by_index(string_desc_index);
                     avdecc_lib::strings_descriptor_response *strings_resp_ref = desc->get_strings_response();
                     clk_src_description = strings_resp_ref->get_string_by_index(string_index);
+					clock_source_descriptions.push_back(clk_src_description);
                     delete strings_resp_ref;
                 }
             }
             else
             {
                 clk_src_description = clk_src_name;
+				clock_source_descriptions.push_back(clk_src_description);
             }
-            
-            clock_source_descriptions.push_back(clk_src_description);
+
             delete clk_src_resp_ref;
         }
         else

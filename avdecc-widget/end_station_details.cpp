@@ -56,7 +56,7 @@ wxDialog(parent, wxID_ANY, wxT("End Station Configuration"),
     m_clk_source = config->get_clock_source();
     uint16_t m_clk_source_count = config->get_clock_source_count();
     
-    for(int i = 0; i < m_clk_source_count; i++)
+    for(size_t i = 0; i < m_clk_source_count; i++)
     {
         if(config->clock_source_descriptions.size() > i)
         {
@@ -236,7 +236,7 @@ void end_station_details::SetChannelChoice(size_t stream_input_count, size_t str
     input_channel_count_choice_sizer = new wxBoxSizer(wxVERTICAL);
     output_channel_count_choice_sizer = new wxBoxSizer(wxVERTICAL);
     
-    for(int i = 0; i < stream_input_count; i++)
+    for(size_t i = 0; i < stream_input_count; i++)
     {
         wxChoice * channel_count;
         
@@ -247,7 +247,7 @@ void end_station_details::SetChannelChoice(size_t stream_input_count, size_t str
         input_channel_counts.push_back(channel_count);
     }
     
-    for(int i = 0; i < stream_output_count; i++)
+    for(size_t i = 0; i < stream_output_count; i++)
     {
         wxChoice * channel_count;
         
@@ -293,21 +293,17 @@ void end_station_details::SetOutputMappings(struct audio_mapping &map)
 
 void end_station_details::SetInputChannelName(unsigned int stream_index, wxString name)
 {
-    //input_stream_grid->SetCellValue(stream_index, 0, name);
     input_stream_name_grid->SetCellValue(stream_index, 0, name);
 }
 
 void end_station_details::SetOutputChannelName(unsigned int stream_index, wxString name)
 {
-    //output_stream_grid->SetCellValue(stream_index, 0, name);
     output_stream_name_grid->SetCellValue(stream_index, 0, name);
 }
 
 void end_station_details::SetInputChannelCount(unsigned int stream_index, size_t channel_count,
                                                size_t stream_input_count)
 {
-    //input_stream_grid->SetCellValue(stream_index, 1, wxString::Format("%u-Channel", (int) channel_count));
-
     if(channel_count == 1)
     {
         input_channel_counts.at(stream_index)->SetSelection(0);
@@ -362,8 +358,6 @@ void end_station_details::SetInputChannelCount(unsigned int stream_index, size_t
 void end_station_details::SetOutputChannelCount(unsigned int stream_index, size_t channel_count,
                                                 size_t stream_output_count)
 {
-    //output_stream_grid->SetCellValue(stream_index, 1, wxString::Format("%u-Channel", (int) channel_count));
-    
     if(channel_count == 1)
     {
         output_channel_counts.at(stream_index)->SetSelection(0);
@@ -864,7 +858,7 @@ void end_station_details::OnGridChange(wxGridEvent &event)
 
         int val = wxAtoi(input_stream_grid->GetCellValue(selected_row, selected_col));
         
-        if(val > m_input_cluster_count)
+        if(val > (int) m_input_cluster_count)
         {
             input_stream_grid->SetCellTextColour(selected_row, selected_col, *wxRED);
         }
@@ -879,7 +873,7 @@ void end_station_details::OnGridChange(wxGridEvent &event)
                     int val = wxAtoi(input_stream_grid->GetCellValue(row, col));
                     
                     std::set<int>::iterator it = cluster_offsets.find(val);
-                    if(it == cluster_offsets.end() && val <= m_input_cluster_count)
+                    if(it == cluster_offsets.end() && val <= (int) m_input_cluster_count)
                     {
                         cluster_offsets.insert(val);
                         input_stream_grid->SetCellTextColour(row, col, *wxBLACK);
@@ -894,7 +888,7 @@ void end_station_details::OnGridChange(wxGridEvent &event)
     }
     else if(id == OUTPUT_GRID_ID)
     {
-        if(wxAtoi(output_stream_grid->GetCellValue(selected_row, selected_col)) > m_output_cluster_count)
+        if(wxAtoi(output_stream_grid->GetCellValue(selected_row, selected_col)) > (int) m_output_cluster_count)
         {
             output_stream_grid->SetCellTextColour(selected_row, selected_col, *wxRED);
         }
@@ -907,6 +901,9 @@ void end_station_details::OnGridChange(wxGridEvent &event)
     {
         //unsupported
     }
+
+	input_stream_grid->ForceRefresh();
+	output_stream_grid->ForceRefresh();
 }
 
 int end_station_details::ConvertClusterOffsetToAvdecc(uint16_t user_cluster_offset, uint16_t &avdecc_cluster_offset, wxString stream_type)
