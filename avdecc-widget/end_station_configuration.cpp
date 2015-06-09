@@ -184,7 +184,7 @@ int end_station_configuration::SetSamplingRate()
     }
     else
     {
-        std::cout << "sampling rate unchanged" << std::endl;
+        //unchanged
     }
     return 0;
 }
@@ -215,7 +215,7 @@ int end_station_configuration::SetEntityName()
 {
     if(name.IsSameAs(dialog_name))
     {
-        std::cout << "entity name unchanged" << std::endl;
+        //unchanged
     }
     else
     {
@@ -292,7 +292,7 @@ int end_station_configuration::SetClockSource()
     }
     else
     {
-        std::cout << "clock source unchanged" << std::endl;
+        //unchanged
     }
     return 0;
 }

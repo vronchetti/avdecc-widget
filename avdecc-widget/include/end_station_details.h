@@ -82,9 +82,9 @@ public:
     end_station_configuration * m_end_station_config;
 
 private:
-    wxTimer * details_timer;
-    
-    //End Station Details objects
+	bool invalid;
+	const wxColour my_green = wxColour(180, 255, 170);
+	const wxColour my_red = wxColour(255, 100, 100);
     wxTextCtrl *name;
     wxTextCtrl *default_name;
     wxChoice *sampling_rate;
@@ -153,6 +153,7 @@ private:
     void SetInputChannelName(unsigned int stream_index, wxString name);
     void SetOutputChannelName(unsigned int stream_index, wxString name);
     void UpdateChannelCount();
+	void CheckValid();
     int ConvertClusterOffsetToAvdecc(uint16_t user_cluster_offset, uint16_t &avdecc_cluster_offset, wxString stream_type);
     unsigned int index_to_channel_count(unsigned int index);
     wxDECLARE_EVENT_TABLE();

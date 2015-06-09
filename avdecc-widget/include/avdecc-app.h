@@ -132,7 +132,6 @@ private:
     //avdecc-lib variables
     int32_t log_level = avdecc_lib::LOGGING_LEVEL_ERROR;
     intptr_t notification_id;
-    size_t m_end_station_count;
     long current_end_station_index;
     
     //avdecc-lib methods

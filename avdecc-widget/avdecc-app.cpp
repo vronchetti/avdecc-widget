@@ -64,7 +64,6 @@ AVDECC_Controller::~AVDECC_Controller()
     controller_obj->destroy();
     netif->destroy();
     avdecc_app_timer->Stop();
-    delete wxLog::SetActiveTarget(NULL);
     Destroy();
 }
 
@@ -81,7 +80,6 @@ void AVDECC_Controller::CreateLogging()
 
 void AVDECC_Controller::CreateController()
 {
-    m_end_station_count = 0;
     notification_id = 1;
     netif = avdecc_lib::create_net_interface();
     controller_obj = avdecc_lib::create_controller(netif, notification_callback, log_callback, log_level);
@@ -124,7 +122,6 @@ void AVDECC_Controller::CreateEndStationList()
             details_list->SetItem(i, 4, wxString::Format("%llx",end_station_mac));
             delete ent_desc_resp;
         }
-        m_end_station_count++;
     }
 }
 
@@ -206,16 +203,6 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
 
 void AVDECC_Controller::OnIncrementTimer(wxTimerEvent& event)
 {
-    if(m_end_station_count < controller_obj->get_end_station_count())
-    {
-        details_list->DeleteAllItems();
-        CreateEndStationList();
-    }
-    else
-    {
-        //no added end stations found
-    }
-    
     std::streambuf *sbOld = std::cout.rdbuf();
     std::cout.rdbuf(logs_notifs);
     

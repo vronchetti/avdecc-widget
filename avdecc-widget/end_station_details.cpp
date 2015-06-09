@@ -273,6 +273,7 @@ void end_station_details::SetInputMappings(struct audio_mapping &map)
     
     wxString cluster_offset_str = wxString::Format(wxT("%i"), cluster_offset);
     input_stream_grid->SetCellValue(stream_index, stream_channel, cluster_offset_str);
+	input_stream_grid->SetCellBackgroundColour(stream_index, stream_channel, my_green);
 }
 
 void end_station_details::SetOutputMappings(struct audio_mapping &map)
@@ -289,6 +290,7 @@ void end_station_details::SetOutputMappings(struct audio_mapping &map)
     
     wxString cluster_offset_str = wxString::Format(wxT("%i"), cluster_offset);
     output_stream_grid->SetCellValue(stream_index, stream_channel, cluster_offset_str);
+	output_stream_grid->SetCellBackgroundColour(stream_index, stream_channel, my_green);
 }
 
 void end_station_details::SetInputChannelName(unsigned int stream_index, wxString name)
@@ -328,6 +330,8 @@ void end_station_details::SetInputChannelCount(unsigned int stream_index, size_t
         
         if(input_channel_counts.at(i)->GetSelection() == 0) //1 channel
         {
+			input_stream_grid->SetCellValue(i, 0, wxT("0"));
+
             for(unsigned int k = 1; k < 8; k++)
             {
                 input_stream_grid->SetReadOnly(i, k);
@@ -338,20 +342,35 @@ void end_station_details::SetInputChannelCount(unsigned int stream_index, size_t
         {
             input_stream_grid->SetReadOnly(i, 1, false); //writable
             input_stream_grid->SetCellBackgroundColour(i, 1, *wxWHITE);
+
+			for (unsigned int k = 0; k < 2; k++)
+			{
+				input_stream_grid->SetCellValue(i, k, wxT("0"));
+			}
+
             for(unsigned int k = 2; k < 8; k++)
             {
                 input_stream_grid->SetReadOnly(i, k);
                 input_stream_grid->SetCellBackgroundColour(i, k, *wxLIGHT_GREY);
             }
         }
-        else //8 channel
+		else if(input_channel_counts.at(i)->GetSelection() == 2) //2 channel
         {
+			for (unsigned int k = 0; k < 8; k++)
+			{
+				input_stream_grid->SetCellValue(i, k, wxT("0"));
+			}
+
             for(unsigned int k = 1; k < 8; k++)
             {
                 input_stream_grid->SetReadOnly(i, k, false);
                 input_stream_grid->SetCellBackgroundColour(i, k, *wxWHITE);
             }
         }
+		else
+		{
+			//unsupported
+		}
     }
 }
 
@@ -382,6 +401,8 @@ void end_station_details::SetOutputChannelCount(unsigned int stream_index, size_
         
         if(output_channel_counts.at(i)->GetSelection() == 0)
         {
+			output_stream_grid->SetCellValue(i, 0, wxT("0"));
+
             for(unsigned int k = 1; k < 8; k++)
             {
                 output_stream_grid->SetReadOnly(i, k);
@@ -392,20 +413,35 @@ void end_station_details::SetOutputChannelCount(unsigned int stream_index, size_
         {
             output_stream_grid->SetReadOnly(i, 3, false); //writable
             output_stream_grid->SetCellBackgroundColour(i, 3, *wxWHITE);
+
+			for (unsigned int k = 0; k < 2; k++)
+			{
+				output_stream_grid->SetCellValue(i, k, wxT("0"));
+			}
+
             for(unsigned int k = 2; k < 8; k++)
             {
                 output_stream_grid->SetReadOnly(i, k);
                 output_stream_grid->SetCellBackgroundColour(i, k, *wxLIGHT_GREY);
             }
         }
-        else
+		else if(output_channel_counts.at(i)->GetSelection() == 2) //2 channel
         {
+			for (unsigned int k = 0; k < 8; k++)
+			{
+				output_stream_grid->SetCellValue(i, k, wxT("0"));
+			}
+
             for(unsigned int k = 1; k < 8; k++)
             {
                 output_stream_grid->SetReadOnly(i, k, false);
                 output_stream_grid->SetCellBackgroundColour(i, k, *wxWHITE);
             }
         }
+		else
+		{
+			//not supported
+		}
     }
 }
 
@@ -413,66 +449,114 @@ void end_station_details::UpdateChannelCount()
 {
     for(unsigned int i = 0; i < m_stream_input_count; i++)
     {
-        if(input_channel_counts.at(i)->GetSelection() == 0)
+        if(input_channel_counts.at(i)->GetSelection() == 0) //1 channel
         {
             for(unsigned int k = 1; k < 8; k++)
             {
+				input_stream_grid->SetCellValue(i, k, wxEmptyString);
                 input_stream_grid->SetReadOnly(i, k);
                 input_stream_grid->SetCellBackgroundColour(i, k, *wxLIGHT_GREY);
             }
         }
-        else if(input_channel_counts.at(i)->GetSelection() == 1)
+		else if (input_channel_counts.at(i)->GetSelection() == 1) //2 channel
+		{
+			input_stream_grid->SetReadOnly(i, 1, false); //writable
+
+			for (unsigned int k = 2; k < 8; k++) //clear other channel data
+			{
+				input_stream_grid->SetCellValue(i, k, wxEmptyString);
+				input_stream_grid->SetReadOnly(i, k);
+				input_stream_grid->SetCellBackgroundColour(i, k, *wxLIGHT_GREY);
+			}
+
+			for (unsigned int k = 0; k < 2; k++) //initialize 2 channels if empty
+			{
+				wxString string = input_stream_grid->GetCellValue(i, k);
+				if (string == wxEmptyString)
+				{
+					input_stream_grid->SetCellValue(i, k, wxT("0"));
+					input_stream_grid->SetCellBackgroundColour(i, k, *wxWHITE);
+				}
+			}
+		}
+		else if (input_channel_counts.at(i)->GetSelection() == 2) //8 channel
         {
-            input_stream_grid->SetReadOnly(i, 1, false); //writable
-            input_stream_grid->SetCellBackgroundColour(i, 1, *wxWHITE);
-            for(unsigned int k = 2; k < 8; k++)
+            for(unsigned int k = 1; k < 8; k++) //initialize 8 channels if empty
             {
-                input_stream_grid->SetReadOnly(i, k);
-                input_stream_grid->SetCellBackgroundColour(i, k, *wxLIGHT_GREY);
-            }
-        }
-        else
-        {
-            for(unsigned int k = 1; k < 8; k++)
-            {
+				wxString string = input_stream_grid->GetCellValue(i, k);
                 input_stream_grid->SetReadOnly(i, k, false);
-                input_stream_grid->SetCellBackgroundColour(i, k, *wxWHITE);
+
+				if (string == wxEmptyString)
+				{
+					input_stream_grid->SetCellValue(i, k, wxT("0"));
+					input_stream_grid->SetCellBackgroundColour(i, k, *wxWHITE);
+				}
             }
         }
+		else
+		{
+			//not supported
+		}
     }
     
     for(unsigned int i = 0; i < m_stream_output_count; i++)
     {
-        if(output_channel_counts.at(i)->GetSelection() == 0)
-        {
-            for(unsigned int k = 1; k < 8; k++)
-            {
-                output_stream_grid->SetReadOnly(i, k);
-                output_stream_grid->SetCellBackgroundColour(i, k, *wxLIGHT_GREY);
-            }
-        }
-        else if(output_channel_counts.at(i)->GetSelection() == 1)
-        {
-            output_stream_grid->SetReadOnly(i, 1, false); //writable
-            output_stream_grid->SetCellBackgroundColour(i, 1, *wxWHITE);
-            for(unsigned int k = 2; k < 8; k++)
-            {
-                output_stream_grid->SetReadOnly(i, k);
-                output_stream_grid->SetCellBackgroundColour(i, k, *wxLIGHT_GREY);
-            }
-        }
-        else
-        {
-            for(unsigned int k = 1; k < 8; k++)
-            {
-                output_stream_grid->SetReadOnly(i, k, false);
-                output_stream_grid->SetCellBackgroundColour(i, k, *wxWHITE);
-            }
-        }
+		for (unsigned int i = 0; i < m_stream_output_count; i++)
+		{
+			if (output_channel_counts.at(i)->GetSelection() == 0) //1 channel
+			{
+				for (unsigned int k = 1; k < 8; k++)
+				{
+					output_stream_grid->SetCellValue(i, k, wxEmptyString);
+					output_stream_grid->SetReadOnly(i, k);
+					output_stream_grid->SetCellBackgroundColour(i, k, *wxLIGHT_GREY);
+				}
+			}
+			else if (output_channel_counts.at(i)->GetSelection() == 1) //2 channel
+			{
+				output_stream_grid->SetReadOnly(i, 1, false); //writable
+
+				for (unsigned int k = 2; k < 8; k++) //clear other channel data
+				{
+					output_stream_grid->SetCellValue(i, k, wxEmptyString);
+					output_stream_grid->SetReadOnly(i, k);
+					output_stream_grid->SetCellBackgroundColour(i, k, *wxLIGHT_GREY);
+				}
+
+				for (unsigned int k = 0; k < 2; k++) //initialize 2 channels if empty
+				{
+					wxString string = output_stream_grid->GetCellValue(i, k);
+					if (string == wxEmptyString)
+					{
+						output_stream_grid->SetCellBackgroundColour(i, k, *wxWHITE);
+						output_stream_grid->SetCellValue(i, k, wxT("0"));
+					}
+				}
+			}
+			else if (output_channel_counts.at(i)->GetSelection() == 2) //8 channel
+			{
+				for (unsigned int k = 1; k < 8; k++) //initialize 8 channels if empty
+				{
+					output_stream_grid->SetReadOnly(i, k, false);
+					wxString string = output_stream_grid->GetCellValue(i, k);
+					if (string == wxEmptyString)
+					{
+						output_stream_grid->SetCellBackgroundColour(i, k, *wxWHITE);
+						output_stream_grid->SetCellValue(i, k, wxT("0"));
+					}
+				}
+			}
+			else
+			{
+				//not supported
+			}
+		}
     }
     
     input_stream_grid->ForceRefresh();
     output_stream_grid->ForceRefresh();
+
+	CheckValid();
 }
 
 void end_station_details::CreateInputStreamGridHeader()
@@ -568,10 +652,10 @@ void end_station_details::CreateAndSizeGrid(size_t stream_input_count, size_t st
     wxGridStringTable *input_name_grid_base = new wxGridStringTable((int) stream_input_count, 1);
     wxGridStringTable *output_name_grid_base = new wxGridStringTable((int) stream_output_count, 1);
 
-    input_stream_grid->SetTable(grid_base);
-    output_stream_grid->SetTable(grid_base2);
-    input_stream_name_grid->SetTable(input_name_grid_base);
-    output_stream_name_grid->SetTable(output_name_grid_base);
+    input_stream_grid->SetTable(grid_base, true);
+    output_stream_grid->SetTable(grid_base2, true);
+    input_stream_name_grid->SetTable(input_name_grid_base, true);
+    output_stream_name_grid->SetTable(output_name_grid_base, true);
     SetChannelChoice(stream_input_count, stream_output_count);
 
     dialog_sizer = new wxBoxSizer(wxVERTICAL);
@@ -662,11 +746,11 @@ void end_station_details::OnOK()
                 case 1:
                 {
                     wxString ret = input_stream_grid->GetCellValue(i, 0);
-                    if(ret == wxEmptyString)
+                    if(wxAtoi(ret) == 0)
                     {
                         //skip
                     }
-                    else if (input_stream_grid->GetCellTextColour(i, 0) == *wxRED)
+					else if (input_stream_grid->GetCellBackgroundColour(i, 0) == my_red)
                     {
                         std::cout << "entered invalid cluster" << std::endl;
                     }
@@ -685,11 +769,11 @@ void end_station_details::OnOK()
                     for(unsigned int j = 0; j < 2; j++)
                     {
                         wxString ret = input_stream_grid->GetCellValue(i, j);
-                        if(ret == wxEmptyString)
+						if (wxAtoi(ret) == 0)
                         {
                             //Empty
                         }
-                        else if (input_stream_grid->GetCellTextColour(i, j) == *wxRED)
+						else if (input_stream_grid->GetCellBackgroundColour(i, j) == my_red)
                         {
                             std::cout << "entered invalid cluster" << std::endl;
                         }
@@ -709,11 +793,11 @@ void end_station_details::OnOK()
                     for(unsigned int j = 0; j < 8; j++)
                     {
                         wxString ret = input_stream_grid->GetCellValue(i, j);
-                        if(ret == wxEmptyString)
+						if (wxAtoi(ret) == 0)
                         {
                             //Empty
                         }
-                        else if (input_stream_grid->GetCellTextColour(i, j) == *wxRED)
+						else if (input_stream_grid->GetCellBackgroundColour(i, j) == my_red)
                         {
                             std::cout << "entered invalid cluster" << std::endl;
                         }
@@ -757,11 +841,11 @@ void end_station_details::OnOK()
                 case 1:
                 {
                     wxString ret = output_stream_grid->GetCellValue(i, 0);
-                    if(ret == wxEmptyString)
+					if (wxAtoi(ret) == 0)
                     {
                         //Empty Box
                     }
-                    else if (output_stream_grid->GetCellTextColour(i, 0) == *wxRED)
+					else if (output_stream_grid->GetCellBackgroundColour(i, 0) == my_red)
                     {
                         std::cout << "entered invalid cluster" << std::endl;
                     }
@@ -780,11 +864,11 @@ void end_station_details::OnOK()
                     for(unsigned int j = 0; j < 2; j++)
                     {
                         wxString ret = output_stream_grid->GetCellValue(i, j);
-                        if(ret == wxEmptyString)
+						if (wxAtoi(ret) == 0)
                         {
                             //Empty
                         }
-                        else if (output_stream_grid->GetCellTextColour(i, j) == *wxRED)
+						else if (output_stream_grid->GetCellBackgroundColour(i, j) == my_red)
                         {
                             std::cout << "entered invalid cluster" << std::endl;
                         }
@@ -804,11 +888,11 @@ void end_station_details::OnOK()
                     for(unsigned int j = 0; j < 8; j++)
                     {
                         wxString ret = output_stream_grid->GetCellValue(i, j);
-                        if(ret == wxEmptyString)
+						if (wxAtoi(ret) == 0)
                         {
                             //Empty
                         }
-                        else if (output_stream_grid->GetCellTextColour(i, j) == *wxRED)
+						else if (output_stream_grid->GetCellBackgroundColour(i, j) == my_red)
                         {
                             std::cout << "entered invalid cluster" << std::endl;
                         }
@@ -850,51 +934,68 @@ void end_station_details::OnGridChange(wxGridEvent &event)
     selected_row = event.GetRow();
     selected_col = event.GetCol();
 
-    if(id == INPUT_GRID_ID)
-    {
-        std::set<int> cluster_offsets;
-        int num_rows = input_stream_grid->GetNumberRows();
-        int num_cols = input_stream_grid->GetNumberCols();
+	int num_input_rows = input_stream_grid->GetNumberRows();
+	int num_input_cols = input_stream_grid->GetNumberCols();
+	int num_output_rows = output_stream_grid->GetNumberRows();
+	int num_output_cols = output_stream_grid->GetNumberCols();
 
-        int val = wxAtoi(input_stream_grid->GetCellValue(selected_row, selected_col));
-        
-        if(val > (int) m_input_cluster_count)
-        {
-            input_stream_grid->SetCellTextColour(selected_row, selected_col, *wxRED);
-        }
-        
-        
-        for(int row = 1; row < num_rows; row++)
-        {
-            for(int col = 0; col < num_cols; col++)
-            {
-                if(input_stream_grid->GetCellValue(row, col) != wxEmptyString)
-                {
-                    int val = wxAtoi(input_stream_grid->GetCellValue(row, col));
-                    
-                    std::set<int>::iterator it = cluster_offsets.find(val);
-                    if(it == cluster_offsets.end() && val <= (int) m_input_cluster_count)
-                    {
-                        cluster_offsets.insert(val);
-                        input_stream_grid->SetCellTextColour(row, col, *wxBLACK);
-                    }
-                    else
-                    {
-                        input_stream_grid->SetCellTextColour(row, col, *wxRED);
-                    }
-                }
-            }
-        }
-    }
+	if (id == INPUT_GRID_ID)
+	{
+		std::set<int> cluster_offsets;
+
+		int val = wxAtoi(input_stream_grid->GetCellValue(selected_row, selected_col));
+
+		if (val > (int) m_input_cluster_count)
+		{
+			input_stream_grid->SetCellBackgroundColour(selected_row, selected_col, my_red);
+		}
+		else
+		{
+			for (int row = 0; row < num_input_rows; row++)
+			{
+				for (int col = 0; col < num_input_cols; col++)
+				{
+					if (wxAtoi(input_stream_grid->GetCellValue(row, col)) != 0)
+					{
+						int val = wxAtoi(input_stream_grid->GetCellValue(row, col));
+
+						std::set<int>::iterator it = cluster_offsets.find(val);
+						if (it == cluster_offsets.end() && val <= (int)m_input_cluster_count)
+						{
+							cluster_offsets.insert(val);
+							input_stream_grid->SetCellBackgroundColour(row, col, my_green);
+						}
+						else
+						{
+							input_stream_grid->SetCellBackgroundColour(row, col, my_red);
+						}
+					}
+				}
+			}
+		}
+
+		if (val == 0)
+		{
+			input_stream_grid->SetCellBackgroundColour(selected_row, selected_col, *wxWHITE);
+			input_stream_grid->SetCellValue(selected_row, selected_col, wxT("0"));
+		}
+	}
     else if(id == OUTPUT_GRID_ID)
     {
-        if(wxAtoi(output_stream_grid->GetCellValue(selected_row, selected_col)) > (int) m_output_cluster_count)
+		int val = wxAtoi(output_stream_grid->GetCellValue(selected_row, selected_col));
+
+		if (val == 0)
+		{
+			output_stream_grid->SetCellBackgroundColour(selected_row, selected_col, *wxWHITE);
+			output_stream_grid->SetCellValue(selected_row, selected_col, wxT("0"));
+		}
+        else if(val > (int) m_output_cluster_count)
         {
-            output_stream_grid->SetCellTextColour(selected_row, selected_col, *wxRED);
+			output_stream_grid->SetCellBackgroundColour(selected_row, selected_col, my_red);
         }
         else
         {
-            output_stream_grid->SetCellTextColour(selected_row, selected_col, *wxBLACK);
+			output_stream_grid->SetCellBackgroundColour(selected_row, selected_col, my_green);
         }
     }
     else
@@ -904,6 +1005,8 @@ void end_station_details::OnGridChange(wxGridEvent &event)
 
 	input_stream_grid->ForceRefresh();
 	output_stream_grid->ForceRefresh();
+
+	CheckValid();
 }
 
 int end_station_details::ConvertClusterOffsetToAvdecc(uint16_t user_cluster_offset, uint16_t &avdecc_cluster_offset, wxString stream_type)
@@ -932,6 +1035,46 @@ int end_station_details::ConvertClusterOffsetToAvdecc(uint16_t user_cluster_offs
     }
     
     return 0;
+}
+
+void end_station_details::CheckValid()
+{
+	invalid = false;
+	int num_input_rows = output_stream_grid->GetNumberRows();
+	int num_input_cols = output_stream_grid->GetNumberCols();
+	int num_output_rows = output_stream_grid->GetNumberRows();
+	int num_output_cols = output_stream_grid->GetNumberCols();
+
+	for (int row = 0; row < num_input_rows; row++)
+	{
+		for (int col = 0; col < num_input_cols; col++)
+		{
+			if (input_stream_grid->GetCellBackgroundColour(row, col) == my_red)
+			{
+				invalid = true;
+			}
+		}
+	}
+
+	for (int row = 0; row < num_output_rows; row++)
+	{
+		for (int col = 0; col < num_output_cols; col++)
+		{
+			if (output_stream_grid->GetCellBackgroundColour(row, col) == my_red)
+			{
+				invalid = true;
+			}
+		}
+	}
+
+	if (invalid)
+	{
+		apply_button->Disable();
+	}
+	else
+	{
+		apply_button->Enable();
+	}
 }
 
 void end_station_details::OnChannelChange(wxCommandEvent &event)

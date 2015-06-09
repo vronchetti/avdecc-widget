@@ -408,7 +408,7 @@ int stream_configuration::SetStreamInfo()
         }
         if(dialog_stream_input_details.stream_name.IsSameAs(avdecc_stream_input_details.stream_name))
         {
-            std::cout << "Stream Input Name unchanged" << std::endl;
+            //unchanged
         }
         else
         {
@@ -440,7 +440,7 @@ int stream_configuration::SetStreamInfo()
         
         if(dialog_stream_output_details.stream_name.IsSameAs(avdecc_stream_output_details.stream_name))
         {
-            std::cout << "Stream Output Name unchanged" << std::endl;
+            //unchanged
         }
         else
         {
