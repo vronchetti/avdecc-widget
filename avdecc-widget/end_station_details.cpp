@@ -447,6 +447,33 @@ void end_station_details::SetOutputChannelCount(unsigned int stream_index, size_
 
 void end_station_details::UpdateChannelCount()
 {
+	unsigned int current_input_cluster_count = 0;
+	unsigned int current_output_cluster_count = 0;
+
+	for(unsigned int i = 0; i < m_stream_input_count; i++)
+	{
+		for (unsigned int j = 0; j < 8; j++)
+		{
+			wxString val = input_stream_grid->GetCellValue(i, j);
+			if (val != wxEmptyString)
+			{
+				++current_input_cluster_count;
+			}
+		}
+	}
+
+	for (unsigned int i = 0; i < m_stream_output_count; i++)
+	{
+		for (unsigned int j = 0; j < 8; j++)
+		{
+			wxString val = output_stream_grid->GetCellValue(i, j);
+			if (val != wxEmptyString)
+			{
+				++current_output_cluster_count;
+			}
+		}
+	}
+
     for(unsigned int i = 0; i < m_stream_input_count; i++)
     {
         if(input_channel_counts.at(i)->GetSelection() == 0) //1 channel
@@ -529,7 +556,15 @@ void end_station_details::UpdateChannelCount()
 					if (string == wxEmptyString)
 					{
 						output_stream_grid->SetCellBackgroundColour(i, k, *wxWHITE);
-						output_stream_grid->SetCellValue(i, k, wxT("0"));
+
+						if (m_output_cluster_count > current_output_cluster_count)
+						{
+							output_stream_grid->SetCellValue(i, k, wxString::Format("%u", ++current_output_cluster_count));
+						}
+						else
+						{
+							output_stream_grid->SetCellValue(i, k, wxT("0"));
+						}
 					}
 				}
 			}
