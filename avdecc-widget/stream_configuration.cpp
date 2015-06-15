@@ -46,52 +46,6 @@ stream_configuration::stream_configuration(avdecc_lib::end_station * end_station
 }
 stream_configuration::~stream_configuration() {}
 
-size_t stream_configuration::get_stream_input_count()
-{
-    return m_stream_input_count;
-}
-
-size_t stream_configuration::get_stream_output_count()
-{
-    return m_stream_output_count;
-}
-
-size_t stream_configuration::get_stream_input_cluster_count()
-{
-    return m_stream_input_cluster_count;
-}
-
-size_t stream_configuration::get_stream_output_cluster_count()
-{
-    return m_stream_output_cluster_count;
-}
-
-void stream_configuration::set_input_output_cluster_counts(size_t input_cluster_count, size_t output_cluster_count)
-{
-    m_stream_input_cluster_count = input_cluster_count;
-    m_stream_output_cluster_count = output_cluster_count;
-}
-
-size_t stream_configuration::get_avdecc_input_maps_count()
-{
-    return avdecc_stream_port_input_audio_mappings.size();
-}
-
-size_t stream_configuration::get_avdecc_output_maps_count()
-{
-    return avdecc_stream_port_output_audio_mappings.size();
-}
-
-size_t stream_configuration::get_dialog_input_maps_count()
-{
-    return dialog_stream_port_input_audio_mappings.size();
-}
-
-size_t stream_configuration::get_dialog_output_maps_count()
-{
-    return dialog_stream_port_output_audio_mappings.size();
-}
-
 int stream_configuration::get_avdecc_stream_input_details_by_index(unsigned int index, struct stream_configuration_details &stream_details)
 {
     if (index >= m_stream_input_count)
@@ -172,19 +126,25 @@ int stream_configuration::GetStreamInfo()
             value = value << 44;
             value = value >> 52;
             
-            if(value == 1) //channel count 1
-            {
-                input_stream_details.channel_count = 1;
-            }
-            else if(value == 2) //channel count 2
-            {
-                input_stream_details.channel_count = 2;
-            }
-            else //channel count 2
-            {
-                input_stream_details.channel_count = 8;
-            }
-            
+			switch (value)
+			{
+				case 1:
+					input_stream_details.channel_count = 1;
+					break;
+				case 2:
+					input_stream_details.channel_count = 2;
+					break;
+				case 4:
+					input_stream_details.channel_count = 4;
+					break;
+				case 8:
+					input_stream_details.channel_count = 8;
+					break;
+				default:
+					//unsupported
+					break;
+			}
+
             input_stream_details.clk_sync_src_flag = stream_input_resp_ref->stream_flags_clock_sync_source();
             avdecc_input_stream_config.push_back(input_stream_details);
             
@@ -235,19 +195,25 @@ int stream_configuration::GetStreamInfo()
             value = value << 44;
             value = value >> 52;
             
-            if(value == 1) //channel count 1
-            {
-                output_stream_details.channel_count = 1;
-            }
-            else if(value == 2) //channel count 2
-            {
-                output_stream_details.channel_count = 2;
-            }
-            else //channel count 8
-            {
-                output_stream_details.channel_count = 8;
-            }
-            
+			switch (value)
+			{
+			case 1:
+				output_stream_details.channel_count = 1;
+				break;
+			case 2:
+				output_stream_details.channel_count = 2;
+				break;
+			case 4:
+				output_stream_details.channel_count = 4;
+				break;
+			case 8:
+				output_stream_details.channel_count = 8;
+				break;
+			default:
+				//unsupported
+				break;
+			}
+
             output_stream_details.clk_sync_src_flag = stream_output_resp_ref->stream_flags_clock_sync_source();
             
             avdecc_output_stream_config.push_back(output_stream_details);

@@ -78,14 +78,13 @@ public:
     
     std::vector<wxString> clock_source_descriptions;
     
-    wxString get_entity_name();
-    wxString get_entity_id();
-    wxString get_default_name();
-    wxString get_mac();
-    wxString get_fw_ver();
-    uint32_t get_sample_rate();
-    uint16_t get_clock_source();
-    uint16_t get_clock_source_count();
+	wxString get_entity_name(){ return name; }
+	wxString get_entity_id(){ return entity_id; }
+	wxString get_default_name(){ return default_name; }
+	wxString get_mac(){ return mac; }
+	wxString get_fw_ver(){ return fw_ver; }
+	uint32_t get_sample_rate(){ return sample_rate; }
+	uint16_t get_clock_source(){ return current_clock_source; }
     int set_sample_rate(uint32_t sampling_rate);
     int set_clock_source(uint16_t clock_source_index);
     int set_entity_name(wxString entity_name);
@@ -107,11 +106,10 @@ private:
     wxString fw_ver;
     uint32_t sample_rate;
     uint32_t dialog_sample_rate;
-    uint16_t clock_source;
+    uint16_t current_clock_source;
     uint16_t dialog_clock_source;
-    uint16_t clock_source_count;
     
-    int FillEndStationDetails();
+    int GetEndStationDetails();
     int cmd_set_name(std::string desc_name, uint16_t desc_index, std::string new_name);
     int cmd_set_sampling_rate(uint32_t new_sampling_rate);
     int cmd_set_clock_source(uint16_t new_clk_src_index);

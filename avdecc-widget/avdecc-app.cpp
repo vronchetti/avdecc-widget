@@ -181,7 +181,6 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
 
     if (retval == wxID_CANCEL)
     {
-        details->OnCancel();
         std::cout << "Cancel" << std::endl;
     }
     else if (retval == wxID_OK)
