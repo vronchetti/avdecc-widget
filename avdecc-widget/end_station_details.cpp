@@ -36,7 +36,7 @@ wxEND_EVENT_TABLE()
 end_station_details::end_station_details(wxWindow *parent, end_station_configuration *config, stream_configuration *stream_config) :
 wxDialog(parent, wxID_ANY, wxT("End Station Configuration"),
         wxDefaultPosition,
-        wxSize(500, 700), wxRESIZE_BORDER)
+        wxDefaultSize)
 {
 	/*
 	* Copy pointers to end station details and stream details class objects.  Values will be updated
