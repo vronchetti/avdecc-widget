@@ -25,7 +25,7 @@
  * avdecc-app.h
  */
 
-#include "end_station_details.h"
+#include "avdecc_end_station_details.h"
 
 //avdecc-lib necessary headers
 #include <stdint.h>
@@ -90,6 +90,8 @@ private:
 
 #define atomic_cout AtomicOut()
 
+class avdecc_stream_connections_frame;
+
 class AVDECC_Controller : public wxFrame
 {
 public:
@@ -98,8 +100,10 @@ public:
     
     //avdecc-app event handlers
     void OnEndStationDClick(wxListEvent& event);
+	void OnClose(wxCloseEvent& event);
     void OnInterfaceSelect(wxCommandEvent& event);
     void OnIncrementTimer(wxTimerEvent& event);
+	void OnShowConnects(wxCommandEvent& event);
 
 private:
     //avdecc-lib objects
@@ -112,13 +116,15 @@ private:
     wxTimer * avdecc_app_timer;
     wxChoice * interface_choice;
     wxTextCtrl * logs_notifs;
+	wxButton * show_connections_button;
     
     wxBoxSizer * app_sizer;
     
     //child class objects
-    end_station_configuration * config;
-    stream_configuration * stream_config;
-    end_station_details * details;
+    avdecc_end_station_configuration * config;
+    avdecc_stream_configuration * stream_config;
+    avdecc_end_station_details * details;
+	avdecc_stream_connections_frame * stream_connections_main_frame = NULL;
     
     //avdecc-app methods
     void SetTimer();
@@ -144,9 +150,10 @@ private:
 
 enum
 {
-    AVDECC_GUI_Quit,
-    EndStationTimer,
-    InterfaceSelect,
-    TIMER_INCREMENT = 200, //200 ms
+	AVDECC_GUI_Quit,
+	EndStationTimer,
+	ShowConnects,
+	InterfaceSelect,
+	TIMER_INCREMENT = 5,
     END_STATION_PROCESS_DELAY = 2000,
 };

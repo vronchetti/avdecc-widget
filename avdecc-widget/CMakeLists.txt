@@ -38,8 +38,8 @@ file(GLOB_RECURSE AVBGUI_SRC "*.cpp" )
 
 set(AVDECCLIB_DIR ${PROJECT_BINARY_DIR}/../avdecc-lib/controller/lib/${CMAKE_CFG_INTDIR})
 add_library(avdecc-lib_controller SHARED IMPORTED)
-set_property(TARGET avdecc-lib_controller PROPERTY IMPORTED_LOCATION ${AVDECCLIB_DIR}/avdecc-lib_controller.dll)
-set_property(TARGET avdecc-lib_controller PROPERTY IMPORTED_IMPLIB ${AVDECCLIB_DIR}/avdecc-lib_controller.lib)
+set_property(TARGET avdecc-lib_controller PROPERTY IMPORTED_LOCATION ${AVDECCLIB_DIR}/avdecc-lib_controller32.dll)
+set_property(TARGET avdecc-lib_controller PROPERTY IMPORTED_IMPLIB ${AVDECCLIB_DIR}/avdecc-lib_controller32.lib)
 
 if(APPLE)
   add_executable (avbgui ${AVBGUI_INCLUDES} ${AVBGUI_SRC})
@@ -55,7 +55,7 @@ elseif(WIN32)
     "$<TARGET_FILE_DIR:avbgui>")
 endif()
 
-target_link_libraries(avbgui avdecc-lib_controller)
+target_link_libraries(avbgui avdecc-lib_controller32)
 target_link_libraries(avbgui ${wxWidgets_LIBRARIES})
 
 

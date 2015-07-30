@@ -48,6 +48,7 @@ extern "C" void notification_callback(void *user_obj, int32_t notification_type,
                                       uint16_t desc_type, uint16_t desc_index, uint32_t cmd_status,
                                       void *notification_id)
 {
+	/*
     if(notification_type == avdecc_lib::COMMAND_TIMEOUT || notification_type == avdecc_lib::RESPONSE_RECEIVED)
     {
         const char *cmd_name;
@@ -99,13 +100,15 @@ extern "C" void notification_callback(void *user_obj, int32_t notification_type,
     m_notification_info.notification_id = notification_id;
     
     pending_notification_msgs.push_back(m_notification_info);
+	*/
 }
 
 extern "C" void log_callback(void *user_obj, int32_t log_level, const char *log_msg, int32_t time_stamp_ms)
 {
+
     printf("\n[LOG] %s (%s)\n", avdecc_lib::utility::logging_level_value_to_name(log_level), log_msg);
     
-    log_info m_log_info;
+	log_info m_log_info;
     
     m_log_info.log_level = log_level;
     m_log_info.log_msg = log_msg;

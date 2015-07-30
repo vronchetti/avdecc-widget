@@ -28,6 +28,7 @@
 
 #include "avdecc-app.h"
 #include "notif_log.h"
+#include "avdecc_stream_connections.h"
 #include "../sample.xpm"
 
 class AVDECC_App : public wxApp
@@ -37,7 +38,9 @@ public:
 };
 
 wxBEGIN_EVENT_TABLE(AVDECC_Controller, wxFrame)
+	EVT_CLOSE(AVDECC_Controller::OnClose)
     EVT_TIMER(EndStationTimer, AVDECC_Controller::OnIncrementTimer)
+	EVT_BUTTON(ShowConnects, AVDECC_Controller::OnShowConnects)
     EVT_LIST_ITEM_ACTIVATED(wxID_ANY, AVDECC_Controller::OnEndStationDClick)
     EVT_CHOICE(InterfaceSelect, AVDECC_Controller::OnInterfaceSelect)
 wxEND_EVENT_TABLE()
@@ -45,7 +48,7 @@ wxEND_EVENT_TABLE()
 IMPLEMENT_APP(AVDECC_App)
 
 AVDECC_Controller::AVDECC_Controller()
-: wxFrame(NULL, wxID_ANY, wxT("AVDECC-LIB Controller widget"),
+: wxFrame(NULL, wxID_ANY, wxT("avb_standalone_v0.2"),
           wxDefaultPosition, wxSize(600,300))
 {
     SetIcon(wxICON(sample));
@@ -59,12 +62,23 @@ AVDECC_Controller::AVDECC_Controller()
 
 AVDECC_Controller::~AVDECC_Controller()
 {
-    sys->process_close();
-    sys->destroy();
-    controller_obj->destroy();
-    netif->destroy();
+	if (sys)
+	{
+		sys->process_close();
+		sys->destroy();
+	}
+	if (controller_obj)
+		controller_obj->destroy();
+	if (netif)
+		netif->destroy();
     avdecc_app_timer->Stop();
     Destroy();
+
+}
+
+void AVDECC_Controller::OnClose(wxCloseEvent& event)
+{
+	exit(0); //force close
 }
 
 void AVDECC_Controller::SetTimer()
@@ -160,6 +174,7 @@ void AVDECC_Controller::OnInterfaceSelect(wxCommandEvent &event)
     sys->process_start();
 
     CreateEndStationList();
+	show_connections_button->Enable();
 }
 
 void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
@@ -172,21 +187,21 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
     std::streambuf *sbOld = std::cout.rdbuf();
     std::cout.rdbuf(logs_notifs);
 
-    config = new end_station_configuration(end_station, sys); //end station config class
-    stream_config = new stream_configuration(end_station, sys); //stream config class
+    config = new avdecc_end_station_configuration(end_station, sys); //end station config class
+    stream_config = new avdecc_stream_configuration(end_station, sys); //stream config class
 
-    details = new end_station_details(this, config, stream_config); //end station details dialog
+    details = new avdecc_end_station_details(this, config, stream_config); //end station details dialog
     
     int retval = details->ShowModal();
 
     if (retval == wxID_CANCEL)
     {
-        std::cout << "Cancel" << std::endl;
+       // std::cout << "Cancel" << std::endl;
     }
     else if (retval == wxID_OK)
     {
         details->OnOK();
-        std::cout << "Apply" << std::endl;
+       // std::cout << "Apply" << std::endl;
     }
     else
     {
@@ -200,64 +215,32 @@ void AVDECC_Controller::OnEndStationDClick(wxListEvent& event)
     delete details;
 }
 
+
 void AVDECC_Controller::OnIncrementTimer(wxTimerEvent& event)
 {
     std::streambuf *sbOld = std::cout.rdbuf();
     std::cout.rdbuf(logs_notifs);
     
-    for(size_t i = 0; i < pending_notification_msgs.size(); i++)
+    for(size_t i = 0; i < pending_log_msgs.size(); i++)
     {
-        struct notification_info notification;
+        struct log_info log;
         
-        notification = pending_notification_msgs.at(i);
-		if (notification.notification_type == avdecc_lib::COMMAND_TIMEOUT || notification.notification_type == avdecc_lib::RESPONSE_RECEIVED)
-		{
-			const char *cmd_name;
-			const char *desc_name;
-			const char *cmd_status_name;
+        log = pending_log_msgs.at(i);
 
-			if (notification.cmd_type < avdecc_lib::CMD_LOOKUP)
-			{
-				cmd_name = avdecc_lib::utility::aem_cmd_value_to_name(notification.cmd_type);
-				desc_name = avdecc_lib::utility::aem_desc_value_to_name(notification.desc_type);
-				cmd_status_name = avdecc_lib::utility::aem_cmd_status_value_to_name(notification.cmd_status);
-			}
-			else
-			{
-				cmd_name = avdecc_lib::utility::acmp_cmd_value_to_name(notification.cmd_type - avdecc_lib::CMD_LOOKUP);
-				desc_name = "NULL";
-				cmd_status_name = avdecc_lib::utility::acmp_cmd_status_value_to_name(notification.cmd_status);
-			}
-
-			std::cout << "[NOTIFICATION] " <<
-				avdecc_lib::utility::notification_value_to_name(notification.notification_type) << " " <<
-				wxString::Format("0x%llx", notification.entity_id) << " " <<
-				cmd_name << " " <<
-				desc_name << " " <<
-				notification.desc_index << " " <<
-				cmd_status_name << " " <<
-				notification.notification_id << std::endl;
-		}
-		else
-		{
-			std::cout << "[NOTIFICATION] " <<
-				avdecc_lib::utility::notification_value_to_name(notification.notification_type) << " " <<
-				wxString::Format("0x%llx", notification.entity_id) << " " <<
-				notification.cmd_type << " " <<
-				notification.desc_type << " " <<
-				notification.desc_index << " " <<
-				notification.cmd_status << " " <<
-				notification.notification_id << std::endl;
-		}
-
+		std::cout << "[LOG] " <<
+			    "Log Level: " << log.log_level <<
+			    " -> " << log.log_msg << std::endl;
     }
-    
-    pending_notification_msgs.clear();
 
+    pending_log_msgs.clear();
     std::cout.rdbuf(sbOld);
 }
- 
 
+void AVDECC_Controller::OnShowConnects(wxCommandEvent& event)
+{
+	stream_connections_main_frame = new avdecc_stream_connections_frame(this, controller_obj, sys);
+}
+ 
 void AVDECC_Controller::CreateEndStationListFormat()
 {
     details_list = new wxListCtrl(this, wxID_ANY, wxDefaultPosition,
@@ -298,9 +281,14 @@ void AVDECC_Controller::CreateEndStationListFormat()
     sizer4->Add(logs_notifs);
     wxStaticBoxSizer *sizer3 = new wxStaticBoxSizer(wxVERTICAL, this, "Select Interface");
     sizer3->Add(interface_choice);
+	wxStaticBoxSizer *sizer5 = new wxStaticBoxSizer(wxVERTICAL, this, "AVB connections");
+	show_connections_button = new wxButton(this, ShowConnects, "Show Connections");
+	show_connections_button->Disable();
+	sizer5->Add(show_connections_button);
     wxStaticBoxSizer *sizer2 = new wxStaticBoxSizer(wxVERTICAL, this, "End Station List");
     sizer2->Add(details_list, 1, wxGROW);
     app_sizer->Add(sizer3);
+	app_sizer->Add(sizer5);
     app_sizer->Add(sizer2);
     app_sizer->Add(sizer4);
 
